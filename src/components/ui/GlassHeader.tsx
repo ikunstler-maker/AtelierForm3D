@@ -3,6 +3,7 @@ import { NEUTRAL_PRESETS, PresetId } from '../../data/neutralPresets';
 import { TRANSLATIONS } from '../../data/translations';
 import { useAtelierStore } from '../../store/useAtelierStore';
 import {
+  IconAnimeSparkle,
   IconAtelierBrand,
   IconExportJson,
   IconFitVerify,
@@ -19,6 +20,8 @@ export const GlassHeader: React.FC = () => {
   const gender = useAtelierStore((s) => s.gender);
   const activePresetId = useAtelierStore((s) => s.activePresetId);
   const measurements = useAtelierStore((s) => s.measurements);
+  const appearance = useAtelierStore((s) => s.appearance);
+  const casPanelOpen = useAtelierStore((s) => s.casPanelOpen);
   const garmentInputsCm = useAtelierStore((s) => s.garmentInputsCm);
   const isFlatMode = useAtelierStore((s) => s.isFlatMode);
   const unit = useAtelierStore((s) => s.unit);
@@ -29,6 +32,7 @@ export const GlassHeader: React.FC = () => {
   const setGender = useAtelierStore((s) => s.setGender);
   const selectPreset = useAtelierStore((s) => s.selectPreset);
   const resetCurrentPreset = useAtelierStore((s) => s.resetCurrentPreset);
+  const setCasPanelOpen = useAtelierStore((s) => s.setCasPanelOpen);
   const setUnit = useAtelierStore((s) => s.setUnit);
   const setLanguage = useAtelierStore((s) => s.setLanguage);
   const setFitPanelOpen = useAtelierStore((s) => s.setFitPanelOpen);
@@ -40,11 +44,12 @@ export const GlassHeader: React.FC = () => {
   const handleExportJson = () => {
     const payload = {
       app: 'AtelierForm 3D',
-      version: '1.0.0',
+      version: '2.0.0',
       exportedAt: new Date().toISOString(),
       gender,
       preset: activePresetId,
       measurements,
+      appearance,
       isFlatMode,
       garmentInputsCm,
     };
@@ -70,6 +75,7 @@ export const GlassHeader: React.FC = () => {
           importProfileData({
             gender: parsed.gender,
             measurements: parsed.measurements,
+            appearance: parsed.appearance,
             garmentInputsCm: parsed.garmentInputsCm,
             isFlatMode: parsed.isFlatMode,
           });
@@ -187,8 +193,45 @@ export const GlassHeader: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Controls: Unit, Language, Fit Check, Import/Export, Customizer */}
+      {/* Right Controls: Anime CAS Studio, Fit Check, Unit, Language, Import/Export, Customizer */}
       <div className="flex items-center gap-1.5">
+        {/* Anime CAS Studio Trigger */}
+        <button
+          id="toggle-cas-panel-btn"
+          type="button"
+          onClick={() => setCasPanelOpen(!casPanelOpen)}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            casPanelOpen ? 'liquid-glass-pill-active' : 'liquid-glass-pill'
+          }`}
+        >
+          <IconAnimeSparkle size={15} />
+          <span className="hidden md:inline">{t.header.casStudio}</span>
+        </button>
+
+        {/* Garment Fit Check Panel Trigger */}
+        <button
+          id="toggle-fit-panel-btn"
+          type="button"
+          onClick={() => setFitPanelOpen(!fitPanelOpen)}
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+            fitPanelOpen ? 'liquid-glass-pill-active' : 'liquid-glass-pill'
+          }`}
+        >
+          <IconFitVerify size={15} />
+          <span className="hidden lg:inline">{t.header.fitCheck}</span>
+          {activeGarmentCount > 0 && (
+            <span
+              className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold tabular-nums"
+              style={{
+                background: 'var(--accent-primary)',
+                color: '#0f172a',
+              }}
+            >
+              {activeGarmentCount}
+            </span>
+          )}
+        </button>
+
         {/* Unit Toggle (cm / in) */}
         <div
           className="flex items-center p-0.5 rounded-xl border border-white/10"
@@ -247,30 +290,6 @@ export const GlassHeader: React.FC = () => {
           </button>
         </div>
 
-        {/* Garment Fit Check Panel Trigger */}
-        <button
-          id="toggle-fit-panel-btn"
-          type="button"
-          onClick={() => setFitPanelOpen(!fitPanelOpen)}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
-            fitPanelOpen ? 'liquid-glass-pill-active' : 'liquid-glass-pill'
-          }`}
-        >
-          <IconFitVerify size={15} />
-          <span className="hidden lg:inline">{t.header.fitCheck}</span>
-          {activeGarmentCount > 0 && (
-            <span
-              className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold tabular-nums"
-              style={{
-                background: 'var(--accent-primary)',
-                color: '#0f172a',
-              }}
-            >
-              {activeGarmentCount}
-            </span>
-          )}
-        </button>
-
         {/* JSON Export / Import */}
         <button
           id="export-json-btn"
@@ -280,7 +299,6 @@ export const GlassHeader: React.FC = () => {
           className="liquid-glass-pill p-1.5 rounded-xl flex items-center gap-1 text-xs"
         >
           <IconExportJson size={15} />
-          <span className="hidden xl:inline text-[11px]">{t.header.exportJson}</span>
         </button>
 
         <button
@@ -291,7 +309,6 @@ export const GlassHeader: React.FC = () => {
           className="liquid-glass-pill p-1.5 rounded-xl flex items-center gap-1 text-xs"
         >
           <IconImportJson size={15} />
-          <span className="hidden xl:inline text-[11px]">{t.header.importJson}</span>
         </button>
         <input
           ref={fileInputRef}

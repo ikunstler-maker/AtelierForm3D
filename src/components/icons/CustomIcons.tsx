@@ -25,6 +25,80 @@ export const IconAtelierBrand: React.FC<IconProps> = ({ className = '', size = 2
   </svg>
 );
 
+export const IconAnimeSparkle: React.FC<IconProps> = ({ className = '', size = 16 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M12 3c.5 4.2 2.8 6.5 7 7-4.2.5-6.5 2.8-7 7-.5-4.2-2.8-6.5-7-7 4.2-.5 6.5-2.8 7-7Z" />
+    <path d="M19 16c.2 1.5 1 2.3 2.5 2.5-1.5.2-2.3 1-2.5 2.5-.2-1.5-1-2.3-2.5-2.5 1.5-.2 2.3-1 2.5-2.5Z" />
+    <path d="M5 3c.2 1.2.8 1.8 2 2-1.2.2-1.8.8-2 2-.2-1.2-.8-1.8-2-2 1.2-.2 1.8-.8 2-2Z" />
+  </svg>
+);
+
+export const IconHairScissors: React.FC<IconProps> = ({ className = '', size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M12 4c-4.5 0-7.5 3.2-7.5 7.5 0 2.8 1.2 5.2 3 7.5-.4-2.8-.2-5.2.8-7 1.2 1.2 2.4 1.8 3.7 1.8s2.5-.6 3.7-1.8c1 1.8 1.2 4.2.8 7 1.8-2.3 3-4.7 3-7.5C19.5 7.2 16.5 4 12 4Z" />
+    <path d="M12 4c.8-1.5 2.2-2 3.8-1.5" />
+  </svg>
+);
+
+export const IconFaceSculpt: React.FC<IconProps> = ({ className = '', size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M12 3.5c4.2 0 7 3.2 7 7.8 0 4.5-3.2 8.5-7 9.2-3.8-.7-7-4.7-7-9.2 0-4.6 2.8-7.8 7-7.8Z" />
+    <path d="M9 10.5h1.5M13.5 10.5H15" />
+    <path d="M10 15.2c1.2.9 2.8.9 4 0" />
+  </svg>
+);
+
+export const IconDiceRandom: React.FC<IconProps> = ({ className = '', size = 15 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <rect x="3.5" y="3.5" width="17" height="17" rx="3.5" />
+    <circle cx="8.5" cy="8.5" r="1.2" fill="currentColor" />
+    <circle cx="15.5" cy="8.5" r="1.2" fill="currentColor" />
+    <circle cx="12" cy="12" r="1.2" fill="currentColor" />
+    <circle cx="8.5" cy="15.5" r="1.2" fill="currentColor" />
+    <circle cx="15.5" cy="15.5" r="1.2" fill="currentColor" />
+  </svg>
+);
+
 export const IconGenderFemale: React.FC<IconProps> = ({ className = '', size = 16 }) => (
   <svg
     width={size}

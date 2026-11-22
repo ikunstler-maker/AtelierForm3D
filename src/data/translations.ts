@@ -1,4 +1,5 @@
 import { MeasurementCategory, MeasurementKey } from './measurementsSchema';
+import { AnimeExpressionId, AnimeHairstyleId } from '../store/useAtelierStore';
 
 export type Language = 'ua' | 'en';
 
@@ -27,9 +28,52 @@ export interface TranslationDictionary {
   header: {
     exportJson: string;
     importJson: string;
+    casStudio: string;
     fitCheck: string;
     glassStyle: string;
     resetPreset: string;
+  };
+  cas: {
+    title: string;
+    subtitle: string;
+    animeModeToggle: string;
+    randomizeBtn: string;
+    resetBtn: string;
+    focusFaceBtn: string;
+    tabs: {
+      hair: string;
+      eyes: string;
+      face: string;
+      skin: string;
+    };
+    hairstylesLabel: string;
+    hairstyles: Record<AnimeHairstyleId, string>;
+    hairColorLabel: string;
+    bangsLength: string;
+    backHairLength: string;
+    hairVolume: string;
+    ahogeToggle: string;
+    eyeColorLabel: string;
+    eyeSize: string;
+    eyeSpacing: string;
+    eyeTilt: string;
+    pupilScale: string;
+    sparkleIntensity: string;
+    eyelashThickness: string;
+    browHeight: string;
+    browAngle: string;
+    faceRoundness: string;
+    chinSharpness: string;
+    noseSize: string;
+    noseHeight: string;
+    mouthWidth: string;
+    lipFullness: string;
+    earSize: string;
+    elfEarsToggle: string;
+    expressionLabel: string;
+    expressions: Record<AnimeExpressionId, string>;
+    skinToneLabel: string;
+    blushIntensity: string;
   };
   inspector: {
     title: string;
@@ -125,7 +169,7 @@ export interface TranslationDictionary {
 export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
   ua: {
     appTitle: 'AtelierForm 3D',
-    appSubtitle: 'Параметричне Ательє та Верифікація Посадки',
+    appSubtitle: 'Аніме CAS Студія та Параметричне Кравецьке Ательє',
     gender: {
       female: 'Жіночий',
       male: 'Чоловічий',
@@ -148,9 +192,67 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     header: {
       exportJson: 'Експорт JSON',
       importJson: 'Імпорт JSON',
+      casStudio: 'Аніме CAS Редактор',
       fitCheck: 'Перевірка Одягу',
       glassStyle: 'Скло та Матеріал',
       resetPreset: 'Скинути',
+    },
+    cas: {
+      title: 'Редактор Персонажа (Anime CAS)',
+      subtitle: 'Кастомізація зачісок, очей та риси обличчя у стилі Sims',
+      animeModeToggle: 'Аніме стилізація обличчя та зачіски',
+      randomizeBtn: 'Випадковий образ',
+      resetBtn: 'За замовчуванням',
+      focusFaceBtn: 'Камера на обличчя',
+      tabs: {
+        hair: 'Зачіски',
+        eyes: 'Очі та Брови',
+        face: 'Скульпт Обличчя',
+        skin: 'Шкіра та Тон',
+      },
+      hairstylesLabel: 'Модель зачіски (3D Волосся)',
+      hairstyles: {
+        twintails: 'Аніме Твінтейли (Два хвостики)',
+        himeLong: 'Хіме-кат (Довге пряме з пасмами)',
+        shortBob: 'Каре з чубчиком (Аніме Боб)',
+        spikyShonen: 'Сьонен Спайки (Виразні пасма)',
+        highPonytail: 'Високий кінський хвіст',
+        wolfCut: 'Вулф-кат (Багатошаровий)',
+        odangoBuns: 'Оданго (Два пучки з пасмами)',
+        buzzNone: 'Без зачіски (Скульптурний манекен)',
+      },
+      hairColorLabel: 'Палітра кольору волосся та відблисків',
+      bangsLength: 'Довжина переднього чубчика',
+      backHairLength: 'Довжина основних пасом / хвостів',
+      hairVolume: 'Пишність та об’єм зачіски',
+      ahogeToggle: 'Ахоге (фірмове верхнє пасмо-антена)',
+      eyeColorLabel: 'Колір райдужки очей',
+      eyeSize: 'Розмір аніме-очей',
+      eyeSpacing: 'Відстань між очима',
+      eyeTilt: 'Кут нахилу очей (Цундере / Лагідний)',
+      pupilScale: 'Глибина зіниці та райдужки',
+      sparkleIntensity: 'Яскравість аніме-блискіток в очах',
+      eyelashThickness: 'Густота та вигин вій',
+      browHeight: 'Висота посадки брів',
+      browAngle: 'Нахил брів (Емоційний акцент)',
+      faceRoundness: 'Форма щік та повнота обличчя',
+      chinSharpness: 'Гострота V-підборіддя (Аніме контур)',
+      noseSize: 'Делікатність / розмір носа',
+      noseHeight: 'Висота перенісся та кінчика носа',
+      mouthWidth: 'Ширина рота та посмішки',
+      lipFullness: 'Пухкість верхньої та нижньої губи',
+      earSize: 'Розмір вух',
+      elfEarsToggle: 'Ельфійські загострені вушка (Фентезі)',
+      expressionLabel: 'Емоція та вираз обличчя',
+      expressions: {
+        gentleSmile: 'Лагідна аніме-посмішка',
+        neutralCalm: 'Спокійний / Зосереджений',
+        cheerfulOpen: 'Радісний / Відкритий',
+        seriousCool: 'Холоднокровний / Серйозний',
+        shyBlush: 'Сором’язливий з рум’янцем',
+      },
+      skinToneLabel: 'Відтінок шкіри (Subsurface Satin)',
+      blushIntensity: 'Інтенсивність рум’янцю на щоках',
     },
     inspector: {
       title: 'Антропометрія Тіла',
@@ -223,18 +325,18 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       surfaceFinish: 'Матеріал 3D манекена',
       finishes: {
         clay: 'Матова Глина',
-        satin: 'Сатинова Смола',
+        satin: 'Аніме Сатин (SSS Шкіра)',
         translucent: 'Напівпрозора Оболонка',
       },
       finishDescriptions: {
         clay: 'Архітектурна скульптурна поверхня без відблисків',
-        satin: 'Делікатний студійний блиск з м’яким Френелем',
+        satin: 'Делікатний аніме-шейдер шкіри з м’яким Френелем',
         translucent: 'Просвічує внутрішні шви рукава та кроковий шов',
       },
     },
     camera: {
       full: 'Повний зріст',
-      torso: 'Торс',
+      torso: 'Обличчя / Торс',
       sleeves: 'Рукави',
       legs: 'Штани та Крок',
       back: 'Спина',
@@ -242,7 +344,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       autoFocus: 'Автофокус на мірці',
     },
     measurements: {
-      // Heights
       totalHeight: {
         name: 'Загальний зріст',
         tooltip: 'Вертикальна відстань від підлоги до верхівки голови',
@@ -283,7 +384,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Висота коліна',
         tooltip: 'Від підлоги до центру колінної чашечки',
       },
-      // Circumferences
       head: {
         name: 'Обхват голови',
         tooltip: 'Горизонтальний обхват через надбрівні дуги та потилицю',
@@ -352,7 +452,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Обхват зап’ястя',
         tooltip: 'Обхват по дистальній складці зап’ястя за кісточками',
       },
-      // Torso
       shoulderWidth: {
         name: 'Ширина плечей (біакроміальна)',
         tooltip: 'Поверхнева дуга між лівою та правою плечовими точками',
@@ -385,7 +484,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Вертикальна дуга торсу',
         tooltip: 'Повна петля від плеча через пах і по спині назад до плеча',
       },
-      // Sleeves
       sleeveFromShoulder: {
         name: 'Довжина рукава від плеча',
         tooltip: 'Від кінчика плеча (акроміона) через лікоть до зап’ястя',
@@ -402,7 +500,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Довжина від плеча до ліктя',
         tooltip: 'Від плечової точки акроміона до середини ліктьового суглоба',
       },
-      // Legs & Rise
       outseamFromWaist: {
         name: 'Боковий шов штанів від талії',
         tooltip: 'Від лінії талії по зовнішньому контуру стегна до щиколотки',
@@ -431,7 +528,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Висота посадки ззаду (Back Rise)',
         tooltip: 'Поверхнева крива від центру талії ззаду через сідниці до точки паху',
       },
-      // Extremities
       handLength: {
         name: 'Довжина кисті руки',
         tooltip: 'Від складки зап’ястя до кінчика середнього пальця',
@@ -452,7 +548,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
   },
   en: {
     appTitle: 'AtelierForm 3D',
-    appSubtitle: 'Parametric Tailoring & Fit Verification Studio',
+    appSubtitle: 'Anime CAS Studio & Parametric Tailoring Fit Verifier',
     gender: {
       female: 'Female',
       male: 'Male',
@@ -475,9 +571,67 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     header: {
       exportJson: 'Export JSON',
       importJson: 'Import JSON',
+      casStudio: 'Anime CAS Studio',
       fitCheck: 'Garment Fit Check',
       glassStyle: 'Glass & Material',
       resetPreset: 'Reset',
+    },
+    cas: {
+      title: 'Character Studio (Anime CAS)',
+      subtitle: 'Sims-style 3D hairstyles, anime eyes & face sculpting',
+      animeModeToggle: 'Anime Face & Hair Styling Active',
+      randomizeBtn: 'Randomize Look',
+      resetBtn: 'Reset Default',
+      focusFaceBtn: 'Zoom to Head / Face',
+      tabs: {
+        hair: 'Hairstyles',
+        eyes: 'Eyes & Brows',
+        face: 'Face Sculpt',
+        skin: 'Skin & Blush',
+      },
+      hairstylesLabel: '3D Anime Hairstyle',
+      hairstyles: {
+        twintails: 'Anime Twintails (Long Ribbons)',
+        himeLong: 'Hime Cut (Long Straight + Side Locks)',
+        shortBob: 'Anime Short Bob with Bangs',
+        spikyShonen: 'Spiky Shonen Layered',
+        highPonytail: 'High Flowing Ponytail',
+        wolfCut: 'Textured Anime Wolf Cut',
+        odangoBuns: 'Odango Double Buns + Strands',
+        buzzNone: 'No Hair (Sculpted Mannequin)',
+      },
+      hairColorLabel: 'Hair Color & Specular Highlights',
+      bangsLength: 'Front Bangs / Fringe Length',
+      backHairLength: 'Main Locks / Tails Length',
+      hairVolume: 'Hair Volume & Fullness',
+      ahogeToggle: 'Top Ahoge Cowlick Strand',
+      eyeColorLabel: 'Iris Color Spectrum',
+      eyeSize: 'Anime Eye Scale',
+      eyeSpacing: 'Inter-Ocular Eye Spacing',
+      eyeTilt: 'Eye Canthal Tilt Angle',
+      pupilScale: 'Iris & Pupil Depth',
+      sparkleIntensity: 'Anime Eye Starlight Sparkles',
+      eyelashThickness: 'Upper Eyelash Wing Thickness',
+      browHeight: 'Eyebrow Vertical Offset',
+      browAngle: 'Eyebrow Expression Angle',
+      faceRoundness: 'Cheek Fullness & Face Softness',
+      chinSharpness: 'Anime V-Shape Chin Taper',
+      noseSize: 'Anime Nose Delicacy',
+      noseHeight: 'Nose Bridge & Tip Elevation',
+      mouthWidth: 'Mouth & Smile Width',
+      lipFullness: 'Upper & Lower Lip Fullness',
+      earSize: 'Ear Scale',
+      elfEarsToggle: 'Pointed Fantasy Elf Ears',
+      expressionLabel: 'Facial Expression Preset',
+      expressions: {
+        gentleSmile: 'Gentle Anime Smile',
+        neutralCalm: 'Serene / Calm',
+        cheerfulOpen: 'Cheerful / Bright',
+        seriousCool: 'Cool / Determined',
+        shyBlush: 'Shy / Flustered Blush',
+      },
+      skinToneLabel: 'Skin Complexion (Subsurface Satin)',
+      blushIntensity: 'Cheek Anime Blush Intensity',
     },
     inspector: {
       title: 'Body Anthropometry',
@@ -550,18 +704,18 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       surfaceFinish: 'Mannequin Surface Shader',
       finishes: {
         clay: 'Matte Clay',
-        satin: 'Satin Resin',
+        satin: 'Anime Satin (SSS Skin)',
         translucent: 'Translucent Shell',
       },
       finishDescriptions: {
         clay: 'Architectural diffuse sculpture with soft studio shadows',
-        satin: 'Smooth atelier resin with subtle Fresnel sheen',
+        satin: 'Smooth anime skin shader with subtle Fresnel sheen',
         translucent: 'Semi-transparent shell revealing inseam & underarm seams',
       },
     },
     camera: {
       full: 'Full Body',
-      torso: 'Torso',
+      torso: 'Face & Torso',
       sleeves: 'Sleeves',
       legs: 'Legs & Rise',
       back: 'Back View',
@@ -569,7 +723,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       autoFocus: 'Auto-Focus Selected',
     },
     measurements: {
-      // Heights
       totalHeight: {
         name: 'Total Stature Height',
         tooltip: 'Vertical distance from floor plane to crown vertex of head',
@@ -610,7 +763,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Knee Center Height',
         tooltip: 'Vertical distance from floor plane to mid-patella knee center',
       },
-      // Circumferences
       head: {
         name: 'Head Circumference',
         tooltip: 'Horizontal perimeter across brow ridge and occipital bone',
@@ -679,7 +831,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Wrist Circumference',
         tooltip: 'Circumference across distal wrist crease and styloid bone',
       },
-      // Torso
       shoulderWidth: {
         name: 'Bi-Acromial Shoulder Width',
         tooltip: 'Posterior contour span from left shoulder tip to right shoulder tip',
@@ -712,7 +863,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Vertical Torso Trunk Loop',
         tooltip: 'Complete vertical trunk loop from shoulder through crotch and up back',
       },
-      // Sleeves
       sleeveFromShoulder: {
         name: 'Outer Sleeve (Shoulder to Wrist)',
         tooltip: 'Shoulder tip over slightly bent outer elbow down to wrist bone',
@@ -729,7 +879,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Shoulder to Elbow Length',
         tooltip: 'Acromion shoulder point to lateral elbow joint',
       },
-      // Legs & Rise
       outseamFromWaist: {
         name: 'Trouser Outseam (from Waist)',
         tooltip: 'Lateral waist over outer hip curve down to ankle malleolus',
@@ -758,7 +907,6 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         name: 'Back Rise (Back Waist to Crotch)',
         tooltip: 'Posterior rise from center-back waist over gluteal curve to crotch seam',
       },
-      // Extremities
       handLength: {
         name: 'Hand Length',
         tooltip: 'Distal wrist crease to tip of middle finger',

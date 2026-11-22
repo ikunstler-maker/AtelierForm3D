@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { MannequinScene } from './components/canvas/MannequinScene';
 import { CameraControlsHUD } from './components/ui/CameraControlsHUD';
+import { CharacterStudioPanel } from './components/ui/CharacterStudioPanel';
 import { FitCheckPanel } from './components/ui/FitCheckPanel';
 import { GlassCustomizer } from './components/ui/GlassCustomizer';
 import { GlassHeader } from './components/ui/GlassHeader';
@@ -29,6 +30,9 @@ export const App: React.FC = () => {
 
       {/* Left Collapsible 50-Parameter Anthropometric Inspector */}
       <MeasurementsPanel />
+
+      {/* Right Sims-Style Anime CAS Character Customization Panel */}
+      <CharacterStudioPanel />
 
       {/* Right Toggleable Garment Size Verification Panel */}
       <FitCheckPanel />
