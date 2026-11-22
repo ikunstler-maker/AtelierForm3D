@@ -9,10 +9,13 @@ import {
 } from '../../utils/geometryMath';
 
 /**
- * Builds a closed-ring lofted BufferGeometry from an ordered stack of cross-sectional rings.
- * All rings must have the same number of radial vertices `radialSegments`.
+ * Builds a high-definition closed-ring lofted BufferGeometry from an ordered stack of cross-sectional rings.
  */
-function buildLoftedGeometry(rings: THREE.Vector3[][], capBottom = true, capTop = true): THREE.BufferGeometry {
+function buildLoftedGeometry(
+  rings: THREE.Vector3[][],
+  capBottom = true,
+  capTop = true
+): THREE.BufferGeometry {
   const numRings = rings.length;
   const radialSegments = rings[0].length;
   const positions: number[] = [];
@@ -67,15 +70,19 @@ function buildLoftedGeometry(rings: THREE.Vector3[][], capBottom = true, capTop 
   }
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(positions, 3)
+  );
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
   return geometry;
 }
 
 /**
- * Builds an anatomical lofted foot mesh from ankle down to floor (Y = 0)
- * parameterized by footLength, footWidth, and ankle position.
+ * Builds an anatomical lofted human foot mesh from ankle down to floor (Y = 0)
+ * featuring calcaneus heel contour, medial longitudinal arch, sloped dorsal instep,
+ * metatarsal ball breadth, and asymmetric hallux-to-fifth-toe taper.
  */
 function buildFootGeometry(
   side: 'left' | 'right',
@@ -88,48 +95,68 @@ function buildFootGeometry(
   const sign = side === 'left' ? 1 : -1;
   const heelZ = ankleCenter.z - footLengthM * 0.25;
   const archZ = ankleCenter.z + footLengthM * 0.22;
-  const ballZ = ankleCenter.z + footLengthM * 0.52;
+  const ballZ = ankleCenter.z + footLengthM * 0.54;
   const toeZ = ankleCenter.z + footLengthM * 0.75;
 
   const halfW = footWidthM * 0.5;
-  const radialSegments = 32;
+  const radialSegments = 40;
 
-  // Vertical slices from floor (y=0.002) up to ankle Center
   const slices = [
     {
-      y: 0.002,
-      zMin: heelZ + 0.006,
-      zMax: toeZ - 0.004,
-      halfWidth: halfW * 0.94,
+      y: 0.0015,
+      zMin: heelZ + 0.008,
+      zMax: toeZ - 0.005,
+      halfWidth: halfW * 0.9,
       xOffset: sign * 0.004,
+      archCarve: 0.22,
     },
     {
-      y: 0.014,
-      zMin: heelZ,
+      y: 0.009,
+      zMin: heelZ + 0.002,
       zMax: toeZ,
-      halfWidth: halfW,
+      halfWidth: halfW * 0.99,
       xOffset: sign * 0.004,
+      archCarve: 0.26,
+    },
+    {
+      y: 0.019,
+      zMin: heelZ,
+      zMax: toeZ - 0.003,
+      halfWidth: halfW,
+      xOffset: sign * 0.0035,
+      archCarve: 0.24,
     },
     {
       y: 0.032,
-      zMin: heelZ + 0.005,
-      zMax: ballZ + (toeZ - ballZ) * 0.45,
-      halfWidth: halfW * 0.86,
+      zMin: heelZ + 0.004,
+      zMax: ballZ + (toeZ - ballZ) * 0.42,
+      halfWidth: halfW * 0.85,
       xOffset: sign * 0.002,
+      archCarve: 0.16,
     },
     {
-      y: ankleCenter.y * 0.68,
+      y: ankleCenter.y * 0.62,
       zMin: ankleCenter.z - ankleRadiusB * 1.25,
-      zMax: archZ + 0.025,
-      halfWidth: ankleRadiusA * 1.08,
-      xOffset: 0,
+      zMax: archZ + 0.035,
+      halfWidth: ankleRadiusA * 1.1,
+      xOffset: sign * 0.001,
+      archCarve: 0.06,
     },
     {
-      y: ankleCenter.y,
-      zMin: ankleCenter.z - ankleRadiusB,
-      zMax: ankleCenter.z + ankleRadiusB,
-      halfWidth: ankleRadiusA,
+      y: ankleCenter.y * 0.85,
+      zMin: ankleCenter.z - ankleRadiusB * 1.08,
+      zMax: ankleCenter.z + ankleRadiusB * 1.16,
+      halfWidth: ankleRadiusA * 1.02,
       xOffset: 0,
+      archCarve: 0.0,
+    },
+    {
+      y: ankleCenter.y + 0.004,
+      zMin: ankleCenter.z - ankleRadiusB * 0.96,
+      zMax: ankleCenter.z + ankleRadiusB * 0.96,
+      halfWidth: ankleRadiusA * 0.96,
+      xOffset: 0,
+      archCarve: 0.0,
     },
   ];
 
@@ -137,13 +164,31 @@ function buildFootGeometry(
     const zCenter = (slice.zMin + slice.zMax) * 0.5;
     const zHalf = (slice.zMax - slice.zMin) * 0.5;
     const pts: THREE.Vector3[] = [];
+
     for (let s = 0; s < radialSegments; s++) {
       const theta = (s / radialSegments) * Math.PI * 2;
       const cosT = Math.cos(theta);
       const sinT = Math.sin(theta);
-      // Slight medial arch curve on foot outline
-      const widthScale = sinT > 0.3 ? 1.04 : sinT < -0.3 ? 0.84 : 0.95;
-      const x = ankleCenter.x + slice.xOffset + cosT * slice.halfWidth * widthScale;
+
+      // Asymmetric foot contour: narrower rounded heel (sinT < 0), wider ball (sinT > 0.2),
+      // medial longitudinal arch indentation, and big-toe hallux bias on inner side
+      const isOuterSide = sign * cosT > 0;
+      let widthScale = 1.0;
+
+      if (sinT < -0.2) {
+        // Calcaneus heel is narrower than forefoot
+        widthScale = 0.72 + 0.22 * (1 + sinT);
+      } else if (sinT > 0.65) {
+        // Asymmetric toe box taper (longer toward medial big toe)
+        const medialToeBias = isOuterSide ? -0.14 * Math.pow(sinT - 0.65, 1.5) : 0.06;
+        widthScale = 0.94 + medialToeBias;
+      } else if (!isOuterSide && Math.abs(sinT) < 0.35) {
+        // Medial arch carve on inner midfoot
+        widthScale = 1.0 - slice.archCarve * (1 - Math.abs(sinT) / 0.35);
+      }
+
+      const x =
+        ankleCenter.x + slice.xOffset + cosT * slice.halfWidth * widthScale;
       const z = zCenter + sinT * zHalf;
       pts.push(new THREE.Vector3(x, slice.y, z));
     }
@@ -167,17 +212,14 @@ export const ParametricBody: React.FC = () => {
     rightLegGeometry,
     leftFootGeometry,
     rightFootGeometry,
-    leftShoulderJoint,
-    rightShoulderJoint,
-    pelvisCapGeometry,
   } = useMemo(() => {
     const L = computeAnatomicalLandmarks(measurements, gender);
     const torsoEval = createTorsoEvaluator(measurements, gender, L);
     const limbEval = createLimbEvaluators(measurements, gender, L);
 
-    // 1. 80-ring Lofted Torso + Neck + Sculpted Head
-    const TORSO_RINGS = 80;
-    const TORSO_SEGMENTS = 64;
+    // 1. 110-Ring High-Resolution Lofted Torso, Pelvis, Trapezius, Neck & Head
+    const TORSO_RINGS = 110;
+    const TORSO_SEGMENTS = 72;
     const torsoRings: THREE.Vector3[][] = [];
     for (let i = 0; i < TORSO_RINGS; i++) {
       const u = i / (TORSO_RINGS - 1);
@@ -187,33 +229,36 @@ export const ParametricBody: React.FC = () => {
     }
     const torsoGeo = buildLoftedGeometry(torsoRings, true, true);
 
-    // 2. Multi-segment Lofted Arms + Hands (36 rings along arm & hand)
-    const ARM_RINGS = 36;
-    const ARM_SEGMENTS = 36;
+    // 2. 48-Ring Multi-Segment Lofted Arms + Hands (seamlessly rooted inside deltoid/shoulder)
+    const ARM_RINGS = 48;
+    const ARM_SEGMENTS = 44;
     const leftArmRings: THREE.Vector3[][] = [];
     const rightArmRings: THREE.Vector3[][] = [];
 
     for (let i = 0; i < ARM_RINGS; i++) {
       const t = i / (ARM_RINGS - 1);
       leftArmRings.push(limbEval.sampleArmRing('left', t, ARM_SEGMENTS, 0));
-      // Reverse winding on mirrored right arm so normals point outward
-      const rightRing = limbEval.sampleArmRing('right', t, ARM_SEGMENTS, 0).reverse();
+      const rightRing = limbEval
+        .sampleArmRing('right', t, ARM_SEGMENTS, 0)
+        .reverse();
       rightArmRings.push(rightRing);
     }
 
     const leftArmGeo = buildLoftedGeometry(leftArmRings, true, true);
     const rightArmGeo = buildLoftedGeometry(rightArmRings, true, true);
 
-    // 3. Multi-segment Lofted Legs (40 rings from upper thigh/hip down to ankle)
-    const LEG_RINGS = 40;
-    const LEG_SEGMENTS = 40;
+    // 3. 52-Ring Multi-Segment Lofted Legs (originating inside pelvis at yHip for seamless hip-to-thigh contour)
+    const LEG_RINGS = 52;
+    const LEG_SEGMENTS = 48;
     const leftLegRings: THREE.Vector3[][] = [];
     const rightLegRings: THREE.Vector3[][] = [];
 
     for (let i = 0; i < LEG_RINGS; i++) {
       const t = i / (LEG_RINGS - 1);
       leftLegRings.push(limbEval.sampleLegRing('left', t, LEG_SEGMENTS, 0));
-      const rightRing = limbEval.sampleLegRing('right', t, LEG_SEGMENTS, 0).reverse();
+      const rightRing = limbEval
+        .sampleLegRing('right', t, LEG_SEGMENTS, 0)
+        .reverse();
       rightLegRings.push(rightRing);
     }
 
@@ -230,25 +275,22 @@ export const ParametricBody: React.FC = () => {
       L.legAnkleL,
       footLenM,
       footWidthM,
-      ankleRad * 0.95,
-      ankleRad * 1.05
+      ankleRad * 0.94,
+      ankleRad * 1.06
     );
-    const rightAnkleCenter = new THREE.Vector3(-L.legAnkleL.x, L.legAnkleL.y, L.legAnkleL.z);
+    const rightAnkleCenter = new THREE.Vector3(
+      -L.legAnkleL.x,
+      L.legAnkleL.y,
+      L.legAnkleL.z
+    );
     const rightFootGeo = buildFootGeometry(
       'right',
       rightAnkleCenter,
       footLenM,
       footWidthM,
-      ankleRad * 0.95,
-      ankleRad * 1.05
+      ankleRad * 0.94,
+      ankleRad * 1.06
     );
-
-    // 5. Deltoid shoulder bridge spheres & pelvic saddle blend
-    const deltoidRadius = (measurements.bicep * CM_TO_M) / (2 * Math.PI) * 1.12;
-    const pelvisRadii = torsoEval.evalAtY(L.yCrotch + 0.015).radii;
-    const pelvisGeo = new THREE.SphereGeometry(1, 32, 24);
-    pelvisGeo.scale(pelvisRadii.a * 0.96, 0.055, (pelvisRadii.bFront + pelvisRadii.bBack) * 0.48);
-    pelvisGeo.translate(0, L.yCrotch + 0.012, pelvisRadii.centerZ);
 
     return {
       torsoGeometry: torsoGeo,
@@ -258,12 +300,6 @@ export const ParametricBody: React.FC = () => {
       rightLegGeometry: rightLegGeo,
       leftFootGeometry: leftFootGeo,
       rightFootGeometry: rightFootGeo,
-      leftShoulderJoint: { pos: L.armShoulderL, radius: deltoidRadius },
-      rightShoulderJoint: {
-        pos: new THREE.Vector3(-L.armShoulderL.x, L.armShoulderL.y, L.armShoulderL.z),
-        radius: deltoidRadius,
-      },
-      pelvisCapGeometry: pelvisGeo,
     };
   }, [measurements, gender]);
 
@@ -273,9 +309,11 @@ export const ParametricBody: React.FC = () => {
     if (surfaceFinish === 'clay') {
       return {
         color: isLight ? '#d8dee8' : '#c8d0dc',
-        roughness: 0.86,
+        roughness: 0.84,
         metalness: 0.02,
-        clearcoat: 0.0,
+        clearcoat: 0.04,
+        sheen: 0.25,
+        sheenRoughness: 0.8,
         transparent: false,
         opacity: 1.0,
         depthWrite: true,
@@ -284,7 +322,7 @@ export const ParametricBody: React.FC = () => {
     if (surfaceFinish === 'translucent') {
       return {
         color: isLight ? '#94a3b8' : '#cbd5e1',
-        roughness: 0.24,
+        roughness: 0.22,
         metalness: 0.08,
         clearcoat: 0.5,
         clearcoatRoughness: 0.2,
@@ -296,10 +334,12 @@ export const ParametricBody: React.FC = () => {
     // Default: 'satin' (Satin Resin)
     return {
       color: isLight ? '#cfd6e2' : '#bcc6d6',
-      roughness: 0.34,
-      metalness: 0.09,
-      clearcoat: 0.42,
-      clearcoatRoughness: 0.26,
+      roughness: 0.32,
+      metalness: 0.08,
+      clearcoat: 0.44,
+      clearcoatRoughness: 0.24,
+      sheen: 0.18,
+      sheenRoughness: 0.5,
       transparent: false,
       opacity: 1.0,
       depthWrite: true,
@@ -317,39 +357,13 @@ export const ParametricBody: React.FC = () => {
 
   return (
     <group name="parametric-mannequin-group">
-      {/* 80-Ring Lofted Torso, Neck & Head */}
+      {/* 110-Ring Lofted Torso, Pelvis, Trapezius, Neck & Head */}
       <mesh
         geometry={torsoGeometry}
         material={sharedMaterial}
         castShadow
         receiveShadow
       />
-
-      {/* Pelvic Saddle Blend */}
-      <mesh
-        geometry={pelvisCapGeometry}
-        material={sharedMaterial}
-        castShadow
-        receiveShadow
-      />
-
-      {/* Shoulder Deltoid Articulation Caps */}
-      <mesh
-        position={leftShoulderJoint.pos}
-        material={sharedMaterial}
-        castShadow
-        receiveShadow
-      >
-        <sphereGeometry args={[leftShoulderJoint.radius, 28, 24]} />
-      </mesh>
-      <mesh
-        position={rightShoulderJoint.pos}
-        material={sharedMaterial}
-        castShadow
-        receiveShadow
-      >
-        <sphereGeometry args={[rightShoulderJoint.radius, 28, 24]} />
-      </mesh>
 
       {/* Left & Right Multi-Segment Lofted Arms & Hands */}
       <mesh
