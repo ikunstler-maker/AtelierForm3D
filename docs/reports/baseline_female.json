@@ -1,0 +1,87 @@
+{
+  "profile": "sims_female_default",
+  "model": "public/models/sims_female_mannequin.glb",
+  "model_size_mb": 5.28,
+  "blender": "5.3.0",
+  "mesh_objects": 1,
+  "vertices": 18910,
+  "floor_z_m": 0.0015,
+  "shape_keys": [
+    "Basis",
+    "Chest_Size",
+    "Underbust_Size",
+    "Waist_Width",
+    "Waist_Depth",
+    "HighHip_Width",
+    "Hip_Width",
+    "Glute_Projection",
+    "Shoulder_Width",
+    "Bicep_Size",
+    "Thigh_Size",
+    "Knee_Size",
+    "Calf_Size",
+    "Ankle_Size",
+    "Neck_Size",
+    "Head_Size"
+  ],
+  "shape_keys_applied": {},
+  "shape_keys_unknown": [],
+  "tolerance_cm": 0.5,
+  "all_ok": false,
+  "measurements": {
+    "height": {
+      "value_cm": 167.85,
+      "target_cm": 168.0,
+      "delta_cm": -0.15,
+      "ok": true
+    },
+    "neck": {
+      "value_cm": 33.92,
+      "contour_cm": 33.92,
+      "width_cm": 11.1,
+      "depth_cm": 10.5,
+      "height_m": 1.4705,
+      "loops_in_slice": 1,
+      "loops_wrapped": 1,
+      "target_cm": 34.0,
+      "delta_cm": -0.08,
+      "ok": true
+    },
+    "chest": {
+      "value_cm": 93.53,
+      "contour_cm": 95.62,
+      "width_cm": 31.47,
+      "depth_cm": 27.23,
+      "height_m": 1.21,
+      "loops_in_slice": 3,
+      "loops_wrapped": 1,
+      "target_cm": 90.0,
+      "delta_cm": 3.53,
+      "ok": false
+    },
+    "waist": {
+      "value_cm": 67.57,
+      "contour_cm": 67.69,
+      "width_cm": 24.6,
+      "depth_cm": 17.95,
+      "height_m": 1.05,
+      "loops_in_slice": 3,
+      "loops_wrapped": 1,
+      "target_cm": 68.0,
+      "delta_cm": -0.43,
+      "ok": true
+    },
+    "hip": {
+      "value_cm": 100.43,
+      "contour_cm": 103.36,
+      "width_cm": 35.29,
+      "depth_cm": 27.89,
+      "height_m": 0.865,
+      "loops_in_slice": 3,
+      "loops_wrapped": 1,
+      "target_cm": 96.0,
+      "delta_cm": 4.43,
+      "ok": false
+    }
+  }
+}

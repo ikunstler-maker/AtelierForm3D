@@ -1,0 +1,87 @@
+{
+  "profile": "sims_male_default",
+  "model": "public/models/sims_male_mannequin.glb",
+  "model_size_mb": 5.19,
+  "blender": "5.3.0",
+  "mesh_objects": 1,
+  "vertices": 18910,
+  "floor_z_m": 0.0015,
+  "shape_keys": [
+    "Basis",
+    "Chest_Size",
+    "Underbust_Size",
+    "Waist_Width",
+    "Waist_Depth",
+    "HighHip_Width",
+    "Hip_Width",
+    "Glute_Projection",
+    "Shoulder_Width",
+    "Bicep_Size",
+    "Thigh_Size",
+    "Knee_Size",
+    "Calf_Size",
+    "Ankle_Size",
+    "Neck_Size",
+    "Head_Size"
+  ],
+  "shape_keys_applied": {},
+  "shape_keys_unknown": [],
+  "tolerance_cm": 0.5,
+  "all_ok": false,
+  "measurements": {
+    "height": {
+      "value_cm": 179.85,
+      "target_cm": 180.0,
+      "delta_cm": -0.15,
+      "ok": true
+    },
+    "neck": {
+      "value_cm": 39.42,
+      "contour_cm": 39.42,
+      "width_cm": 12.89,
+      "depth_cm": 12.2,
+      "height_m": 1.578,
+      "loops_in_slice": 1,
+      "loops_wrapped": 1,
+      "target_cm": 39.5,
+      "delta_cm": -0.08,
+      "ok": true
+    },
+    "chest": {
+      "value_cm": 101.31,
+      "contour_cm": 101.58,
+      "width_cm": 36.78,
+      "depth_cm": 26.55,
+      "height_m": 1.31,
+      "loops_in_slice": 3,
+      "loops_wrapped": 1,
+      "target_cm": 100.0,
+      "delta_cm": 1.31,
+      "ok": false
+    },
+    "waist": {
+      "value_cm": 83.45,
+      "contour_cm": 83.6,
+      "width_cm": 30.02,
+      "depth_cm": 22.58,
+      "height_m": 1.115,
+      "loops_in_slice": 3,
+      "loops_wrapped": 1,
+      "target_cm": 84.0,
+      "delta_cm": -0.55,
+      "ok": false
+    },
+    "hip": {
+      "value_cm": 100.67,
+      "contour_cm": 102.78,
+      "width_cm": 35.32,
+      "depth_cm": 28.16,
+      "height_m": 0.93,
+      "loops_in_slice": 3,
+      "loops_wrapped": 1,
+      "target_cm": 98.0,
+      "delta_cm": 2.67,
+      "ok": false
+    }
+  }
+}

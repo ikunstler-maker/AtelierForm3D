@@ -24,7 +24,9 @@ Source of truth: `docs/SPEC.md`, amended by `docs/decisions.md`. Conflict with a
 - Blender 5.3 via the Blender MCP server (tools `mcp__Blender__*`). Fallback: addon socket `localhost:9876`.
 
 ## Blender → site pipeline (invariants)
-- Generator: `scripts/blender_sims_human_generator.py`; output GLB → `public/models/` (or `public/*.glb`, see backlog).
+- Generator: `scripts/blender_sims_human_generator.py`; output GLB → `public/models/`.
+- Ruler: `blender -b --factory-startup -P scripts/measure_glb.py -- --profile scripts/profiles/<name>.json`; exit 0 = within tolerance.
+- Run Blender headless for builds and checks (`C:\Program Files\Blender Foundation\Blender 5.3\blender.exe`); use MCP only for the owner's open scene.
 - Units: meters in Blender, centimeters in the app schema (`src/data/measurementsSchema.ts`).
 - Body measurements in the GLB must match the 50 parameters; check numerically, not only by eye.
 - Inspect the scene before changes; never delete or overwrite owner objects without a confirmation.

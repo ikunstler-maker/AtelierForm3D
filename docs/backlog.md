@@ -1,14 +1,17 @@
 # Backlog
 
 ## Next by plan
-1. Stage 1: connect GitHub remote, first push, check Pages deploy (needs repo URL from owner).
-2. Stage 2: measurement-check script — load GLB in Blender, measure girths at schema heights, compare with input (±0.5 cm).
-3. Stage 2: improve `scripts/blender_sims_human_generator.py` until the check passes for 3 profiles.
-4. Stage 3: snap overlays to the GLB surface.
+1. Stage 2 / PR 2: generator takes a measurement profile JSON, works in Blender 5.3, compensates bust/glute bumps.
+2. Stage 2 / PR 2: calibrate shape keys in cm (+ calibration table JSON next to the GLB).
+3. Stage 2 / PR 2: site loads the GLB behind a "Blender model (beta)" switch and sets morph weights from measurements.
+4. Stage 2 / PR 2: verify 3 profiles (female, male, extreme) with `scripts/measure_glb.py`, tolerance 0.5 cm.
+5. Stage 3: snap overlays to the GLB surface.
 
 ## Known gaps / follow-ups
-- GLB location mismatch: `public/sims_*_mannequin.glb` vs empty `public/models/` — pick one.
-- Generator header says Blender 4.x; installed is 5.3 — verify API compatibility.
+- Site does not load `public/models/*.glb` yet (no `useGLTF` in `src/`); 11 MB ships to Pages unused until PR 2.
+- Baseline (docs/reports/baseline.md): chest +1.3..+3.5 cm, hip +2.7..+4.4 cm, male waist −0.55 cm vs generator targets.
+- Feet float 1.5 mm above the floor in both GLBs (height −0.15 cm).
+- Remaining 12 girths and all lengths are not measured yet; extend `scripts/profiles/*.json` after stage 2.
+- Blender MCP requests time out while the owner's Blender is open with an unsaved scene; headless Blender works.
 - README has broken encoding (mojibake in the title dash) — re-save as UTF-8.
-- No tests yet; only `npm run lint` (tsc) and build.
-- Open Blender scene has `Sims_male_Body` — unknown if it is the latest source.
+- No tests yet; only `npm run lint` (tsc) and build. `gh` CLI is not installed (PRs are opened by the owner).
