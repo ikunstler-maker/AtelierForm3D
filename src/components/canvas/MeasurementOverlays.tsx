@@ -1,19 +1,15 @@
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
-import { Html } from '@react-three/drei';
 import {
   MEASUREMENTS_MAP,
   MEASUREMENTS_SCHEMA,
   MeasurementCategory,
   MeasurementKey,
 } from '../../data/measurementsSchema';
-import { TRANSLATIONS } from '../../data/translations';
 import { useAtelierStore } from '../../store/useAtelierStore';
 import {
   GARMENT_TEMPLATE_KEYS,
   evaluateParameterFit,
-  formatDeltaWithUnit,
-  formatValueWithUnit,
 } from '../../utils/fitCalculator';
 import {
   OverlayGeometryData,
@@ -21,12 +17,12 @@ import {
 } from '../../utils/geometryMath';
 
 const CATEGORY_DEFAULT_COLORS: Record<MeasurementCategory, string> = {
-  circumferences: '#38bdf8', // Sky cyan
-  torso: '#a78bfa',          // Soft indigo
-  sleeves: '#2dd4bf',        // Teal mint
-  legs: '#f59e0b',           // Warm amber
-  heights: '#94a3b8',        // Slate silver
-  extremities: '#f472b6',    // Rose pink
+  circumferences: '#38bdf8',
+  torso: '#a78bfa',
+  sleeves: '#2dd4bf',
+  legs: '#f59e0b',
+  heights: '#94a3b8',
+  extremities: '#f472b6',
 };
 
 interface SingleOverlayMeshProps {
@@ -66,7 +62,6 @@ const SingleOverlayMesh: React.FC<SingleOverlayMeshProps> = React.memo(
         10,
         data.closed
       );
-      // Slightly wider invisible hit-target tube for effortless mouse hover/click picking
       const hitTube = new THREE.TubeGeometry(
         curve,
         Math.max(16, data.points.length),
@@ -160,19 +155,13 @@ export const MeasurementOverlays: React.FC = () => {
   const garmentTemplate = useAtelierStore((s) => s.garmentTemplate);
   const garmentInputsCm = useAtelierStore((s) => s.garmentInputsCm);
   const isFlatMode = useAtelierStore((s) => s.isFlatMode);
-  const unit = useAtelierStore((s) => s.unit);
-  const language = useAtelierStore((s) => s.language);
   const accentHex = useAtelierStore((s) => s.glassSettings.accentHex);
 
-  const t = TRANSLATIONS[language];
-
-  // Compute all 50 3D overlay curves in real time from current mannequin state
   const allOverlays = useMemo(
     () => computeAllMeasurementOverlays(measurements, gender),
     [measurements, gender]
   );
 
-  // Determine which measurements are visible
   const visibleKeys = useMemo(() => {
     const templateSet = new Set(GARMENT_TEMPLATE_KEYS[garmentTemplate]);
     const activeTarget = hoveredMeasurement || selectedMeasurement;
@@ -180,17 +169,14 @@ export const MeasurementOverlays: React.FC = () => {
     return MEASUREMENTS_SCHEMA.filter((meta) => {
       const key = meta.key;
 
-      // Always show currently hovered or selected measurement
-      if (key === hoveredMeasurement || key === selectedMeasurement) {
-        return true;
-      }
-
-      // Respect individual eye visibility toggle
       if (hiddenMeasurements[key]) {
         return false;
       }
 
-      // If Fit Check panel is open and template is not 'all', prioritize template keys
+      if (key === hoveredMeasurement || key === selectedMeasurement) {
+        return true;
+      }
+
       if (fitPanelOpen && garmentTemplate !== 'all' && displayMode !== 'active') {
         return templateSet.has(key);
       }
@@ -203,7 +189,6 @@ export const MeasurementOverlays: React.FC = () => {
         return activeCategories.includes(meta.category);
       }
 
-      // 'all' mode: show all non-hidden parameters
       return true;
     }).map((m) => m.key);
   }, [
@@ -216,7 +201,6 @@ export const MeasurementOverlays: React.FC = () => {
     garmentTemplate,
   ]);
 
-  // Evaluate fit status for all parameters
   const fitEvaluations = useMemo(() => {
     const map = {} as Record<MeasurementKey, ReturnType<typeof evaluateParameterFit>>;
     for (const meta of MEASUREMENTS_SCHEMA) {
@@ -229,11 +213,6 @@ export const MeasurementOverlays: React.FC = () => {
     }
     return map;
   }, [measurements, garmentInputsCm, isFlatMode]);
-
-  const activeBadgeKey = hoveredMeasurement || selectedMeasurement;
-  const activeBadgeOverlay = activeBadgeKey ? allOverlays[activeBadgeKey] : null;
-  const activeBadgeMeta = activeBadgeKey ? MEASUREMENTS_MAP[activeBadgeKey] : null;
-  const activeBadgeFit = activeBadgeKey ? fitEvaluations[activeBadgeKey] : null;
 
   return (
     <group name="measurement-overlays-layer">
@@ -256,24 +235,24 @@ export const MeasurementOverlays: React.FC = () => {
         if (hasFitValue) {
           colorHex = fitEval.colorHex;
         } else if (isHighlighted) {
-          colorHex = '#ffffff';
+          colorHex = '#38bdf8';
         }
 
         const baseRadius =
-          data.type === 'ring' ? 0.0021 : data.type === 'line' ? 0.0023 : 0.0015;
+          data.type === 'ring' ? 0.0018 : data.type === 'line' ? 0.002 : 0.0014;
         const tubeRadius = isHighlighted
-          ? baseRadius * 1.75
+          ? baseRadius * 1.55
           : hasFitValue
-          ? baseRadius * 1.35
+          ? baseRadius * 1.3
           : baseRadius;
 
         const opacity = isHighlighted
-          ? 1.0
+          ? 0.95
           : hasFitValue
-          ? 0.96
+          ? 0.92
           : hoveredMeasurement && hoveredMeasurement !== key
-          ? 0.35
-          : 0.78;
+          ? 0.32
+          : 0.72;
 
         return (
           <SingleOverlayMesh
@@ -289,46 +268,6 @@ export const MeasurementOverlays: React.FC = () => {
           />
         );
       })}
-
-      {/* Floating 3D Liquid Glass Readout Badge for Active/Hovered Measurement */}
-      {activeBadgeKey && activeBadgeOverlay && activeBadgeMeta && (
-        <Html
-          position={activeBadgeOverlay.labelPosition}
-          center
-          distanceFactor={2.1}
-          zIndexRange={[40, 0]}
-          style={{ pointerEvents: 'none' }}
-        >
-          <div className="liquid-glass px-3 py-1.5 rounded-xl min-w-[165px] shadow-2xl border border-white/25 backdrop-blur-xl transition-all duration-150">
-            <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wider font-mono opacity-75">
-              <span>{activeBadgeMeta.code}</span>
-              <span>{t.categories[activeBadgeMeta.category]}</span>
-            </div>
-            <div className="text-xs font-semibold leading-tight mt-0.5 whitespace-nowrap">
-              {t.measurements[activeBadgeKey].name}
-            </div>
-            <div className="flex items-center justify-between gap-2.5 mt-1 pt-1 border-t border-white/15">
-              <span className="font-mono text-xs font-bold tabular-nums text-sky-300">
-                {formatValueWithUnit(measurements[activeBadgeKey], unit)}
-              </span>
-              {activeBadgeFit &&
-                activeBadgeFit.status !== 'unset' &&
-                activeBadgeFit.deltaCm !== null && (
-                  <span
-                    className="font-mono text-[11px] font-semibold px-1.5 py-0.5 rounded-md tabular-nums"
-                    style={{
-                      backgroundColor: `${activeBadgeFit.colorHex}26`,
-                      color: activeBadgeFit.colorHex,
-                      border: `1px solid ${activeBadgeFit.colorHex}66`,
-                    }}
-                  >
-                    {formatDeltaWithUnit(activeBadgeFit.deltaCm, unit)}
-                  </span>
-                )}
-            </div>
-          </div>
-        </Html>
-      )}
     </group>
   );
 };

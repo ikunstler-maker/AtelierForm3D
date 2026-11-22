@@ -22,8 +22,8 @@ function getCameraPresetTarget(
   switch (preset) {
     case 'torso':
       return {
-        position: new THREE.Vector3(0.0, h * 0.68, 1.38),
-        target: new THREE.Vector3(0.0, h * 0.66, 0.0),
+        position: new THREE.Vector3(0.0, h * 0.72, 1.25),
+        target: new THREE.Vector3(0.0, h * 0.70, 0.0),
       };
     case 'sleeves':
       return {
@@ -37,13 +37,13 @@ function getCameraPresetTarget(
       };
     case 'back':
       return {
-        position: new THREE.Vector3(0.0, h * 0.64, -1.95),
-        target: new THREE.Vector3(0.0, h * 0.58, 0.0),
+        position: new THREE.Vector3(-0.22, h * 0.60, -2.15),
+        target: new THREE.Vector3(0.0, h * 0.55, 0.0),
       };
     case 'full':
     default:
       return {
-        position: new THREE.Vector3(0.28, h * 0.56, 2.38),
+        position: new THREE.Vector3(0.24, h * 0.56, 2.32),
         target: new THREE.Vector3(0.0, h * 0.52, 0.0),
       };
   }
@@ -58,7 +58,7 @@ const CameraTransitionController: React.FC<{
   const totalHeight = useAtelierStore((s) => s.measurements.totalHeight);
 
   const isAnimatingRef = useRef(false);
-  const desiredPosRef = useRef(new THREE.Vector3(0.28, 0.95, 2.38));
+  const desiredPosRef = useRef(new THREE.Vector3(0.24, 0.95, 2.32));
   const desiredTargetRef = useRef(new THREE.Vector3(0, 0.88, 0));
 
   useEffect(() => {
@@ -83,7 +83,6 @@ const CameraTransitionController: React.FC<{
     }
   });
 
-  // Stop automated transition immediately when user grabs the orbit controls
   useEffect(() => {
     const controls = controlsRef.current;
     if (!controls) return;
@@ -106,7 +105,6 @@ const StudioPedestal: React.FC = () => {
 
   return (
     <group position={[0, -0.002, 0]}>
-      {/* Architectural calibration platform disc */}
       <mesh position={[0, -0.014, 0]} receiveShadow>
         <cylinderGeometry args={[0.56, 0.62, 0.024, 64]} />
         <meshStandardMaterial
@@ -116,7 +114,6 @@ const StudioPedestal: React.FC = () => {
         />
       </mesh>
 
-      {/* Precision concentric tailoring rings on top of plinth */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.0005, 0]}>
         <ringGeometry args={[0.38, 0.384, 64]} />
         <meshBasicMaterial color={accentHex} transparent opacity={0.35} />
@@ -130,7 +127,6 @@ const StudioPedestal: React.FC = () => {
         />
       </mesh>
 
-      {/* Subtle radial studio floor grid */}
       <gridHelper
         args={[
           3.2,
@@ -147,47 +143,57 @@ const StudioPedestal: React.FC = () => {
 export const MannequinScene: React.FC = () => {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const theme = useAtelierStore((s) => s.glassSettings.theme);
+  const canvasBgColor = useAtelierStore((s) => s.glassSettings.canvasBgColor);
+  const showStudioFloor = useAtelierStore(
+    (s) => s.glassSettings.showStudioFloor
+  );
   const isLight = theme === 'light';
 
   return (
-    <div className="relative w-full h-full">
+    <div
+      className="relative w-full h-full transition-colors duration-200"
+      style={{ backgroundColor: canvasBgColor }}
+    >
       <Canvas
         shadows
         dpr={[1, 2]}
-        camera={{ position: [0.28, 0.96, 2.38], fov: 38, near: 0.05, far: 25 }}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        camera={{ position: [0.24, 0.96, 2.32], fov: 36, near: 0.05, far: 25 }}
+        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       >
-        {/* Soft Studio Lighting */}
-        <ambientLight intensity={isLight ? 0.85 : 0.65} />
+        {/* Solid Custom Background Color Behind Mannequin */}
+        <color attach="background" args={[canvasBgColor]} />
+
+        {/* Studio Lighting aligned with w1536-wm.webp (Key light from upper-left-front) */}
+        <ambientLight intensity={isLight ? 0.85 : 0.72} />
         <hemisphereLight
           args={[
-            isLight ? '#ffffff' : '#e2e8f0',
-            isLight ? '#94a3b8' : '#1e293b',
-            isLight ? 0.95 : 0.75,
+            '#ffffff',
+            '#94a3b8',
+            0.8,
           ]}
         />
 
-        {/* Key Directional Light */}
+        {/* Upper-Left-Front Key Directional Light matching w1536-wm.webp */}
         <directionalLight
-          position={[2.4, 3.2, 2.6]}
-          intensity={isLight ? 1.55 : 1.45}
+          position={[-2.2, 2.8, 2.35]}
+          intensity={1.55}
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
           shadow-bias={-0.0005}
         />
 
-        {/* Soft Left Fill Light */}
+        {/* Subtle Right Fill Light */}
         <directionalLight
-          position={[-2.4, 2.0, 1.5]}
-          intensity={isLight ? 0.75 : 0.65}
-          color="#bae6fd"
+          position={[2.2, 1.8, 1.4]}
+          intensity={0.45}
+          color="#e2e8f0"
         />
 
-        {/* Back Sculptural Rim Light */}
+        {/* Back Rim Light */}
         <directionalLight
-          position={[0.4, 2.5, -2.6]}
-          intensity={isLight ? 0.9 : 1.1}
+          position={[0.3, 2.5, -2.5]}
+          intensity={0.75}
           color="#f8fafc"
         />
 
@@ -195,13 +201,13 @@ export const MannequinScene: React.FC = () => {
         <group position={[0, 0, 0]}>
           <ParametricBody />
           <MeasurementOverlays />
-          <StudioPedestal />
+          {showStudioFloor && <StudioPedestal />}
           <ContactShadows
             position={[0, 0.001, 0]}
-            opacity={isLight ? 0.28 : 0.48}
-            scale={1.8}
-            blur={2.2}
-            far={1.2}
+            opacity={0.22}
+            scale={1.5}
+            blur={2.4}
+            far={1.0}
           />
         </group>
 
@@ -215,7 +221,7 @@ export const MannequinScene: React.FC = () => {
           zoomSpeed={1.05}
           panSpeed={0.85}
           zoomToCursor
-          minDistance={0.45}
+          minDistance={0.42}
           maxDistance={4.8}
           maxPolarAngle={Math.PI * 0.94}
           minPolarAngle={0.05}

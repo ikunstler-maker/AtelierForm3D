@@ -1,5 +1,9 @@
 import { MeasurementCategory, MeasurementKey } from './measurementsSchema';
-import { AnimeExpressionId, AnimeHairstyleId } from '../store/useAtelierStore';
+import {
+  AnimeExpressionId,
+  AnimeHairstyleId,
+  HeadDisplayMode,
+} from '../store/useAtelierStore';
 
 export type Language = 'ua' | 'en';
 
@@ -32,11 +36,17 @@ export interface TranslationDictionary {
     fitCheck: string;
     glassStyle: string;
     resetPreset: string;
+    bgColorTooltip: string;
+    headModeTooltip: string;
   };
   cas: {
     title: string;
     subtitle: string;
     animeModeToggle: string;
+    headModeLabel: string;
+    headModes: Record<HeadDisplayMode, string>;
+    outlineThickness: string;
+    shadowContrast: string;
     randomizeBtn: string;
     resetBtn: string;
     focusFaceBtn: string;
@@ -133,16 +143,20 @@ export interface TranslationDictionary {
     themeMode: string;
     darkGlass: string;
     lightGlass: string;
+    canvasBackground: string;
+    showStudioFloor: string;
     accentColor: string;
     backdropBlur: string;
     panelOpacity: string;
     surfaceFinish: string;
     finishes: {
+      animeCel: string;
       clay: string;
       satin: string;
       translucent: string;
     };
     finishDescriptions: {
+      animeCel: string;
       clay: string;
       satin: string;
       translucent: string;
@@ -192,15 +206,25 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     header: {
       exportJson: 'Експорт JSON',
       importJson: 'Імпорт JSON',
-      casStudio: 'Аніме CAS Редактор',
+      casStudio: 'Аніме CAS',
       fitCheck: 'Перевірка Одягу',
-      glassStyle: 'Скло та Матеріал',
+      glassStyle: 'Фон та Стиль',
       resetPreset: 'Скинути',
+      bgColorTooltip: 'Кастомний колір фону позаду манекена',
+      headModeTooltip: 'Режим голови (Макет / Без голови / Аніме з волоссям)',
     },
     cas: {
       title: 'Редактор Персонажа (Anime CAS)',
-      subtitle: 'Кастомізація зачісок, очей та риси обличчя у стилі Sims',
-      animeModeToggle: 'Аніме стилізація обличчя та зачіски',
+      subtitle: 'Кастомізація тіла, контуру, зачісок та обличчя',
+      animeModeToggle: 'Аніме стилізація тіла та світла',
+      headModeLabel: 'Відображення голови (як у референсі)',
+      headModes: {
+        baldMannequin: 'Аніме-голова (Чистий манекен)',
+        headless: 'Без голови (Зріз шиї)',
+        animeFull: 'Повний образ (Зачіска + Очі)',
+      },
+      outlineThickness: 'Товщина чорного аніме-контуру (Ink Line)',
+      shadowContrast: 'Глибина аніме Cel-тіней',
       randomizeBtn: 'Випадковий образ',
       resetBtn: 'За замовчуванням',
       focusFaceBtn: 'Камера на обличчя',
@@ -208,7 +232,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         hair: 'Зачіски',
         eyes: 'Очі та Брови',
         face: 'Скульпт Обличчя',
-        skin: 'Шкіра та Тон',
+        skin: 'Тіло та Світло',
       },
       hairstylesLabel: 'Модель зачіски (3D Волосся)',
       hairstyles: {
@@ -219,7 +243,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         highPonytail: 'Високий кінський хвіст',
         wolfCut: 'Вулф-кат (Багатошаровий)',
         odangoBuns: 'Оданго (Два пучки з пасмами)',
-        buzzNone: 'Без зачіски (Скульптурний манекен)',
+        buzzNone: 'Без зачіски (Чиста голова)',
       },
       hairColorLabel: 'Палітра кольору волосся та відблисків',
       bangsLength: 'Довжина переднього чубчика',
@@ -251,7 +275,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         seriousCool: 'Холоднокровний / Серйозний',
         shyBlush: 'Сором’язливий з рум’янцем',
       },
-      skinToneLabel: 'Відтінок шкіри (Subsurface Satin)',
+      skinToneLabel: 'Відтінок поверхні тіла (Cel-Shading)',
       blushIntensity: 'Інтенсивність рум’янцю на щоках',
     },
     inspector: {
@@ -315,22 +339,26 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
     },
     customizer: {
-      title: 'Liquid Glass та Поверхня',
+      title: 'Фон, Світло та Liquid Glass',
       themeMode: 'Режим інтерфейсу',
       darkGlass: 'Темне Скло',
       lightGlass: 'Світле Скло',
-      accentColor: 'Акцентний спектр',
+      canvasBackground: 'Колір фону позаду манекена',
+      showStudioFloor: 'Показувати подіум та сітку підлоги',
+      accentColor: 'Акцентний спектр UI',
       backdropBlur: 'Глибина розмиття скла',
       panelOpacity: 'Щільність панелей',
-      surfaceFinish: 'Матеріал 3D манекена',
+      surfaceFinish: 'Шейдер освітлення 3D тіла',
       finishes: {
-        clay: 'Матова Глина',
-        satin: 'Аніме Сатин (SSS Шкіра)',
+        animeCel: 'Аніме Cel-Shading (Як на референсі)',
+        clay: 'Матова Скульптурна Глина',
+        satin: 'М’який Сатин (SSS Шкіра)',
         translucent: 'Напівпрозора Оболонка',
       },
       finishDescriptions: {
+        animeCel: 'Чіткі двотонові аніме-тіні + тушовий контур (ACON / Clip Studio стиль)',
         clay: 'Архітектурна скульптурна поверхня без відблисків',
-        satin: 'Делікатний аніме-шейдер шкіри з м’яким Френелем',
+        satin: 'Делікатний студійний шейдер шкіри з м’яким Френелем',
         translucent: 'Просвічує внутрішні шви рукава та кроковий шов',
       },
     },
@@ -571,15 +599,25 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     header: {
       exportJson: 'Export JSON',
       importJson: 'Import JSON',
-      casStudio: 'Anime CAS Studio',
+      casStudio: 'Anime CAS',
       fitCheck: 'Garment Fit Check',
-      glassStyle: 'Glass & Material',
+      glassStyle: 'Backdrop & Style',
       resetPreset: 'Reset',
+      bgColorTooltip: 'Custom background color behind the mannequin',
+      headModeTooltip: 'Head Mode (Bald Mannequin / Headless / Full Anime)',
     },
     cas: {
       title: 'Character Studio (Anime CAS)',
-      subtitle: 'Sims-style 3D hairstyles, anime eyes & face sculpting',
-      animeModeToggle: 'Anime Face & Hair Styling Active',
+      subtitle: 'Customize body shading, ink outline, hairstyles & face',
+      animeModeToggle: 'Anime Body & Cel-Shading Active',
+      headModeLabel: 'Head Display Mode (Reference Menu)',
+      headModes: {
+        baldMannequin: 'Anime Head (Clean Drawing Base)',
+        headless: 'Headless (Collar Neck Cut)',
+        animeFull: 'Full Character (Hair + Anime Eyes)',
+      },
+      outlineThickness: 'Anime Ink Contour Line Thickness',
+      shadowContrast: 'Anime Cel-Shadow Depth',
       randomizeBtn: 'Randomize Look',
       resetBtn: 'Reset Default',
       focusFaceBtn: 'Zoom to Head / Face',
@@ -587,7 +625,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         hair: 'Hairstyles',
         eyes: 'Eyes & Brows',
         face: 'Face Sculpt',
-        skin: 'Skin & Blush',
+        skin: 'Body & Shading',
       },
       hairstylesLabel: '3D Anime Hairstyle',
       hairstyles: {
@@ -598,7 +636,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         highPonytail: 'High Flowing Ponytail',
         wolfCut: 'Textured Anime Wolf Cut',
         odangoBuns: 'Odango Double Buns + Strands',
-        buzzNone: 'No Hair (Sculpted Mannequin)',
+        buzzNone: 'No Hair (Bald Mannequin)',
       },
       hairColorLabel: 'Hair Color & Specular Highlights',
       bangsLength: 'Front Bangs / Fringe Length',
@@ -630,7 +668,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         seriousCool: 'Cool / Determined',
         shyBlush: 'Shy / Flustered Blush',
       },
-      skinToneLabel: 'Skin Complexion (Subsurface Satin)',
+      skinToneLabel: 'Surface Base Tone (Cel-Shaded)',
       blushIntensity: 'Cheek Anime Blush Intensity',
     },
     inspector: {
@@ -694,20 +732,24 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
     },
     customizer: {
-      title: 'Liquid Glass & Surface',
+      title: 'Backdrop, Shading & Glass',
       themeMode: 'Interface Appearance',
       darkGlass: 'Dark Liquid Glass',
       lightGlass: 'Light Liquid Glass',
-      accentColor: 'Accent Spectrum',
+      canvasBackground: 'Custom Background Color Behind Body',
+      showStudioFloor: 'Show Floor Pedestal & Grid',
+      accentColor: 'UI Accent Spectrum',
       backdropBlur: 'Glass Backdrop Blur',
       panelOpacity: 'Glass Surface Opacity',
-      surfaceFinish: 'Mannequin Surface Shader',
+      surfaceFinish: 'Mannequin Lighting Shader',
       finishes: {
-        clay: 'Matte Clay',
+        animeCel: 'Anime Cel-Shading (Reference Match)',
+        clay: 'Matte Sculptural Clay',
         satin: 'Anime Satin (SSS Skin)',
         translucent: 'Translucent Shell',
       },
       finishDescriptions: {
+        animeCel: 'Crisp 2-tone cel shadows + charcoal ink outline (ACON / CSP style)',
         clay: 'Architectural diffuse sculpture with soft studio shadows',
         satin: 'Smooth anime skin shader with subtle Fresnel sheen',
         translucent: 'Semi-transparent shell revealing inseam & underarm seams',

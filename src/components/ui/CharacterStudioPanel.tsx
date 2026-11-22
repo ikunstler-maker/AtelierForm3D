@@ -3,8 +3,10 @@ import { TRANSLATIONS } from '../../data/translations';
 import {
   AnimeExpressionId,
   AnimeHairstyleId,
+  CANVAS_BG_SWATCHES,
   EYE_COLOR_SWATCHES,
   HAIR_COLOR_SWATCHES,
+  HeadDisplayMode,
   SKIN_TONE_SWATCHES,
   useAtelierStore,
 } from '../../store/useAtelierStore';
@@ -19,7 +21,7 @@ import {
   IconTargetFocus,
 } from '../icons/CustomIcons';
 
-type CasTabId = 'hair' | 'eyes' | 'face' | 'skin';
+type CasTabId = 'skin' | 'hair' | 'eyes' | 'face';
 
 const HAIRSTYLE_KEYS: AnimeHairstyleId[] = [
   'twintails',
@@ -40,8 +42,14 @@ const EXPRESSION_KEYS: AnimeExpressionId[] = [
   'shyBlush',
 ];
 
+const HEAD_MODES: HeadDisplayMode[] = [
+  'baldMannequin',
+  'headless',
+  'animeFull',
+];
+
 export const CharacterStudioPanel: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<CasTabId>('hair');
+  const [activeTab, setActiveTab] = useState<CasTabId>('skin');
 
   const casPanelOpen = useAtelierStore((s) => s.casPanelOpen);
   const setCasPanelOpen = useAtelierStore((s) => s.setCasPanelOpen);
@@ -50,6 +58,8 @@ export const CharacterStudioPanel: React.FC = () => {
   const resetAppearance = useAtelierStore((s) => s.resetAppearance);
   const randomizeAppearance = useAtelierStore((s) => s.randomizeAppearance);
   const setCameraPreset = useAtelierStore((s) => s.setCameraPreset);
+  const glassSettings = useAtelierStore((s) => s.glassSettings);
+  const updateGlassSettings = useAtelierStore((s) => s.updateGlassSettings);
   const language = useAtelierStore((s) => s.language);
 
   if (!casPanelOpen) return null;
@@ -57,6 +67,11 @@ export const CharacterStudioPanel: React.FC = () => {
   const t = TRANSLATIONS[language];
 
   const tabs: Array<{ id: CasTabId; label: string; icon: React.ReactNode }> = [
+    {
+      id: 'skin',
+      label: t.cas.tabs.skin,
+      icon: <IconAnimeSparkle size={13} />,
+    },
     {
       id: 'hair',
       label: t.cas.tabs.hair,
@@ -71,11 +86,6 @@ export const CharacterStudioPanel: React.FC = () => {
       id: 'face',
       label: t.cas.tabs.face,
       icon: <IconFaceSculpt size={13} />,
-    },
-    {
-      id: 'skin',
-      label: t.cas.tabs.skin,
-      icon: <IconAnimeSparkle size={13} />,
     },
   ];
 
@@ -114,30 +124,43 @@ export const CharacterStudioPanel: React.FC = () => {
         </button>
       </div>
 
-      {/* Top Action Bar: Anime Toggle + Randomize + Focus Face + Reset */}
+      {/* Top Action Bar: Head Mode Selector (like w1536-wm.webp) + Randomize + Focus Face */}
       <div className="px-3.5 py-2.5 border-b border-white/10 space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <label className="flex items-center gap-2 text-xs font-medium cursor-pointer">
-            <input
-              type="checkbox"
-              checked={appearance.animeStyleEnabled}
-              onChange={(e) =>
-                updateAppearance({ animeStyleEnabled: e.target.checked })
-              }
-              className="rounded accent-sky-400 w-3.5 h-3.5 cursor-pointer"
-            />
-            <span>{t.cas.animeModeToggle}</span>
-          </label>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase tracking-wider opacity-70 font-semibold">
+              {t.cas.headModeLabel}
+            </span>
+            <button
+              id="cas-focus-face-btn"
+              type="button"
+              onClick={() => setCameraPreset('torso')}
+              className="liquid-glass-pill px-2 py-0.5 rounded-lg text-[10px] font-medium flex items-center gap-1 opacity-85 hover:opacity-100"
+            >
+              <IconTargetFocus size={11} />
+              <span>{t.cas.focusFaceBtn}</span>
+            </button>
+          </div>
 
-          <button
-            id="cas-focus-face-btn"
-            type="button"
-            onClick={() => setCameraPreset('torso')}
-            className="liquid-glass-pill px-2 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1 opacity-85 hover:opacity-100"
-          >
-            <IconTargetFocus size={12} />
-            <span>{t.cas.focusFaceBtn}</span>
-          </button>
+          <div className="grid grid-cols-3 gap-1">
+            {HEAD_MODES.map((hm) => {
+              const isSelected = appearance.headDisplayMode === hm;
+              return (
+                <button
+                  key={hm}
+                  type="button"
+                  onClick={() => updateAppearance({ headDisplayMode: hm })}
+                  className={`py-1.5 px-2 rounded-xl text-[11px] font-medium leading-tight text-center transition-all ${
+                    isSelected
+                      ? 'liquid-glass-pill-active'
+                      : 'liquid-glass-pill opacity-75 hover:opacity-100'
+                  }`}
+                >
+                  {t.cas.headModes[hm]}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -165,7 +188,7 @@ export const CharacterStudioPanel: React.FC = () => {
           </button>
         </div>
 
-        {/* 4-Tab Navigation (Hairstyles / Eyes & Brows / Face Sculpt / Skin & Blush) */}
+        {/* 4-Tab Navigation */}
         <div
           className="grid grid-cols-4 gap-1 p-0.5 rounded-xl border border-white/10"
           style={{ background: 'var(--glass-bg-elevated)' }}
@@ -192,7 +215,166 @@ export const CharacterStudioPanel: React.FC = () => {
       {/* Tab Content Body */}
       <div className="flex-1 overflow-y-auto glass-scroll px-3.5 py-3 space-y-4">
         {/* ================================================================ */}
-        {/* TAB 1: HAIRSTYLES (3D Anime Hair Models, Color, Bangs, Ahoge)    */}
+        {/* TAB 1: BODY & SHADING (Cel-Shading, Outline, Background, Tone)   */}
+        {/* ================================================================ */}
+        {activeTab === 'skin' && (
+          <>
+            {/* Custom Background Color Behind Mannequin */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] uppercase tracking-wider opacity-75 font-semibold">
+                  {t.customizer.canvasBackground}
+                </span>
+                <span className="font-mono text-[11px] uppercase opacity-75">
+                  {glassSettings.canvasBgColor}
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {CANVAS_BG_SWATCHES.map((sw) => {
+                  const isSelected =
+                    glassSettings.canvasBgColor.toLowerCase() ===
+                    sw.hex.toLowerCase();
+                  return (
+                    <button
+                      key={sw.id}
+                      type="button"
+                      title={sw.label}
+                      onClick={() =>
+                        updateGlassSettings({ canvasBgColor: sw.hex })
+                      }
+                      className={`w-8 h-8 rounded-xl border border-white/25 transition-transform ${
+                        isSelected
+                          ? 'scale-110 ring-2 ring-white shadow-lg'
+                          : 'opacity-85 hover:opacity-100 hover:scale-105'
+                      }`}
+                      style={{ backgroundColor: sw.hex }}
+                    />
+                  );
+                })}
+                <input
+                  type="color"
+                  aria-label={t.customizer.canvasBackground}
+                  value={glassSettings.canvasBgColor}
+                  onChange={(e) =>
+                    updateGlassSettings({ canvasBgColor: e.target.value })
+                  }
+                  className="w-9 h-8 rounded-xl cursor-pointer bg-transparent border border-white/25"
+                />
+              </div>
+            </div>
+
+            {/* Anime Outline Thickness & Cel-Shadow Contrast */}
+            <div className="space-y-3 pt-1 border-t border-white/10">
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="opacity-80">{t.cas.outlineThickness}</span>
+                  <span className="font-mono text-[11px] tabular-nums">
+                    {Math.round(appearance.outlineThickness * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0.0}
+                  max={2.0}
+                  step={0.05}
+                  value={appearance.outlineThickness}
+                  onChange={(e) =>
+                    updateAppearance({
+                      outlineThickness: parseFloat(e.target.value),
+                    })
+                  }
+                  className="glass-slider"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="opacity-80">{t.cas.shadowContrast}</span>
+                  <span className="font-mono text-[11px] tabular-nums">
+                    {Math.round(appearance.shadowContrast * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0.25}
+                  max={1.4}
+                  step={0.05}
+                  value={appearance.shadowContrast}
+                  onChange={(e) =>
+                    updateAppearance({
+                      shadowContrast: parseFloat(e.target.value),
+                    })
+                  }
+                  className="glass-slider"
+                />
+              </div>
+            </div>
+
+            {/* Surface Base Tone Swatches */}
+            <div className="space-y-2 pt-1 border-t border-white/10">
+              <div className="text-[11px] uppercase tracking-wider opacity-75 font-semibold">
+                {t.cas.skinToneLabel}
+              </div>
+              <div className="grid grid-cols-4 gap-2">
+                {SKIN_TONE_SWATCHES.map((sw) => {
+                  const isSelected = appearance.skinToneHex === sw.hex;
+                  return (
+                    <button
+                      key={sw.id}
+                      type="button"
+                      title={sw.label}
+                      onClick={() => updateAppearance({ skinToneHex: sw.hex })}
+                      className={`h-9 rounded-xl flex items-center justify-center transition-transform border border-white/20 ${
+                        isSelected
+                          ? 'scale-105 ring-2 ring-white shadow-lg'
+                          : 'opacity-85 hover:opacity-100'
+                      }`}
+                      style={{ backgroundColor: sw.hex }}
+                    >
+                      <span className="text-[10px] font-semibold text-slate-900/80">
+                        {sw.label.split(' ')[0]}
+                      </span>
+                    </button>
+                  );
+                })}
+                <input
+                  type="color"
+                  aria-label={t.cas.skinToneLabel}
+                  value={appearance.skinToneHex}
+                  onChange={(e) =>
+                    updateAppearance({ skinToneHex: e.target.value })
+                  }
+                  className="w-full h-9 rounded-xl cursor-pointer bg-transparent border border-white/20"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1 pt-1">
+              <div className="flex justify-between text-xs">
+                <span className="opacity-80">{t.cas.blushIntensity}</span>
+                <span className="font-mono text-[11px] tabular-nums">
+                  {Math.round(appearance.blushIntensity * 100)}%
+                </span>
+              </div>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.05}
+                value={appearance.blushIntensity}
+                onChange={(e) =>
+                  updateAppearance({
+                    blushIntensity: parseFloat(e.target.value),
+                  })
+                }
+                className="glass-slider"
+              />
+            </div>
+          </>
+        )}
+
+        {/* ================================================================ */}
+        {/* TAB 2: HAIRSTYLES (3D Anime Hair Models, Color, Bangs, Ahoge)    */}
         {/* ================================================================ */}
         {activeTab === 'hair' && (
           <>
@@ -202,13 +384,23 @@ export const CharacterStudioPanel: React.FC = () => {
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 {HAIRSTYLE_KEYS.map((styleId) => {
-                  const isSelected = appearance.hairstyle === styleId;
+                  const isSelected =
+                    appearance.hairstyle === styleId &&
+                    appearance.headDisplayMode === 'animeFull';
                   return (
                     <button
                       key={styleId}
                       id={`hairstyle-${styleId}-btn`}
                       type="button"
-                      onClick={() => updateAppearance({ hairstyle: styleId })}
+                      onClick={() =>
+                        updateAppearance({
+                          hairstyle: styleId,
+                          headDisplayMode:
+                            styleId === 'buzzNone'
+                              ? 'baldMannequin'
+                              : 'animeFull',
+                        })
+                      }
                       className={`text-left px-2.5 py-2 rounded-xl text-xs font-medium transition-all ${
                         isSelected
                           ? 'liquid-glass-pill-active'
@@ -240,6 +432,7 @@ export const CharacterStudioPanel: React.FC = () => {
                         updateAppearance({
                           hairColorHex: sw.hex,
                           hairHighlightHex: sw.highlight,
+                          headDisplayMode: 'animeFull',
                         })
                       }
                       className={`w-8 h-8 rounded-xl transition-transform ${
@@ -258,14 +451,17 @@ export const CharacterStudioPanel: React.FC = () => {
                   aria-label={t.cas.hairColorLabel}
                   value={appearance.hairColorHex}
                   onChange={(e) =>
-                    updateAppearance({ hairColorHex: e.target.value })
+                    updateAppearance({
+                      hairColorHex: e.target.value,
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="w-8 h-8 rounded-xl cursor-pointer bg-transparent border border-white/20"
                 />
               </div>
             </div>
 
-            {/* Hair Morph Sliders: Bangs Length, Back Hair Length, Volume */}
+            {/* Hair Morph Sliders */}
             <div className="space-y-3 pt-1">
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
@@ -283,6 +479,7 @@ export const CharacterStudioPanel: React.FC = () => {
                   onChange={(e) =>
                     updateAppearance({
                       bangsLength: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
                     })
                   }
                   className="glass-slider"
@@ -305,6 +502,7 @@ export const CharacterStudioPanel: React.FC = () => {
                   onChange={(e) =>
                     updateAppearance({
                       backHairLength: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
                     })
                   }
                   className="glass-slider"
@@ -327,20 +525,23 @@ export const CharacterStudioPanel: React.FC = () => {
                   onChange={(e) =>
                     updateAppearance({
                       hairVolume: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
                     })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Ahoge Top Strand Toggle */}
               <label className="flex items-center justify-between p-2.5 rounded-xl liquid-glass-pill cursor-pointer">
                 <span className="text-xs font-medium">{t.cas.ahogeToggle}</span>
                 <input
                   type="checkbox"
                   checked={appearance.ahogeEnabled}
                   onChange={(e) =>
-                    updateAppearance({ ahogeEnabled: e.target.checked })
+                    updateAppearance({
+                      ahogeEnabled: e.target.checked,
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="rounded accent-sky-400 w-4 h-4 cursor-pointer"
                 />
@@ -350,7 +551,7 @@ export const CharacterStudioPanel: React.FC = () => {
         )}
 
         {/* ================================================================ */}
-        {/* TAB 2: EYES & BROWS (Anime Iris Color, Scale, Tilt, Sparkles)    */}
+        {/* TAB 3: EYES & BROWS (Anime Iris Color, Scale, Tilt, Sparkles)    */}
         {/* ================================================================ */}
         {activeTab === 'eyes' && (
           <>
@@ -365,7 +566,12 @@ export const CharacterStudioPanel: React.FC = () => {
                     <button
                       key={sw.id}
                       type="button"
-                      onClick={() => updateAppearance({ eyeColorHex: sw.hex })}
+                      onClick={() =>
+                        updateAppearance({
+                          eyeColorHex: sw.hex,
+                          headDisplayMode: 'animeFull',
+                        })
+                      }
                       className={`w-8 h-8 rounded-full transition-transform ${
                         isSelected
                           ? 'scale-110 ring-2 ring-white shadow-lg'
@@ -382,7 +588,10 @@ export const CharacterStudioPanel: React.FC = () => {
                   aria-label={t.cas.eyeColorLabel}
                   value={appearance.eyeColorHex}
                   onChange={(e) =>
-                    updateAppearance({ eyeColorHex: e.target.value })
+                    updateAppearance({
+                      eyeColorHex: e.target.value,
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="w-8 h-8 rounded-xl cursor-pointer bg-transparent border border-white/20"
                 />
@@ -390,7 +599,6 @@ export const CharacterStudioPanel: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              {/* Eye Size */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.eyeSize}</span>
@@ -405,13 +613,15 @@ export const CharacterStudioPanel: React.FC = () => {
                   step={0.02}
                   value={appearance.eyeSize}
                   onChange={(e) =>
-                    updateAppearance({ eyeSize: parseFloat(e.target.value) })
+                    updateAppearance({
+                      eyeSize: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Eye Spacing */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.eyeSpacing}</span>
@@ -426,13 +636,15 @@ export const CharacterStudioPanel: React.FC = () => {
                   step={0.02}
                   value={appearance.eyeSpacing}
                   onChange={(e) =>
-                    updateAppearance({ eyeSpacing: parseFloat(e.target.value) })
+                    updateAppearance({
+                      eyeSpacing: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Eye Tilt Angle */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.eyeTilt}</span>
@@ -449,13 +661,15 @@ export const CharacterStudioPanel: React.FC = () => {
                   step={1}
                   value={appearance.eyeTilt}
                   onChange={(e) =>
-                    updateAppearance({ eyeTilt: parseInt(e.target.value, 10) })
+                    updateAppearance({
+                      eyeTilt: parseInt(e.target.value, 10),
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Iris & Pupil Depth */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.pupilScale}</span>
@@ -470,13 +684,15 @@ export const CharacterStudioPanel: React.FC = () => {
                   step={0.02}
                   value={appearance.pupilScale}
                   onChange={(e) =>
-                    updateAppearance({ pupilScale: parseFloat(e.target.value) })
+                    updateAppearance({
+                      pupilScale: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Starlight Catchlight Sparkles */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.sparkleIntensity}</span>
@@ -493,13 +709,13 @@ export const CharacterStudioPanel: React.FC = () => {
                   onChange={(e) =>
                     updateAppearance({
                       sparkleIntensity: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
                     })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Eyelash Thickness */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.eyelashThickness}</span>
@@ -516,13 +732,13 @@ export const CharacterStudioPanel: React.FC = () => {
                   onChange={(e) =>
                     updateAppearance({
                       eyelashThickness: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
                     })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Eyebrow Height */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.browHeight}</span>
@@ -537,13 +753,15 @@ export const CharacterStudioPanel: React.FC = () => {
                   step={0.02}
                   value={appearance.browHeight}
                   onChange={(e) =>
-                    updateAppearance({ browHeight: parseFloat(e.target.value) })
+                    updateAppearance({
+                      browHeight: parseFloat(e.target.value),
+                      headDisplayMode: 'animeFull',
+                    })
                   }
                   className="glass-slider"
                 />
               </div>
 
-              {/* Eyebrow Expression Angle */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.browAngle}</span>
@@ -562,6 +780,7 @@ export const CharacterStudioPanel: React.FC = () => {
                   onChange={(e) =>
                     updateAppearance({
                       browAngle: parseInt(e.target.value, 10),
+                      headDisplayMode: 'animeFull',
                     })
                   }
                   className="glass-slider"
@@ -572,11 +791,10 @@ export const CharacterStudioPanel: React.FC = () => {
         )}
 
         {/* ================================================================ */}
-        {/* TAB 3: FACE SCULPT (V-Chin, Cheeks, Nose, Lips, Expressions)     */}
+        {/* TAB 4: FACE SCULPT (V-Chin, Cheeks, Nose, Lips, Expressions)     */}
         {/* ================================================================ */}
         {activeTab === 'face' && (
           <>
-            {/* Expression Presets */}
             <div className="space-y-1.5">
               <div className="text-[11px] uppercase tracking-wider opacity-75 font-semibold">
                 {t.cas.expressionLabel}
@@ -603,7 +821,6 @@ export const CharacterStudioPanel: React.FC = () => {
             </div>
 
             <div className="space-y-3 pt-1">
-              {/* Anime V-Chin Sharpness */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.chinSharpness}</span>
@@ -626,7 +843,6 @@ export const CharacterStudioPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Cheek Fullness & Face Softness */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.faceRoundness}</span>
@@ -649,7 +865,6 @@ export const CharacterStudioPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Nose Delicacy / Size */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.noseSize}</span>
@@ -670,7 +885,6 @@ export const CharacterStudioPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Nose Bridge Elevation */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.noseHeight}</span>
@@ -691,7 +905,6 @@ export const CharacterStudioPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Mouth Width */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.mouthWidth}</span>
@@ -712,7 +925,6 @@ export const CharacterStudioPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Lip Fullness */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.lipFullness}</span>
@@ -735,7 +947,6 @@ export const CharacterStudioPanel: React.FC = () => {
                 />
               </div>
 
-              {/* Ear Size & Pointed Elf Ears */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="opacity-80">{t.cas.earSize}</span>
@@ -769,75 +980,6 @@ export const CharacterStudioPanel: React.FC = () => {
                   className="rounded accent-sky-400 w-4 h-4 cursor-pointer"
                 />
               </label>
-            </div>
-          </>
-        )}
-
-        {/* ================================================================ */}
-        {/* TAB 4: SKIN & BLUSH (Skin Complexion, Cheek Blush, Lip Tint)     */}
-        {/* ================================================================ */}
-        {activeTab === 'skin' && (
-          <>
-            <div className="space-y-2">
-              <div className="text-[11px] uppercase tracking-wider opacity-75 font-semibold">
-                {t.cas.skinToneLabel}
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {SKIN_TONE_SWATCHES.map((sw) => {
-                  const isSelected = appearance.skinToneHex === sw.hex;
-                  return (
-                    <button
-                      key={sw.id}
-                      type="button"
-                      title={sw.label}
-                      onClick={() => updateAppearance({ skinToneHex: sw.hex })}
-                      className={`h-10 rounded-xl flex items-center justify-center transition-transform border border-white/20 ${
-                        isSelected
-                          ? 'scale-105 ring-2 ring-white shadow-lg'
-                          : 'opacity-85 hover:opacity-100'
-                      }`}
-                      style={{ backgroundColor: sw.hex }}
-                    >
-                      <span className="text-[10px] font-semibold text-slate-900/80 drop-shadow">
-                        {sw.label.split(' ')[0]}
-                      </span>
-                    </button>
-                  );
-                })}
-                <input
-                  type="color"
-                  aria-label={t.cas.skinToneLabel}
-                  value={appearance.skinToneHex}
-                  onChange={(e) =>
-                    updateAppearance({ skinToneHex: e.target.value })
-                  }
-                  className="w-full h-10 rounded-xl cursor-pointer bg-transparent border border-white/20"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-3 pt-2">
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="opacity-80">{t.cas.blushIntensity}</span>
-                  <span className="font-mono text-[11px] tabular-nums">
-                    {Math.round(appearance.blushIntensity * 100)}%
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  value={appearance.blushIntensity}
-                  onChange={(e) =>
-                    updateAppearance({
-                      blushIntensity: parseFloat(e.target.value),
-                    })
-                  }
-                  className="glass-slider"
-                />
-              </div>
             </div>
           </>
         )}

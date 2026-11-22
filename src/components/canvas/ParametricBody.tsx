@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {
   AnimeHairstyleId,
   CharacterAppearance,
+  useAtelierStore,
 } from '../../store/useAtelierStore';
 import {
   AnatomicalLandmarks,
@@ -11,7 +12,6 @@ import {
   createLimbEvaluators,
   createTorsoEvaluator,
 } from '../../utils/geometryMath';
-import { useAtelierStore } from '../../store/useAtelierStore';
 
 /**
  * Builds a closed-ring lofted BufferGeometry from an ordered stack of cross-sectional rings.
@@ -126,8 +126,125 @@ function mergeBufferGeometries(
 }
 
 /**
- * Builds a tapered anime hair ribbon lock along a 3D spline path with an elliptical
- * or diamond cross-section that tapers to a sharp anime tip.
+ * Creates a dedicated GLSL 2-Tone Anime Cel-Shading Material matching the
+ * Clip Studio Paint / ACON 3D Anime Mannequin reference (`w1536-wm.webp`).
+ */
+function createAnimeCelMaterial(
+  baseColorHex: string,
+  shadowContrast = 1.0,
+  outlineStrength = 1.0
+): THREE.ShaderMaterial {
+  const baseCol = new THREE.Color(baseColorHex);
+  // Compute cool-shifted anime cel shadow color (matching #c7cbd2 on #f4f5f7)
+  const shadowTarget = new THREE.Color(
+    baseCol.r * 0.78,
+    baseCol.g * 0.80,
+    baseCol.b * 0.84
+  );
+  const deepShadowTarget = new THREE.Color(
+    baseCol.r * 0.67,
+    baseCol.g * 0.69,
+    baseCol.b * 0.74
+  );
+
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uBaseColor: { value: baseCol },
+      uShadowColor: { value: shadowTarget },
+      uDeepShadowColor: { value: deepShadowTarget },
+      uInkColor: { value: new THREE.Color('#2c2f36') },
+      // Key light from upper-left-front matching w1536-wm.webp
+      uLightDir: {
+        value: new THREE.Vector3(-0.56, 0.62, 0.55).normalize(),
+      },
+      uShadowContrast: { value: shadowContrast },
+      uCreaseInk: { value: Math.min(1.0, outlineStrength * 0.65) },
+    },
+    vertexShader: `
+      varying vec3 vWorldNormal;
+      varying vec3 vViewDir;
+
+      void main() {
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
+        vViewDir = normalize(cameraPosition - worldPos.xyz);
+        gl_Position = projectionMatrix * viewMatrix * worldPos;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uBaseColor;
+      uniform vec3 uShadowColor;
+      uniform vec3 uDeepShadowColor;
+      uniform vec3 uInkColor;
+      uniform vec3 uLightDir;
+      uniform float uShadowContrast;
+      uniform float uCreaseInk;
+
+      varying vec3 vWorldNormal;
+      varying vec3 vViewDir;
+
+      void main() {
+        vec3 N = normalize(vWorldNormal);
+        if (!gl_FrontFacing) {
+          N = -N;
+        }
+        vec3 V = normalize(vViewDir);
+        float NdotL = dot(N, uLightDir);
+
+        // Crisp 2-tone anime shadow terminator
+        float celStep = smoothstep(-0.025, 0.035, NdotL);
+        // Deep crease occlusion shadow (under breasts, gluteal fold, inguinal crease)
+        float deepStep = smoothstep(-0.52, -0.20, NdotL);
+
+        vec3 midShadow = mix(uBaseColor, uShadowColor, clamp(uShadowContrast, 0.0, 1.4));
+        vec3 deepShadow = mix(uBaseColor, uDeepShadowColor, clamp(uShadowContrast, 0.0, 1.4));
+
+        vec3 col = mix(midShadow, uBaseColor, celStep);
+        col = mix(deepShadow, col, deepStep);
+
+        // Subtle internal anime pencil/ink contour on grazing anatomical folds
+        float NdotV = abs(dot(N, V));
+        float grazingInk = (1.0 - smoothstep(0.06, 0.22, NdotV)) * uCreaseInk * 0.55;
+        col = mix(col, uInkColor, grazingInk);
+
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `,
+    side: THREE.DoubleSide,
+  });
+}
+
+/**
+ * Creates an Inverted-Hull Charcoal Ink Outline ShaderMaterial (`THREE.BackSide`)
+ * that extrudes vertices along their normal to draw crisp anime contour lines.
+ */
+function createAnimeOutlineMaterial(
+  thicknessMultiplier = 1.0
+): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uOffset: { value: 0.00145 * thicknessMultiplier },
+      uColor: { value: new THREE.Color('#282b32') },
+    },
+    vertexShader: `
+      uniform float uOffset;
+      void main() {
+        vec3 displaced = position + normalize(normal) * uOffset;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      void main() {
+        gl_FragColor = vec4(uColor, 1.0);
+      }
+    `,
+    side: THREE.BackSide,
+  });
+}
+
+/**
+ * Builds a tapered anime hair ribbon lock along a 3D spline path.
  */
 function buildHairStrandGeometry(
   controlPoints: THREE.Vector3[],
@@ -150,7 +267,6 @@ function buildHairStrandGeometry(
     const center = curve.getPoint(u);
     const tangent = curve.getTangent(u).normalize();
 
-    // Outward normal from vertical head axis
     const radialRef = new THREE.Vector3(center.x, 0, center.z);
     if (radialRef.lengthSq() < 1e-5) radialRef.set(0, 0, 1);
     radialRef.normalize();
@@ -162,7 +278,6 @@ function buildHairStrandGeometry(
       .crossVectors(sideVec, tangent)
       .normalize();
 
-    // Swell slightly in middle, taper cleanly to tip
     const profile =
       u < 0.2
         ? 0.72 + 1.4 * u
@@ -176,7 +291,6 @@ function buildHairStrandGeometry(
       const angle = (s / radialSegs) * Math.PI * 2;
       const cosA = Math.cos(angle);
       const sinA = Math.sin(angle);
-      // Slight outer ridge for anime hair lock crease
       const ridge = sinA > 0 ? 1.15 : 0.85;
       const pt = center
         .clone()
@@ -191,15 +305,7 @@ function buildHairStrandGeometry(
 }
 
 /**
- * Procedural 3D Anime Hairstyle Generator supporting 8 distinct hairstyles:
- * - 'twintails' (Anime Twintails with ribbons + hime side locks + bangs)
- * - 'himeLong' (Long straight Hime cut with cheek side-locks + full fringe)
- * - 'shortBob' (Layered anime bob with inward-curled tips + bangs)
- * - 'spikyShonen' (Dynamic multi-layered spiky anime locks)
- * - 'highPonytail' (Swept-back crown + high tie + long flowing cascade + bangs)
- * - 'wolfCut' (Shaggy layered anime wolf cut with feathered neck locks)
- * - 'odangoBuns' (Twin high spherical Odango buns + long trailing ribbons)
- * - 'buzzNone' (No hair / pure sculptural mannequin)
+ * Procedural 3D Anime Hairstyle Generator supporting 8 distinct hairstyles.
  */
 function buildAnimeHairstyleGeometry(
   style: AnimeHairstyleId,
@@ -215,13 +321,12 @@ function buildAnimeHairstyleGeometry(
   const bangsScale = app.bangsLength;
   const backScale = app.backHairLength;
   const headH = Math.max(0.18, L.yCrown - L.yJaw);
-  const yCenter = L.yJaw + headH * 0.56;
   const aCap = headWidthA * 1.07 * Math.sqrt(vol);
   const bCap = headDepthB * 1.07 * Math.sqrt(vol);
 
   const geos: THREE.BufferGeometry[] = [];
 
-  // 1. Base Cranial Hair Dome (covers top, sides, and back of skull above yJaw + 0.34*headH)
+  // 1. Base Cranial Hair Dome
   {
     const domeRings: THREE.Vector3[][] = [];
     const numDomeRings = 16;
@@ -243,7 +348,6 @@ function buildAnimeHairstyleGeometry(
         const cosT = Math.cos(theta);
         const sinT = Math.sin(theta);
 
-        // Carve out face opening in front (sinT > 0.25) on lower rings (u < 0.58)
         let frontRecess = 1.0;
         if (sinT > 0.15 && u < 0.62) {
           const faceWindow =
@@ -265,7 +369,7 @@ function buildAnimeHairstyleGeometry(
     geos.push(buildLoftedGeometry(domeRings, false, true));
   }
 
-  // 2. Front Anime Bangs / Fringe (7 tapered locks framing the forehead and eyes)
+  // 2. Front Anime Bangs / Fringe
   const bangAngles = [-0.62, -0.41, -0.21, 0.0, 0.21, 0.41, 0.62];
   const yCrownRoot = L.yCrown + 0.008 * vol;
   const yForehead = L.yJaw + headH * 0.72;
@@ -280,11 +384,8 @@ function buildAnimeHairstyleGeometry(
 
     const lengthMult = isOuter ? 1.18 : isCenter ? 1.04 : 0.96;
     const yTip =
-      L.yJaw +
-      headH * 0.72 -
-      (headH * 0.26 * bangsScale * lengthMult);
+      L.yJaw + headH * 0.72 - headH * 0.26 * bangsScale * lengthMult;
 
-    // Slight curve sweeping outward or inward
     const sweepX = x1 * (isOuter ? 1.08 : 0.92);
     const pts = [
       new THREE.Vector3(x1 * 0.35, yCrownRoot, centerZ + bCap * 0.35),
@@ -305,7 +406,7 @@ function buildAnimeHairstyleGeometry(
     );
   }
 
-  // 3. Cheek-framing Side Locks (Hime / Anime Temple Strands on Left & Right)
+  // 3. Cheek-framing Side Locks
   for (const sign of [-1, 1]) {
     const sideLen =
       style === 'himeLong' || style === 'twintails' || style === 'odangoBuns'
@@ -337,21 +438,18 @@ function buildAnimeHairstyleGeometry(
 
   // 4. Style-Specific Main Hair Architecture
   if (style === 'twintails') {
-    // High Left & Right Twintail Ponytails with Ribbon Cuffs
     for (const sign of [-1, 1]) {
       const rootX = sign * aCap * 0.92;
       const rootY = L.yJaw + headH * 0.72;
       const rootZ = centerZ - bCap * 0.15;
       const tailLen = 0.42 * backScale;
 
-      // Decorative Hair Tie Cuff
       const cuffGeo = new THREE.TorusGeometry(0.024 * vol, 0.008 * vol, 12, 24);
       cuffGeo.rotateY(sign * 0.7);
       cuffGeo.rotateX(0.4);
       cuffGeo.translate(rootX * 1.05, rootY, rootZ);
       geos.push(cuffGeo);
 
-      // 3 Flowing locks per twintail for rich anime silhouette
       const offsets = [
         { dx: 0.0, dz: 0.0, w: 0.036 },
         { dx: sign * 0.024, dz: 0.018, w: 0.026 },
@@ -382,24 +480,16 @@ function buildAnimeHairstyleGeometry(
           ),
         ];
         geos.push(
-          buildHairStrandGeometry(
-            pts,
-            off.w * vol,
-            0.022 * vol,
-            24,
-            12,
-            1.4
-          )
+          buildHairStrandGeometry(pts, off.w * vol, 0.022 * vol, 24, 12, 1.4)
         );
       }
     }
   } else if (style === 'himeLong') {
-    // Long flowing back curtain of 9 sculpted vertical locks reaching mid-back/waist
     const numBackLocks = 9;
     const tailLen = 0.46 * backScale;
     for (let i = 0; i < numBackLocks; i++) {
-      const frac = (i / (numBackLocks - 1)) * 2 - 1; // -1 to +1
-      const theta = Math.PI * 1.5 + frac * 0.85; // posterior arc
+      const frac = (i / (numBackLocks - 1)) * 2 - 1;
+      const theta = Math.PI * 1.5 + frac * 0.85;
       const rx = Math.cos(theta) * aCap * 0.96;
       const rz = centerZ + Math.sin(theta) * bCap * 0.98;
 
@@ -419,11 +509,10 @@ function buildAnimeHairstyleGeometry(
       );
     }
   } else if (style === 'shortBob') {
-    // Classic Anime Chin/Neck Bob with inward-curled tips around posterior and lateral perimeter
     const numBobLocks = 13;
     const bobDrop = 0.055 * backScale;
     for (let i = 0; i < numBobLocks; i++) {
-      const frac = (i / (numBobLocks - 1)) * 2 - 1; // -1 to +1
+      const frac = (i / (numBobLocks - 1)) * 2 - 1;
       const theta = Math.PI * 1.5 + frac * 1.28;
       const rx = Math.cos(theta) * aCap;
       const rz = centerZ + Math.sin(theta) * bCap;
@@ -439,22 +528,18 @@ function buildAnimeHairstyleGeometry(
       );
     }
   } else if (style === 'spikyShonen') {
-    // Multi-layered outward-flaring Shonen Anime Spikes around crown, sides, and nape
     const spikeSpecs = [
-      // Crown & Upper Back Spikes
       { angH: 0.0, yBase: 0.78, flareY: 0.08, len: 0.14, w: 0.032 },
       { angH: 0.45, yBase: 0.74, flareY: 0.06, len: 0.14, w: 0.03 },
       { angH: -0.45, yBase: 0.74, flareY: 0.06, len: 0.14, w: 0.03 },
       { angH: 0.9, yBase: 0.66, flareY: 0.03, len: 0.13, w: 0.028 },
       { angH: -0.9, yBase: 0.66, flareY: 0.03, len: 0.13, w: 0.028 },
-      // Mid-level lateral & back spikes
       { angH: 0.25, yBase: 0.52, flareY: -0.02, len: 0.13, w: 0.03 },
       { angH: -0.25, yBase: 0.52, flareY: -0.02, len: 0.13, w: 0.03 },
       { angH: 0.72, yBase: 0.48, flareY: -0.03, len: 0.125, w: 0.027 },
       { angH: -0.72, yBase: 0.48, flareY: -0.03, len: 0.125, w: 0.027 },
       { angH: 1.15, yBase: 0.48, flareY: -0.04, len: 0.11, w: 0.025 },
       { angH: -1.15, yBase: 0.48, flareY: -0.04, len: 0.11, w: 0.025 },
-      // Nape spikes
       { angH: 0.0, yBase: 0.3, flareY: -0.06, len: 0.1, w: 0.026 },
       { angH: 0.48, yBase: 0.32, flareY: -0.06, len: 0.1, w: 0.024 },
       { angH: -0.48, yBase: 0.32, flareY: -0.06, len: 0.1, w: 0.024 },
@@ -484,11 +569,17 @@ function buildAnimeHairstyleGeometry(
         ),
       ];
       geos.push(
-        buildHairStrandGeometry(pts, sp.w * vol, sp.w * 0.65 * vol, 14, 10, 1.8)
+        buildHairStrandGeometry(
+          pts,
+          sp.w * vol,
+          sp.w * 0.65 * vol,
+          14,
+          10,
+          1.8
+        )
       );
     }
   } else if (style === 'highPonytail') {
-    // High energetic back ponytail with hair cuff and 4 cascading ribbons
     const rootY = L.yJaw + headH * 0.74;
     const rootZ = centerZ - bCap * 0.95;
     const tailLen = 0.42 * backScale;
@@ -525,7 +616,6 @@ function buildAnimeHairstyleGeometry(
       );
     }
   } else if (style === 'wolfCut') {
-    // Layered textured Anime Wolf Cut (short flared upper crown locks + longer feathered neck/shoulder locks)
     const numLocks = 11;
     const neckLen = 0.18 * backScale;
     for (let i = 0; i < numLocks; i++) {
@@ -534,17 +624,22 @@ function buildAnimeHairstyleGeometry(
       const rx = Math.cos(theta) * aCap;
       const rz = centerZ + Math.sin(theta) * bCap;
 
-      // Upper flared wolf-layer
       const upperPts = [
         new THREE.Vector3(rx * 0.4, L.yCrown, rz * 0.4),
         new THREE.Vector3(rx * 1.08, L.yJaw + headH * 0.56, rz * 1.06),
         new THREE.Vector3(rx * 1.24, L.yJaw + headH * 0.25, rz * 1.2),
       ];
       geos.push(
-        buildHairStrandGeometry(upperPts, 0.028 * vol, 0.015 * vol, 14, 10, 1.6)
+        buildHairStrandGeometry(
+          upperPts,
+          0.028 * vol,
+          0.015 * vol,
+          14,
+          10,
+          1.6
+        )
       );
 
-      // Lower feathered neck-layer flipping outward at collarbone
       const lowerPts = [
         new THREE.Vector3(rx * 0.85, L.yJaw + headH * 0.35, rz * 0.9),
         new THREE.Vector3(rx * 0.98, L.yJaw - 0.01, rz * 1.02),
@@ -552,11 +647,17 @@ function buildAnimeHairstyleGeometry(
         new THREE.Vector3(rx * 1.32, L.yJaw - neckLen, rz * 1.24),
       ];
       geos.push(
-        buildHairStrandGeometry(lowerPts, 0.025 * vol, 0.014 * vol, 16, 10, 1.5)
+        buildHairStrandGeometry(
+          lowerPts,
+          0.025 * vol,
+          0.014 * vol,
+          16,
+          10,
+          1.5
+        )
       );
     }
   } else if (style === 'odangoBuns') {
-    // Twin Spherical Odango Buns on top-sides + long ribbon streamers
     for (const sign of [-1, 1]) {
       const bunX = sign * aCap * 0.88;
       const bunY = L.yCrown - 0.008;
@@ -566,13 +667,17 @@ function buildAnimeHairstyleGeometry(
       bunGeo.translate(bunX, bunY, bunZ);
       geos.push(bunGeo);
 
-      const cuffGeo = new THREE.TorusGeometry(0.032 * vol, 0.008 * vol, 10, 20);
+      const cuffGeo = new THREE.TorusGeometry(
+        0.032 * vol,
+        0.008 * vol,
+        10,
+        20
+      );
       cuffGeo.rotateY(sign * 0.6);
       cuffGeo.rotateX(0.9);
       cuffGeo.translate(bunX * 0.9, bunY - 0.01, bunZ);
       geos.push(cuffGeo);
 
-      // Long ribbon lock falling from underneath each Odango bun
       const tailLen = 0.38 * backScale;
       const pts = [
         new THREE.Vector3(bunX, bunY - 0.02, bunZ),
@@ -586,7 +691,7 @@ function buildAnimeHairstyleGeometry(
     }
   }
 
-  // 5. Iconic Anime Ahoge (Bouncy Top Cowlick Antenna Strand)
+  // 5. Iconic Anime Ahoge
   if (app.ahogeEnabled) {
     const ahogePts = [
       new THREE.Vector3(0, L.yCrown + 0.006 * vol, centerZ + 0.01),
@@ -603,9 +708,7 @@ function buildAnimeHairstyleGeometry(
 }
 
 /**
- * Builds a Sims-4 / Anime CAS style sculpted head & face geometry parameterized by
- * all face sliders (faceRoundness, chinSharpness, noseSize, noseHeight, mouthWidth,
- * lipFullness, earSize, elfEars, expression, and animeStyleEnabled).
+ * Builds a Sims-4 / Anime CAS style sculpted head & face geometry.
  */
 function buildSculptedHeadAndFaceGeometry(
   L: AnatomicalLandmarks,
@@ -614,19 +717,7 @@ function buildSculptedHeadAndFaceGeometry(
   neckRadiusB: number,
   centerZNeck: number,
   app: CharacterAppearance
-): {
-  headGeo: THREE.BufferGeometry;
-  eyeAnchors: {
-    leftEye: THREE.Vector3;
-    rightEye: THREE.Vector3;
-    leftCheekBlush: THREE.Vector3;
-    rightCheekBlush: THREE.Vector3;
-    mouthCenter: THREE.Vector3;
-    headWidthA: number;
-    headDepthB: number;
-    centerZHead: number;
-  };
-} {
+) {
   const isFemale = L.gender === 'female';
   const isAnime = app.animeStyleEnabled;
 
@@ -667,21 +758,26 @@ function buildSculptedHeadAndFaceGeometry(
 
     if (y < L.yJaw) {
       const tNeck = (y - yNeckTop) / Math.max(0.005, L.yJaw - yNeckTop);
-      a = THREE.MathUtils.lerp(neckRadiusA * 0.96, headWidthA * 0.68, tNeck);
+      a = THREE.MathUtils.lerp(neckRadiusA * 0.96, headWidthA * 0.65, tNeck);
       bF = THREE.MathUtils.lerp(neckRadiusB * 0.98, headDepthB * 0.84, tNeck);
       bB = THREE.MathUtils.lerp(neckRadiusB * 0.98, headDepthB * 0.82, tNeck);
     } else if (hNorm < 0.46) {
-      // Lower face V-taper controlled by chinSharpness and faceRoundness
       const tFace = hNorm / 0.46;
-      const baseJawRatio = isFemale ? 0.65 : 0.72;
-      const sharpAdjust = (app.chinSharpness - 1.0) * 0.22;
-      const jawTaper = Math.max(0.45, Math.min(0.86, baseJawRatio - sharpAdjust));
+      const baseJawRatio = isFemale ? 0.63 : 0.7;
+      const sharpAdjust = (app.chinSharpness - 1.0) * 0.24;
+      const jawTaper = Math.max(0.42, Math.min(0.86, baseJawRatio - sharpAdjust));
       const curveExp = isAnime
-        ? Math.max(0.45, 0.72 / app.faceRoundness)
+        ? Math.max(0.44, 0.7 / app.faceRoundness)
         : 0.65;
-      a = headWidthA * THREE.MathUtils.lerp(jawTaper, 0.99, Math.pow(tFace, curveExp));
-      bF = headDepthB * THREE.MathUtils.lerp(0.85, 0.98, Math.pow(tFace, 0.55));
-      bB = headDepthB * THREE.MathUtils.lerp(0.76, 1.02, Math.pow(tFace, 0.7));
+      a =
+        headWidthA *
+        THREE.MathUtils.lerp(jawTaper, 0.99, Math.pow(tFace, curveExp));
+      bF =
+        headDepthB *
+        THREE.MathUtils.lerp(0.85, 0.98, Math.pow(tFace, 0.55));
+      bB =
+        headDepthB *
+        THREE.MathUtils.lerp(0.76, 1.02, Math.pow(tFace, 0.7));
     } else if (hNorm > 0.72) {
       const tDome = (hNorm - 0.72) / 0.28;
       const domeScale = Math.sqrt(Math.max(0.002, 1 - Math.pow(tDome, 1.85)));
@@ -701,19 +797,17 @@ function buildSculptedHeadAndFaceGeometry(
       let z = (sinT >= 0 ? bF : bB) * sinT;
 
       if (sinT > 0 && y >= L.yJaw - 0.005) {
-        // 1. Anime V-Chin & Jawline
         const chinV = g1(y, yChin + 0.008, 0.012);
         const chinWidthSigma =
-          (isFemale ? 0.23 : 0.28) / Math.max(0.6, app.chinSharpness);
+          (isFemale ? 0.22 : 0.27) / Math.max(0.6, app.chinSharpness);
         const chinH = g1(absCos, 0, chinWidthSigma);
         z +=
           chinV *
-          (isFemale ? 0.0125 : 0.015) *
+          (isFemale ? 0.012 : 0.0145) *
           (0.85 + 0.15 * app.chinSharpness) *
           chinH *
           Math.pow(sinT, 1.4);
 
-        // 2. Lips & Facial Expression Curve
         const smileLift =
           app.expression === 'gentleSmile'
             ? 0.0035
@@ -731,51 +825,57 @@ function buildSculptedHeadAndFaceGeometry(
         const cupidsBow =
           1.0 + 0.22 * g1(absCos, 0.075, 0.045) - 0.15 * g1(absCos, 0, 0.03);
 
-        const lipScale = app.lipFullness * (isAnime ? 0.85 : 1.0);
-        z += lowerLipV * 0.0085 * lipScale * lipSpanH * Math.pow(sinT, 2);
+        const lipScale = app.lipFullness * (isAnime ? 0.8 : 1.0);
+        z += lowerLipV * 0.008 * lipScale * lipSpanH * Math.pow(sinT, 2);
         z +=
           upperLipV *
-          0.0095 *
+          0.009 *
           lipScale *
           lipSpanH *
           cupidsBow *
           Math.pow(sinT, 2);
-        z -= mouthCleftV * 0.004 * lipSpanH * Math.pow(sinT, 2);
+        z -= mouthCleftV * 0.0035 * lipSpanH * Math.pow(sinT, 2);
 
-        // 3. Nose (Delicate upturned anime nose tip & subtle bridge)
-        const noseScale = app.noseSize * (isAnime ? 0.82 : 1.0);
+        const noseScale = app.noseSize * (isAnime ? 0.78 : 1.0);
         const noseTipV = g1(y, yNoseTip, 0.0085);
         const noseBridgeV =
           y >= yNoseTip && y <= yBrowRidge
-            ? Math.sin(((y - yNoseTip) / Math.max(0.01, yBrowRidge - yNoseTip)) * Math.PI)
+            ? Math.sin(
+                ((y - yNoseTip) / Math.max(0.01, yBrowRidge - yNoseTip)) *
+                  Math.PI
+              )
             : 0;
         const noseSubV = g1(y, yNoseBase, 0.0055);
-        const noseCenterH = g1(absCos, 0, 0.078 * Math.sqrt(app.noseSize));
+        const noseCenterH = g1(absCos, 0, 0.075 * Math.sqrt(app.noseSize));
 
         z +=
-          (noseTipV * 0.0185 + noseBridgeV * (isAnime ? 0.0095 : 0.0135) + noseSubV * 0.007) *
+          (noseTipV * 0.0175 +
+            noseBridgeV * (isAnime ? 0.0085 : 0.0135) +
+            noseSubV * 0.0065) *
           noseScale *
           noseCenterH *
           Math.pow(sinT, 3);
 
-        // 4. Eye Sockets & Cheekbones
         const eyeLatCenter = 0.34 * app.eyeSpacing;
         const orbitV = g1(y, yEyeCenter, 0.015 * app.eyeSize);
         const orbitH = g1(absCos, eyeLatCenter, 0.14 * app.eyeSize);
-        z -= orbitV * orbitH * (isAnime ? 0.005 : 0.009) * Math.pow(sinT, 1.5);
+        z -=
+          orbitV *
+          orbitH *
+          (isAnime ? 0.0045 : 0.009) *
+          Math.pow(sinT, 1.5);
 
         const cheekV = g1(y, yNoseTip + 0.008, 0.019);
         const cheekH = g1(absCos, 0.56, 0.19);
-        z += cheekV * cheekH * 0.0065 * app.faceRoundness * sinT;
+        z += cheekV * cheekH * 0.006 * app.faceRoundness * sinT;
         x +=
           Math.sign(cosT) *
           cheekV *
           cheekH *
-          0.0045 *
+          0.004 *
           app.faceRoundness;
       }
 
-      // 5. Sculpted Ears (with optional Fantasy Pointed Elf Ears)
       const earScale = app.earSize * (app.elfEars ? 1.45 : 1.0);
       const earCenterY =
         (yNoseTip + yEyeCenter) * 0.52 + (app.elfEars ? 0.006 : 0);
@@ -786,12 +886,12 @@ function buildSculptedHeadAndFaceGeometry(
           app.elfEars && y > earCenterY
             ? 1.0 + 1.15 * ((y - earCenterY) / 0.03)
             : 1.0;
-        const earProjection = earV * earAngle * 0.014 * earScale * elfTipBoost;
+        const earProjection =
+          earV * earAngle * 0.014 * earScale * elfTipBoost;
         x += Math.sign(cosT) * earProjection;
         z -= earProjection * (app.elfEars ? 0.55 : 0.35);
       }
 
-      // 6. Occipital skull curve
       if (sinT < -0.2) {
         const napeHollow = g1(y, L.yJaw + 0.01, 0.022);
         const occiputFullness = g1(y, L.yHeadMax - 0.005, 0.045);
@@ -804,24 +904,32 @@ function buildSculptedHeadAndFaceGeometry(
     rings.push(ringPts);
   }
 
-  // Compute exact 3D surface positions for expressive Anime Eyes, Eyelashes, Brows, and Blush
-  const sampleFaceAnchor = (targetY: number, targetAbsCos: number, signX: number) => {
+  const sampleFaceAnchor = (
+    targetY: number,
+    targetAbsCos: number,
+    signX: number
+  ) => {
     const sinVal = Math.sqrt(Math.max(0.05, 1 - targetAbsCos * targetAbsCos));
     const hNorm = Math.max(0, Math.min(1, (targetY - L.yJaw) / headHeight));
     const tFace = Math.min(1, hNorm / 0.46);
-    const baseJawRatio = isFemale ? 0.65 : 0.72;
-    const sharpAdjust = (app.chinSharpness - 1.0) * 0.22;
-    const jawTaper = Math.max(0.45, Math.min(0.86, baseJawRatio - sharpAdjust));
+    const baseJawRatio = isFemale ? 0.63 : 0.7;
+    const sharpAdjust = (app.chinSharpness - 1.0) * 0.24;
+    const jawTaper = Math.max(
+      0.42,
+      Math.min(0.86, baseJawRatio - sharpAdjust)
+    );
     const curveExp = isAnime
-      ? Math.max(0.45, 0.72 / app.faceRoundness)
+      ? Math.max(0.44, 0.7 / app.faceRoundness)
       : 0.65;
     const aAtY =
       hNorm < 0.46
-        ? headWidthA * THREE.MathUtils.lerp(jawTaper, 0.99, Math.pow(tFace, curveExp))
+        ? headWidthA *
+          THREE.MathUtils.lerp(jawTaper, 0.99, Math.pow(tFace, curveExp))
         : headWidthA;
     const bFAtY =
       hNorm < 0.46
-        ? headDepthB * THREE.MathUtils.lerp(0.85, 0.98, Math.pow(tFace, 0.55))
+        ? headDepthB *
+          THREE.MathUtils.lerp(0.85, 0.98, Math.pow(tFace, 0.55))
         : headDepthB * 0.98;
 
     return new THREE.Vector3(
@@ -1141,8 +1249,7 @@ function buildFootGeometry(
 }
 
 /**
- * 3D Expressive Anime Eye Assembly (Sclera, Colored Iris, Dark Pupil,
- * Dual Starlight Sparkle Catchlights, Winged Upper Eyelash, and Sculpted Eyebrow).
+ * 3D Expressive Anime Eye Assembly (shown when headDisplayMode === 'animeFull').
  */
 const AnimeFaceDetails: React.FC<{
   anchors: {
@@ -1155,7 +1262,12 @@ const AnimeFaceDetails: React.FC<{
   appearance: CharacterAppearance;
   isTranslucent: boolean;
 }> = ({ anchors, appearance, isTranslucent }) => {
-  if (!appearance.animeStyleEnabled) return null;
+  if (
+    !appearance.animeStyleEnabled ||
+    appearance.headDisplayMode !== 'animeFull'
+  ) {
+    return null;
+  }
 
   const eyeRadius = 0.0125 * appearance.eyeSize;
   const irisRadius = eyeRadius * 0.72 * appearance.pupilScale;
@@ -1165,42 +1277,31 @@ const AnimeFaceDetails: React.FC<{
   const opacityMult = isTranslucent ? 0.5 : 1.0;
 
   const renderSingleEye = (pos: THREE.Vector3, sideSign: 1 | -1) => {
-    const yawAngle = sideSign * 0.24; // Face slightly outward along facial curvature
+    const yawAngle = sideSign * 0.24;
     return (
       <group
         key={`anime-eye-${sideSign}`}
         position={[pos.x, pos.y, pos.z - 0.0015]}
         rotation={[0, yawAngle, sideSign * tiltRad]}
       >
-        {/* White Sclera Dome */}
         <mesh scale={[1.18, 0.95, 0.42]}>
           <sphereGeometry args={[eyeRadius, 24, 20]} />
-          <meshStandardMaterial
+          <meshBasicMaterial
             color="#f8fafc"
-            roughness={0.2}
             transparent={isTranslucent}
             opacity={opacityMult}
           />
         </mesh>
 
-        {/* Vibrant Anime Iris Disc */}
-        <mesh
-          position={[0, 0, eyeRadius * 0.34]}
-          scale={[1.0, 1.05, 0.28]}
-        >
+        <mesh position={[0, 0, eyeRadius * 0.34]} scale={[1.0, 1.05, 0.28]}>
           <sphereGeometry args={[irisRadius, 24, 20]} />
-          <meshStandardMaterial
+          <meshBasicMaterial
             color={appearance.eyeColorHex}
-            emissive={appearance.eyeColorHex}
-            emissiveIntensity={0.28}
-            roughness={0.14}
-            metalness={0.1}
             transparent={isTranslucent}
             opacity={opacityMult}
           />
         </mesh>
 
-        {/* Deep Dark Pupil Core */}
         <mesh
           position={[0, -0.0005, eyeRadius * 0.42]}
           scale={[0.92, 1.02, 0.22]}
@@ -1209,7 +1310,6 @@ const AnimeFaceDetails: React.FC<{
           <meshBasicMaterial color="#090d16" />
         </mesh>
 
-        {/* Primary & Secondary Anime Starlight Catchlights */}
         {appearance.sparkleIntensity > 0.05 && (
           <>
             <mesh
@@ -1245,23 +1345,23 @@ const AnimeFaceDetails: React.FC<{
           </>
         )}
 
-        {/* Winged Upper Anime Eyelash Frame */}
         <mesh
           position={[0, eyeRadius * 0.35, eyeRadius * 0.25]}
           rotation={[0.2, 0, -sideSign * 0.08]}
-          scale={[
-            1.28,
-            0.35 * appearance.eyelashThickness,
-            0.48,
-          ]}
+          scale={[1.28, 0.35 * appearance.eyelashThickness, 0.48]}
         >
           <torusGeometry
-            args={[eyeRadius * 0.96, 0.0024 * appearance.eyelashThickness, 10, 24, Math.PI * 0.92]}
+            args={[
+              eyeRadius * 0.96,
+              0.0024 * appearance.eyelashThickness,
+              10,
+              24,
+              Math.PI * 0.92,
+            ]}
           />
-          <meshStandardMaterial color="#141824" roughness={0.4} />
+          <meshBasicMaterial color="#141824" />
         </mesh>
 
-        {/* Expressive Anime Eyebrow */}
         <mesh
           position={[
             0,
@@ -1274,10 +1374,7 @@ const AnimeFaceDetails: React.FC<{
           <torusGeometry
             args={[eyeRadius * 0.98, 0.0019, 8, 20, Math.PI * 0.82]}
           />
-          <meshStandardMaterial
-            color={appearance.hairColorHex}
-            roughness={0.45}
-          />
+          <meshBasicMaterial color={appearance.hairColorHex} />
         </mesh>
       </group>
     );
@@ -1295,7 +1392,6 @@ const AnimeFaceDetails: React.FC<{
       {renderSingleEye(anchors.leftEye, 1)}
       {renderSingleEye(anchors.rightEye, -1)}
 
-      {/* Soft Anime Cheek Blush Cushions */}
       {blushOpacity > 0.02 && (
         <>
           <mesh
@@ -1335,7 +1431,6 @@ const AnimeFaceDetails: React.FC<{
         </>
       )}
 
-      {/* Subtle Lip Tint Highlight */}
       <mesh
         position={[
           anchors.mouthCenter.x,
@@ -1349,9 +1444,8 @@ const AnimeFaceDetails: React.FC<{
         ]}
       >
         <sphereGeometry args={[0.0085, 16, 12]} />
-        <meshStandardMaterial
+        <meshBasicMaterial
           color={appearance.lipColorHex}
-          roughness={0.28}
           transparent
           opacity={0.72 * opacityMult}
         />
@@ -1367,8 +1461,13 @@ export const ParametricBody: React.FC = () => {
   const surfaceFinish = useAtelierStore((s) => s.glassSettings.surfaceFinish);
   const theme = useAtelierStore((s) => s.glassSettings.theme);
 
+  const isHeadless = appearance.headDisplayMode === 'headless';
+  const showAnimeHair =
+    appearance.animeStyleEnabled && appearance.headDisplayMode === 'animeFull';
+
   const {
     torsoGeometry,
+    neckCutCapGeometry,
     headGeometry,
     hairGeometry,
     eyeAnchors,
@@ -1386,9 +1485,10 @@ export const ParametricBody: React.FC = () => {
     const limbEval = createLimbEvaluators(measurements, gender, L);
 
     // 1. 96-Ring High-Resolution Lofted Torso, Pelvis, Trapezius & Neck
+    // In 'headless' mode, stop cleanly at L.yNeckCut just like the middle & right figures in w1536-wm.webp
     const TORSO_RINGS = 96;
     const TORSO_SEGMENTS = 72;
-    const torsoTopY = L.yJaw - 0.008;
+    const torsoTopY = isHeadless ? L.yNeckCut : L.yJaw - 0.008;
     const torsoRings: THREE.Vector3[][] = [];
     for (let i = 0; i < TORSO_RINGS; i++) {
       const u = i / (TORSO_RINGS - 1);
@@ -1396,7 +1496,14 @@ export const ParametricBody: React.FC = () => {
       const ring = torsoEval.sampleClosedRing(y, TORSO_SEGMENTS, 0);
       torsoRings.push(ring);
     }
-    const torsoGeo = buildLoftedGeometry(torsoRings, true, true);
+    const torsoGeo = buildLoftedGeometry(torsoRings, true, !isHeadless);
+
+    // Build flat matte-black neck cut cross-section cap for 'headless' mode (matching w1536-wm.webp)
+    let neckCutGeo: THREE.BufferGeometry | null = null;
+    if (isHeadless) {
+      const topRing = torsoRings[torsoRings.length - 1];
+      neckCutGeo = buildLoftedGeometry([topRing, topRing], false, true);
+    }
 
     // 2. Sims-4 / Anime CAS Sculpted Head & Face
     const neckEval = torsoEval.evalAtY(L.yJaw - 0.014).radii;
@@ -1410,7 +1517,7 @@ export const ParametricBody: React.FC = () => {
     );
 
     // 3. 3D Procedural Anime Hairstyle Mesh
-    const hairGeo = appearance.animeStyleEnabled
+    const hairGeo = showAnimeHair
       ? buildAnimeHairstyleGeometry(
           appearance.hairstyle,
           L,
@@ -1509,6 +1616,7 @@ export const ParametricBody: React.FC = () => {
 
     return {
       torsoGeometry: torsoGeo,
+      neckCutCapGeometry: neckCutGeo,
       headGeometry: headGeo,
       hairGeometry: hairGeo,
       eyeAnchors: anchors,
@@ -1521,16 +1629,24 @@ export const ParametricBody: React.FC = () => {
       leftFootGeometry: leftFootGeo,
       rightFootGeometry: rightFootGeo,
     };
-  }, [measurements, gender, appearance]);
+  }, [measurements, gender, appearance, isHeadless, showAnimeHair]);
 
-  // Skin / Body surface shader material
+  // Primary Body Material (supports Anime Cel-Shading Reference Mode + Clay + Satin + Translucent)
   const skinMaterial = useMemo(() => {
     const isLight = theme === 'light';
     const baseColor = appearance.animeStyleEnabled
       ? appearance.skinToneHex
       : isLight
-      ? '#cfd6e2'
-      : '#c2cce0';
+      ? '#f4f5f7'
+      : '#d4dce8';
+
+    if (surfaceFinish === 'animeCel') {
+      return createAnimeCelMaterial(
+        baseColor,
+        appearance.shadowContrast,
+        appearance.outlineThickness
+      );
+    }
 
     if (surfaceFinish === 'clay') {
       return new THREE.MeshPhysicalMaterial({
@@ -1556,7 +1672,6 @@ export const ParametricBody: React.FC = () => {
         side: THREE.DoubleSide,
       });
     }
-    // Default: 'satin' (Anime Subsurface Satin Skin)
     return new THREE.MeshPhysicalMaterial({
       color: baseColor,
       roughness: 0.32,
@@ -1568,10 +1683,24 @@ export const ParametricBody: React.FC = () => {
       sheenRoughness: 0.45,
       side: THREE.DoubleSide,
     });
-  }, [surfaceFinish, theme, appearance.animeStyleEnabled, appearance.skinToneHex]);
+  }, [
+    surfaceFinish,
+    theme,
+    appearance.animeStyleEnabled,
+    appearance.skinToneHex,
+    appearance.shadowContrast,
+    appearance.outlineThickness,
+  ]);
 
-  // Anime Hair shader with anisotropic-like sheen highlight
+  // Anime Hair Material (Cel-shaded when in animeCel mode)
   const hairMaterial = useMemo(() => {
+    if (surfaceFinish === 'animeCel') {
+      return createAnimeCelMaterial(
+        appearance.hairColorHex,
+        appearance.shadowContrast,
+        appearance.outlineThickness
+      );
+    }
     const isTranslucent = surfaceFinish === 'translucent';
     return new THREE.MeshPhysicalMaterial({
       color: appearance.hairColorHex,
@@ -1588,101 +1717,113 @@ export const ParametricBody: React.FC = () => {
       side: THREE.DoubleSide,
     });
   }, [
+    surfaceFinish,
     appearance.hairColorHex,
     appearance.hairHighlightHex,
-    surfaceFinish,
+    appearance.shadowContrast,
+    appearance.outlineThickness,
+  ]);
+
+  // Inverted-Hull Ink Outline Material for Anime Cel-Shading
+  const outlineMaterial = useMemo(() => {
+    if (
+      surfaceFinish === 'translucent' ||
+      appearance.outlineThickness <= 0.05
+    ) {
+      return null;
+    }
+    return createAnimeOutlineMaterial(appearance.outlineThickness);
+  }, [surfaceFinish, appearance.outlineThickness]);
+
+  // Matte black cross-section cap material for Headless neck cut (as in w1536-wm.webp)
+  const blackCapMaterial = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: '#111318',
+        side: THREE.DoubleSide,
+      }),
+    []
+  );
+
+  const bodyParts = useMemo(() => {
+    const parts: THREE.BufferGeometry[] = [
+      torsoGeometry,
+      leftArmGeometry,
+      rightArmGeometry,
+      leftHandGeometry,
+      rightHandGeometry,
+      leftLegGeometry,
+      rightLegGeometry,
+      leftFootGeometry,
+      rightFootGeometry,
+    ];
+    if (!isHeadless) {
+      parts.push(headGeometry);
+    }
+    return parts;
+  }, [
+    torsoGeometry,
+    headGeometry,
+    isHeadless,
+    leftArmGeometry,
+    rightArmGeometry,
+    leftHandGeometry,
+    rightHandGeometry,
+    leftLegGeometry,
+    rightLegGeometry,
+    leftFootGeometry,
+    rightFootGeometry,
   ]);
 
   return (
     <group name="parametric-mannequin-group">
-      {/* 96-Ring Lofted Torso, Pelvis, Trapezius & Neck */}
-      <mesh
-        geometry={torsoGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
+      {/* Main Sculpted Body Parts + Inverted-Hull Anime Ink Outline */}
+      {bodyParts.map((geo, idx) => (
+        <React.Fragment key={`body-part-${idx}`}>
+          <mesh
+            geometry={geo}
+            material={skinMaterial}
+            castShadow
+            receiveShadow
+          />
+          {outlineMaterial && (
+            <mesh geometry={geo} material={outlineMaterial} />
+          )}
+        </React.Fragment>
+      ))}
 
-      {/* Sims-4 / Anime CAS Sculpted Head & Face */}
-      <mesh
-        geometry={headGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-
-      {/* Expressive 3D Anime Eyes, Sparkles, Winged Eyelashes, Brows, Blush & Lip Tint */}
-      <AnimeFaceDetails
-        anchors={eyeAnchors}
-        appearance={appearance}
-        isTranslucent={surfaceFinish === 'translucent'}
-      />
-
-      {/* Procedural 3D Anime Hairstyle (Twintails, Hime, Bob, Spiky Shonen, Ponytail, Wolf Cut, Odango, Ahoge) */}
-      {hairGeometry && (
+      {/* Headless Neck Cut Black Cap (exact match for middle & right figures in w1536-wm.webp) */}
+      {isHeadless && neckCutCapGeometry && (
         <mesh
-          geometry={hairGeometry}
-          material={hairMaterial}
-          castShadow
-          receiveShadow
+          geometry={neckCutCapGeometry}
+          material={blackCapMaterial}
+          position={[0, 0.0005, 0]}
         />
       )}
 
-      {/* Left & Right Multi-Segment Lofted Arms */}
-      <mesh
-        geometry={leftArmGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-      <mesh
-        geometry={rightArmGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
+      {/* Expressive 3D Anime Eyes, Sparkles, Eyelashes, Brows & Blush (when in animeFull mode) */}
+      {!isHeadless && (
+        <AnimeFaceDetails
+          anchors={eyeAnchors}
+          appearance={appearance}
+          isTranslucent={surfaceFinish === 'translucent'}
+        />
+      )}
 
-      {/* Left & Right Articulated 5-Finger Sculpted Hands */}
-      <mesh
-        geometry={leftHandGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-      <mesh
-        geometry={rightHandGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-
-      {/* Left & Right Multi-Segment Lofted Legs */}
-      <mesh
-        geometry={leftLegGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-      <mesh
-        geometry={rightLegGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-
-      {/* Left & Right Sculpted Feet with 5 Toes */}
-      <mesh
-        geometry={leftFootGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
-      <mesh
-        geometry={rightFootGeometry}
-        material={skinMaterial}
-        castShadow
-        receiveShadow
-      />
+      {/* Procedural 3D Anime Hairstyle + Ink Outline */}
+      {!isHeadless && hairGeometry && (
+        <>
+          <mesh
+            geometry={hairGeometry}
+            material={hairMaterial}
+            castShadow
+            receiveShadow
+          />
+          {outlineMaterial && (
+            <mesh geometry={hairGeometry} material={outlineMaterial} />
+          )}
+        </>
+      )}
     </group>
   );
 };

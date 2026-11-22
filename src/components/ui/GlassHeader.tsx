@@ -1,11 +1,15 @@
 import React, { useRef } from 'react';
 import { NEUTRAL_PRESETS, PresetId } from '../../data/neutralPresets';
 import { TRANSLATIONS } from '../../data/translations';
-import { useAtelierStore } from '../../store/useAtelierStore';
+import {
+  HeadDisplayMode,
+  useAtelierStore,
+} from '../../store/useAtelierStore';
 import {
   IconAnimeSparkle,
   IconAtelierBrand,
   IconExportJson,
+  IconFaceSculpt,
   IconFitVerify,
   IconGenderFemale,
   IconGenderMale,
@@ -21,6 +25,7 @@ export const GlassHeader: React.FC = () => {
   const activePresetId = useAtelierStore((s) => s.activePresetId);
   const measurements = useAtelierStore((s) => s.measurements);
   const appearance = useAtelierStore((s) => s.appearance);
+  const updateAppearance = useAtelierStore((s) => s.updateAppearance);
   const casPanelOpen = useAtelierStore((s) => s.casPanelOpen);
   const garmentInputsCm = useAtelierStore((s) => s.garmentInputsCm);
   const isFlatMode = useAtelierStore((s) => s.isFlatMode);
@@ -28,6 +33,8 @@ export const GlassHeader: React.FC = () => {
   const language = useAtelierStore((s) => s.language);
   const fitPanelOpen = useAtelierStore((s) => s.fitPanelOpen);
   const customizerOpen = useAtelierStore((s) => s.customizerOpen);
+  const canvasBgColor = useAtelierStore((s) => s.glassSettings.canvasBgColor);
+  const updateGlassSettings = useAtelierStore((s) => s.updateGlassSettings);
 
   const setGender = useAtelierStore((s) => s.setGender);
   const selectPreset = useAtelierStore((s) => s.selectPreset);
@@ -44,7 +51,7 @@ export const GlassHeader: React.FC = () => {
   const handleExportJson = () => {
     const payload = {
       app: 'AtelierForm 3D',
-      version: '2.0.0',
+      version: '2.1.0',
       exportedAt: new Date().toISOString(),
       gender,
       preset: activePresetId,
@@ -88,12 +95,23 @@ export const GlassHeader: React.FC = () => {
     e.target.value = '';
   };
 
+  const cycleHeadMode = () => {
+    const order: HeadDisplayMode[] = [
+      'baldMannequin',
+      'headless',
+      'animeFull',
+    ];
+    const nextIdx =
+      (order.indexOf(appearance.headDisplayMode) + 1) % order.length;
+    updateAppearance({ headDisplayMode: order[nextIdx] });
+  };
+
   const activeGarmentCount = Object.keys(garmentInputsCm).length;
 
   return (
     <header
       id="atelier-glass-header"
-      className="fixed top-3 left-3 right-3 z-30 liquid-glass rounded-2xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2.5"
+      className="fixed top-3 left-3 right-3 z-30 liquid-glass rounded-2xl px-3.5 py-2 flex flex-wrap items-center justify-between gap-2"
     >
       {/* Brand Title & Subtitle */}
       <div className="flex items-center gap-2.5">
@@ -110,13 +128,13 @@ export const GlassHeader: React.FC = () => {
           <h1 className="text-sm font-semibold tracking-tight leading-tight">
             {t.appTitle}
           </h1>
-          <p className="text-[11px] opacity-70 hidden sm:block leading-tight">
+          <p className="text-[11px] opacity-70 hidden xl:block leading-tight">
             {t.appSubtitle}
           </p>
         </div>
       </div>
 
-      {/* Center Controls: Gender Switcher & Preset Selector */}
+      {/* Center Controls: Gender Switcher, Preset Selector, Head Mode & Background Color */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Gender Segmented Switcher */}
         <div
@@ -191,6 +209,40 @@ export const GlassHeader: React.FC = () => {
             <IconReset size={15} />
           </button>
         </div>
+
+        {/* Head Display Mode Switcher (Bald Mannequin / Headless Neck Cut / Full Anime with Hair) */}
+        <button
+          id="cycle-head-mode-btn"
+          type="button"
+          onClick={cycleHeadMode}
+          title={t.header.headModeTooltip}
+          className="liquid-glass-pill px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 text-xs font-medium"
+        >
+          <IconFaceSculpt size={15} />
+          <span className="hidden md:inline">
+            {t.cas.headModes[appearance.headDisplayMode]}
+          </span>
+        </button>
+
+        {/* Direct Custom Background Color Picker in Top Bar */}
+        <label
+          title={t.header.bgColorTooltip}
+          className="liquid-glass-pill px-2 py-1 rounded-xl flex items-center gap-1.5 cursor-pointer text-xs"
+        >
+          <input
+            id="header-bg-color-picker"
+            type="color"
+            aria-label={t.header.bgColorTooltip}
+            value={canvasBgColor}
+            onChange={(e) =>
+              updateGlassSettings({ canvasBgColor: e.target.value })
+            }
+            className="w-5 h-5 rounded-md cursor-pointer border border-white/25 bg-transparent"
+          />
+          <span className="font-mono text-[11px] uppercase hidden lg:inline opacity-80">
+            {canvasBgColor}
+          </span>
+        </label>
       </div>
 
       {/* Right Controls: Anime CAS Studio, Fit Check, Unit, Language, Import/Export, Customizer */}
@@ -242,7 +294,9 @@ export const GlassHeader: React.FC = () => {
             type="button"
             onClick={() => setUnit('cm')}
             className={`px-2 py-1 rounded-lg text-xs font-mono font-medium transition-all ${
-              unit === 'cm' ? 'liquid-glass-pill-active' : 'opacity-70 hover:opacity-100'
+              unit === 'cm'
+                ? 'liquid-glass-pill-active'
+                : 'opacity-70 hover:opacity-100'
             }`}
           >
             {t.units.cm}
@@ -252,7 +306,9 @@ export const GlassHeader: React.FC = () => {
             type="button"
             onClick={() => setUnit('in')}
             className={`px-2 py-1 rounded-lg text-xs font-mono font-medium transition-all ${
-              unit === 'in' ? 'liquid-glass-pill-active' : 'opacity-70 hover:opacity-100'
+              unit === 'in'
+                ? 'liquid-glass-pill-active'
+                : 'opacity-70 hover:opacity-100'
             }`}
           >
             {t.units.in}

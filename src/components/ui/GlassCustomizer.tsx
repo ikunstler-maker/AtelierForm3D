@@ -2,6 +2,7 @@ import React from 'react';
 import { TRANSLATIONS } from '../../data/translations';
 import {
   ACCENT_SWATCHES,
+  CANVAS_BG_SWATCHES,
   SurfaceFinish,
   useAtelierStore,
 } from '../../store/useAtelierStore';
@@ -21,12 +22,17 @@ export const GlassCustomizer: React.FC = () => {
   if (!customizerOpen) return null;
 
   const t = TRANSLATIONS[language];
-  const finishes: SurfaceFinish[] = ['clay', 'satin', 'translucent'];
+  const finishes: SurfaceFinish[] = [
+    'animeCel',
+    'clay',
+    'satin',
+    'translucent',
+  ];
 
   return (
     <div
       id="glass-customizer-popover"
-      className="fixed top-[68px] right-3 z-40 w-[320px] max-w-[calc(100vw-24px)] liquid-glass rounded-2xl p-4 space-y-4 shadow-2xl"
+      className="fixed top-[68px] right-3 z-40 w-[335px] max-w-[calc(100vw-24px)] max-h-[calc(100vh-140px)] overflow-y-auto glass-scroll liquid-glass rounded-2xl p-4 space-y-4 shadow-2xl"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
@@ -43,8 +49,100 @@ export const GlassCustomizer: React.FC = () => {
         </button>
       </div>
 
+      {/* Custom Canvas Background Color Picker + Curated Studio Swatches */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-medium opacity-80">
+            {t.customizer.canvasBackground}
+          </span>
+          <span className="font-mono text-[11px] uppercase opacity-75">
+            {glassSettings.canvasBgColor}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {CANVAS_BG_SWATCHES.map((sw) => {
+            const isSelected =
+              glassSettings.canvasBgColor.toLowerCase() ===
+              sw.hex.toLowerCase();
+            return (
+              <button
+                key={sw.id}
+                type="button"
+                title={sw.label}
+                onClick={() =>
+                  updateGlassSettings({ canvasBgColor: sw.hex })
+                }
+                className={`w-8 h-8 rounded-xl border border-white/25 transition-transform ${
+                  isSelected
+                    ? 'scale-110 ring-2 ring-white shadow-lg'
+                    : 'opacity-85 hover:opacity-100 hover:scale-105'
+                }`}
+                style={{ backgroundColor: sw.hex }}
+              />
+            );
+          })}
+          <input
+            id="customizer-bg-color-input"
+            type="color"
+            aria-label={t.customizer.canvasBackground}
+            value={glassSettings.canvasBgColor}
+            onChange={(e) =>
+              updateGlassSettings({ canvasBgColor: e.target.value })
+            }
+            className="w-9 h-8 rounded-xl cursor-pointer bg-transparent border border-white/25"
+          />
+        </div>
+
+        {/* Toggle Studio Floor Pedestal & Grid */}
+        <label className="flex items-center justify-between p-2 rounded-xl liquid-glass-pill cursor-pointer mt-1">
+          <span className="text-xs font-medium">
+            {t.customizer.showStudioFloor}
+          </span>
+          <input
+            type="checkbox"
+            checked={glassSettings.showStudioFloor}
+            onChange={(e) =>
+              updateGlassSettings({ showStudioFloor: e.target.checked })
+            }
+            className="rounded accent-sky-400 w-4 h-4 cursor-pointer"
+          />
+        </label>
+      </div>
+
+      {/* Mannequin Surface Finish (Anime Cel-Shading Reference, Matte Clay, Satin Resin, Translucent Shell) */}
+      <div className="space-y-1.5 pt-2 border-t border-white/10">
+        <div className="text-[11px] font-medium opacity-80">
+          {t.customizer.surfaceFinish}
+        </div>
+        <div className="space-y-1.5">
+          {finishes.map((finish) => {
+            const isSelected = glassSettings.surfaceFinish === finish;
+            return (
+              <button
+                key={finish}
+                id={`surface-finish-${finish}-btn`}
+                type="button"
+                onClick={() => updateGlassSettings({ surfaceFinish: finish })}
+                className={`w-full text-left px-3 py-2 rounded-xl transition-all ${
+                  isSelected
+                    ? 'liquid-glass-pill-active'
+                    : 'liquid-glass-pill opacity-85 hover:opacity-100'
+                }`}
+              >
+                <div className="text-xs font-semibold">
+                  {t.customizer.finishes[finish]}
+                </div>
+                <div className="text-[10px] opacity-70 leading-tight mt-0.5">
+                  {t.customizer.finishDescriptions[finish]}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Theme Mode: Dark Liquid Glass vs Light Liquid Glass */}
-      <div className="space-y-1.5">
+      <div className="space-y-1.5 pt-2 border-t border-white/10">
         <div className="text-[11px] font-medium opacity-75">
           {t.customizer.themeMode}
         </div>
@@ -163,38 +261,6 @@ export const GlassCustomizer: React.FC = () => {
           }
           className="glass-slider"
         />
-      </div>
-
-      {/* Mannequin Surface Finish (Matte Clay, Satin Resin, Translucent Shell) */}
-      <div className="space-y-1.5 pt-1 border-t border-white/10">
-        <div className="text-[11px] font-medium opacity-75">
-          {t.customizer.surfaceFinish}
-        </div>
-        <div className="space-y-1.5">
-          {finishes.map((finish) => {
-            const isSelected = glassSettings.surfaceFinish === finish;
-            return (
-              <button
-                key={finish}
-                id={`surface-finish-${finish}-btn`}
-                type="button"
-                onClick={() => updateGlassSettings({ surfaceFinish: finish })}
-                className={`w-full text-left px-3 py-2 rounded-xl transition-all ${
-                  isSelected
-                    ? 'liquid-glass-pill-active'
-                    : 'liquid-glass-pill opacity-85 hover:opacity-100'
-                }`}
-              >
-                <div className="text-xs font-semibold">
-                  {t.customizer.finishes[finish]}
-                </div>
-                <div className="text-[10px] opacity-70 leading-tight mt-0.5">
-                  {t.customizer.finishDescriptions[finish]}
-                </div>
-              </button>
-            );
-          })}
-        </div>
       </div>
     </div>
   );

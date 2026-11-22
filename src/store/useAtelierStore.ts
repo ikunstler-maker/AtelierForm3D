@@ -18,8 +18,9 @@ import {
 } from '../utils/fitCalculator';
 
 export type DisplayMode = 'all' | 'category' | 'active';
-export type SurfaceFinish = 'clay' | 'satin' | 'translucent';
+export type SurfaceFinish = 'animeCel' | 'clay' | 'satin' | 'translucent';
 export type ThemeMode = 'dark' | 'light';
+export type HeadDisplayMode = 'baldMannequin' | 'headless' | 'animeFull';
 
 export type AnimeHairstyleId =
   | 'twintails'
@@ -40,6 +41,9 @@ export type AnimeExpressionId =
 
 export interface CharacterAppearance {
   animeStyleEnabled: boolean;
+  headDisplayMode: HeadDisplayMode;
+  outlineThickness: number;    // 0.0 to 2.0
+  shadowContrast: number;      // 0.3 to 1.5
   // Skin
   skinToneHex: string;
   blushIntensity: number;      // 0.0 to 1.0
@@ -76,13 +80,22 @@ export interface CharacterAppearance {
 }
 
 export const SKIN_TONE_SWATCHES = [
+  { id: 'aconWhite', label: 'ACON Cel White', hex: '#f4f5f7' },
   { id: 'porcelain', label: 'Porcelain Ivory', hex: '#fde7dd' },
   { id: 'peach', label: 'Sakura Peach', hex: '#f9d4c2' },
   { id: 'warmBeige', label: 'Warm Honey', hex: '#ecc0a5' },
   { id: 'goldenTan', label: 'Sunlit Tan', hex: '#d39c7b' },
   { id: 'caramel', label: 'Amber Caramel', hex: '#ae7656' },
   { id: 'espresso', label: 'Deep Umber', hex: '#764b36' },
-  { id: 'studioSatin', label: 'Atelier Pearl', hex: '#cfd8e8' },
+];
+
+export const CANVAS_BG_SWATCHES = [
+  { id: 'aconGray', label: 'Reference Gray', hex: '#9e9e9e' },
+  { id: 'slateStudio', label: 'Cool Slate', hex: '#64748b' },
+  { id: 'darkObsidian', label: 'Dark Studio', hex: '#141824' },
+  { id: 'softPaper', label: 'Warm Paper', hex: '#dcd6cd' },
+  { id: 'pastelSky', label: 'Pastel Sky', hex: '#8faec7' },
+  { id: 'sakuraMist', label: 'Sakura Mist', hex: '#b89aa8' },
 ];
 
 export const HAIR_COLOR_SWATCHES = [
@@ -107,8 +120,11 @@ export const EYE_COLOR_SWATCHES = [
 
 export const DEFAULT_FEMALE_APPEARANCE: CharacterAppearance = {
   animeStyleEnabled: true,
-  skinToneHex: '#fde7dd',
-  blushIntensity: 0.55,
+  headDisplayMode: 'baldMannequin',
+  outlineThickness: 1.0,
+  shadowContrast: 1.0,
+  skinToneHex: '#f4f5f7',
+  blushIntensity: 0.35,
   blushColorHex: '#fb7185',
   hairstyle: 'twintails',
   hairColorHex: '#f472b6',
@@ -126,13 +142,13 @@ export const DEFAULT_FEMALE_APPEARANCE: CharacterAppearance = {
   eyelashThickness: 1.15,
   browHeight: 0.0,
   browAngle: 3,
-  faceRoundness: 0.96,
-  chinSharpness: 1.22,
-  noseSize: 0.82,
+  faceRoundness: 0.94,
+  chinSharpness: 1.28,
+  noseSize: 0.78,
   noseHeight: 0.0,
-  mouthWidth: 0.88,
-  lipFullness: 0.95,
-  lipColorHex: '#f47285',
+  mouthWidth: 0.85,
+  lipFullness: 0.88,
+  lipColorHex: '#e5989b',
   earSize: 1.0,
   elfEars: false,
   expression: 'gentleSmile',
@@ -140,8 +156,11 @@ export const DEFAULT_FEMALE_APPEARANCE: CharacterAppearance = {
 
 export const DEFAULT_MALE_APPEARANCE: CharacterAppearance = {
   animeStyleEnabled: true,
-  skinToneHex: '#f9d4c2',
-  blushIntensity: 0.2,
+  headDisplayMode: 'baldMannequin',
+  outlineThickness: 1.0,
+  shadowContrast: 1.0,
+  skinToneHex: '#f4f5f7',
+  blushIntensity: 0.15,
   blushColorHex: '#fb7185',
   hairstyle: 'spikyShonen',
   hairColorHex: '#1e2230',
@@ -160,12 +179,12 @@ export const DEFAULT_MALE_APPEARANCE: CharacterAppearance = {
   browHeight: -0.05,
   browAngle: -5,
   faceRoundness: 0.9,
-  chinSharpness: 1.18,
-  noseSize: 0.95,
+  chinSharpness: 1.22,
+  noseSize: 0.9,
   noseHeight: 0.0,
-  mouthWidth: 0.95,
-  lipFullness: 0.85,
-  lipColorHex: '#e0827c',
+  mouthWidth: 0.92,
+  lipFullness: 0.82,
+  lipColorHex: '#d88c8a',
   earSize: 1.0,
   elfEars: false,
   expression: 'seriousCool',
@@ -193,6 +212,8 @@ export interface GlassSettings {
   blurPx: number;
   opacity: number;
   surfaceFinish: SurfaceFinish;
+  canvasBgColor: string;
+  showStudioFloor: boolean;
 }
 
 export interface AtelierState {
@@ -267,10 +288,10 @@ export const useAtelierStore = create<AtelierState>()(
       activePresetId: 'female-m',
       measurements: { ...DEFAULT_FEMALE_PRESET.measurements },
       appearance: { ...DEFAULT_FEMALE_APPEARANCE },
-      casPanelOpen: true,
+      casPanelOpen: false,
       unit: 'cm',
       language: 'ua',
-      displayMode: 'all',
+      displayMode: 'active',
       activeCategories: [...MEASUREMENT_CATEGORIES],
       hiddenMeasurements: {},
       selectedMeasurement: 'waist',
@@ -284,14 +305,16 @@ export const useAtelierStore = create<AtelierState>()(
       garmentInputsCm: {},
       cameraPreset: 'full',
       cameraTriggerCount: 0,
-      autoFocusSelected: true,
+      autoFocusSelected: false,
       glassSettings: {
         theme: 'dark',
         accentHex: ACCENT_SWATCHES[0].hex,
         accentRgb: ACCENT_SWATCHES[0].rgb,
         blurPx: 20,
-        opacity: 0.62,
-        surfaceFinish: 'satin',
+        opacity: 0.68,
+        surfaceFinish: 'animeCel',
+        canvasBgColor: '#9e9e9e',
+        showStudioFloor: false,
       },
 
       setGender: (gender) => {
@@ -305,7 +328,8 @@ export const useAtelierStore = create<AtelierState>()(
           measurements: { ...preset.measurements },
           appearance: {
             ...defaultApp,
-            animeStyleEnabled: state.appearance.animeStyleEnabled,
+            headDisplayMode: state.appearance.headDisplayMode,
+            skinToneHex: state.appearance.skinToneHex,
           },
           cameraPreset: 'full',
           cameraTriggerCount: state.cameraTriggerCount + 1,
@@ -412,12 +436,13 @@ export const useAtelierStore = create<AtelierState>()(
 
           const hair = randItem(HAIR_COLOR_SWATCHES);
           const eye = randItem(EYE_COLOR_SWATCHES);
-          const skin = randItem(SKIN_TONE_SWATCHES.slice(0, 5));
+          const skin = randItem(SKIN_TONE_SWATCHES.slice(0, 4));
 
           return {
             appearance: {
               ...state.appearance,
               animeStyleEnabled: true,
+              headDisplayMode: 'animeFull',
               skinToneHex: skin.hex,
               hairstyle: randItem(styles),
               hairColorHex: hair.hex,
@@ -616,7 +641,7 @@ export const useAtelierStore = create<AtelierState>()(
         }),
     }),
     {
-      name: 'atelier-form-3d-storage-v2',
+      name: 'atelier-form-3d-storage-v3',
       partialize: (state) => ({
         gender: state.gender,
         activePresetId: state.activePresetId,

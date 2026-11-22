@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { MannequinScene } from './components/canvas/MannequinScene';
+import { ActiveMeasurementHUD } from './components/ui/ActiveMeasurementHUD';
 import { CameraControlsHUD } from './components/ui/CameraControlsHUD';
 import { CharacterStudioPanel } from './components/ui/CharacterStudioPanel';
 import { FitCheckPanel } from './components/ui/FitCheckPanel';
@@ -27,6 +28,9 @@ export const App: React.FC = () => {
 
       {/* Top Floating Liquid Glass Bar */}
       <GlassHeader />
+
+      {/* Docked Top-Center Active Parameter Readout Pill (Off the 3D Body) */}
+      <ActiveMeasurementHUD />
 
       {/* Left Collapsible 50-Parameter Anthropometric Inspector */}
       <MeasurementsPanel />

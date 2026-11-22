@@ -14,26 +14,26 @@ export interface SuperEllipseRadii {
 
 export interface AnatomicalDetailProfile {
   gender: Gender;
-  yNormTorso: number;      // 0 at crotch -> 1 at cervicale
-  yNormHead: number;       // 0 at cervicale -> 1 at crown
-  bustMask: number;        // 0..1 vertical Gaussian at chest level
-  bustProjectionM: number; // Anterior breast / pectoral projection in meters
-  underbustIndent: number; // Inframammary fold definition
-  ribcageMask: number;     // Thoracic cage contour
-  navelMask: number;       // Umbilicus depression just below waist
-  abdomenLineaAlba: number;// Central vertical linea alba groove
-  iliacObliqueMask: number;// External oblique / iliac crest flare
-  gluteMask: number;       // 0..1 vertical window over gluteus maximus
-  gluteProjectionM: number;// Posterior gluteal hemisphere projection in meters
-  glutealFoldMask: number; // Crisp infragluteal crease at bottom of buttocks
-  scapulaMask: number;     // Bilateral shoulder-blade projection on upper back
-  spineGrooveM: number;    // Erector spinae / spinal furrow depth
-  clavicleMask: number;    // Collarbone anterior ridge near yCervicale/yShoulder
-  trapeziusMask: number;   // Neck-to-shoulder trapezius transition
-  crotchSaddleMask: number;// Perineal bifurcation & inguinal crease at pelvis base
-  jawMask: number;         // Mandible / chin projection on head
-  noseBrowMask: number;    // Facial profile projection
-  occiputMask: number;     // Back of skull (occipital bone) curve
+  yNormTorso: number;
+  yNormHead: number;
+  bustMask: number;
+  bustProjectionM: number;
+  underbustIndent: number;
+  ribcageMask: number;
+  navelMask: number;
+  abdomenLineaAlba: number;
+  iliacObliqueMask: number;
+  gluteMask: number;
+  gluteProjectionM: number;
+  glutealFoldMask: number;
+  scapulaMask: number;
+  spineGrooveM: number;
+  clavicleMask: number;
+  trapeziusMask: number;
+  crotchSaddleMask: number;
+  jawMask: number;
+  noseBrowMask: number;
+  occiputMask: number;
 }
 
 export interface AnatomicalLandmarks {
@@ -55,18 +55,17 @@ export interface AnatomicalLandmarks {
   yShoulder: number;
   yCervicale: number;
   yNeckMid: number;
+  yNeckCut: number;
   yJaw: number;
   yHeadMax: number;
   yCrown: number;
 
-  // Key widths and offsets in meters
   shoulderHalfSpan: number;
   neckHalfWidth: number;
   hipStanceHalfX: number;
   kneeStanceHalfX: number;
   ankleStanceHalfX: number;
 
-  // Arm centerline joints (left side, +X; right side mirrors X -> -X)
   armRootL: THREE.Vector3;
   armShoulderL: THREE.Vector3;
   armpitL: THREE.Vector3;
@@ -79,7 +78,6 @@ export interface AnatomicalLandmarks {
   handKnuckleL: THREE.Vector3;
   handTipL: THREE.Vector3;
 
-  // Leg centerline joints (left side, +X; right side mirrors X -> -X)
   legPelvisRootL: THREE.Vector3;
   legTopL: THREE.Vector3;
   legThighL: THREE.Vector3;
@@ -194,9 +192,11 @@ export function createMonotoneHermiteInterpolator(
 
 /**
  * Evaluates a 3D surface point on an anatomical torso/neck/head cross-section at angle theta ∈ [0, 2π),
- * incorporating realistic breast/pectoral lobes, sternum cleavage, ribcage, linea alba, navel,
- * iliac obliques, bilateral gluteal hemispheres, infragluteal fold, erector spinae furrow,
- * scapulae, clavicles, and craniofacial jaw/brow/occiput structure.
+ * sculpted to match the ACON / Clip Studio Anime Body Reference (`w1536-wm.webp`):
+ * - Crisp teardrop breast mounds with defined under-bust crease and sternum cleavage
+ * - Slender hourglass ribcage & waist with subtle linea alba, navel, and inguinal V-taper
+ * - Deep spinal furrow flanked by erector spinae & defined scapular planes
+ * - Lifted bilateral gluteal hemispheres with crisp infragluteal fold
  */
 export function sampleCrossSectionPoint(
   radii: SuperEllipseRadii,
@@ -224,130 +224,126 @@ export function sampleCrossSectionPoint(
 
     // 1. ANTERIOR BREAST / PECTORAL ANATOMY (sinT > 0)
     if (detail.bustMask > 0.001 && sinT > 0) {
-      // Bilateral breast / pectoral centers at ~26 deg from center-front (|cosT| ≈ 0.44, sinT ≈ 0.90)
-      const lateralDistance = Math.abs(absCos - (isFemale ? 0.43 : 0.48));
-      const lobeGaussian = Math.exp(-Math.pow(lateralDistance / (isFemale ? 0.25 : 0.31), 2));
-      const frontEnvelope = Math.pow(sinT, 1.25);
+      // Distinct left/right breast hemispheres centered at |cosT| ≈ 0.44
+      const lobeCenter = isFemale ? 0.44 : 0.48;
+      const lobeSigma = isFemale ? 0.23 : 0.3;
+      const lobeGaussian = Math.exp(-Math.pow((absCos - lobeCenter) / lobeSigma, 2));
+      const frontEnvelope = Math.pow(sinT, 1.2);
 
-      // Central sternum cleavage valley at cosT = 0, sinT = 1
-      const sternumValley = Math.exp(-Math.pow(absCos / (isFemale ? 0.14 : 0.12), 2)) * Math.pow(sinT, 3);
+      // Crisp sternum cleavage valley at center-front (cosT = 0)
+      const sternumValley =
+        Math.exp(-Math.pow(absCos / (isFemale ? 0.15 : 0.12), 2)) *
+        Math.pow(sinT, 2.6);
 
       const dzBust =
         detail.bustMask *
         detail.bustProjectionM *
         frontEnvelope *
-        (1.12 * lobeGaussian + (isFemale ? 0.16 : 0.25) - (isFemale ? 0.38 : 0.24) * sternumValley);
+        (1.22 * lobeGaussian +
+          (isFemale ? 0.08 : 0.22) -
+          (isFemale ? 0.52 : 0.26) * sternumValley);
 
       z += dzBust;
 
-      // Subtle lateral fullness of breast/pec
+      // Natural outward lateral breast curve (gives the 3/4 view breast silhouette seen in reference)
       if (isFemale) {
-        x *= 1 + detail.bustMask * 0.035 * lobeGaussian * frontEnvelope;
+        x +=
+          Math.sign(cosT) *
+          detail.bustMask *
+          detail.bustProjectionM *
+          0.32 *
+          lobeGaussian *
+          frontEnvelope;
       }
     }
 
-    // 2. INFRAMAMMARY FOLD & ANTERIOR RIBCAGE TAPER
-    if (detail.underbustIndent > 0.001 && sinT > 0.2) {
-      const underLobe = Math.exp(-Math.pow((absCos - 0.42) / 0.28, 2));
-      z -= detail.underbustIndent * Math.pow(sinT, 1.6) * (0.5 + 0.5 * underLobe);
+    // 2. INFRAMAMMARY FOLD (crisp crease under breasts so cel-shader casts crescent shadow)
+    if (detail.underbustIndent > 0.001 && sinT > 0.15) {
+      const underLobe = Math.exp(-Math.pow((absCos - 0.44) / 0.25, 2));
+      z -=
+        detail.underbustIndent *
+        Math.pow(sinT, 1.5) *
+        (0.35 + 0.85 * underLobe);
     }
 
-    // 3. LINEA ALBA & RECTUS ABDOMINIS / NAVEL (UMBILICUS)
-    if (detail.abdomenLineaAlba > 0.001 && sinT > 0.5) {
-      // Subtle vertical central linea alba groove & lateral rectus border (six-pack / toned linea semilunaris)
-      const centerGroove = Math.exp(-Math.pow(absCos / 0.08, 2));
-      const semilunarisGroove = Math.exp(-Math.pow((absCos - 0.36) / 0.07, 2));
-      z -= detail.abdomenLineaAlba * Math.pow(sinT, 3) * (centerGroove + 0.45 * semilunarisGroove);
+    // 3. RIBCAGE ARCH, LINEA ALBA & NAVEL (UMBILICUS)
+    if (detail.abdomenLineaAlba > 0.001 && sinT > 0.45) {
+      const centerGroove = Math.exp(-Math.pow(absCos / 0.075, 2));
+      const semilunarisGroove = Math.exp(-Math.pow((absCos - 0.38) / 0.08, 2));
+      z -=
+        detail.abdomenLineaAlba *
+        Math.pow(sinT, 2.8) *
+        (centerGroove + 0.5 * semilunarisGroove);
     }
-    if (detail.navelMask > 0.001 && sinT > 0.85) {
+    if (detail.navelMask > 0.001 && sinT > 0.82) {
       const navelSpot = Math.exp(-Math.pow(absCos / 0.055, 2));
-      z -= detail.navelMask * 0.0065 * navelSpot;
+      z -= detail.navelMask * 0.0085 * navelSpot;
     }
 
-    // 4. ILIAC CREST & EXTERNAL OBLIQUE FLARE
+    // 4. ILIAC CREST & PELVIC V-TAPER
     if (detail.iliacObliqueMask > 0.001) {
       const obliqueZone = Math.exp(-Math.pow((absCos - 0.86) / 0.18, 2));
-      x += Math.sign(cosT) * detail.iliacObliqueMask * 0.0055 * obliqueZone;
+      x += Math.sign(cosT) * detail.iliacObliqueMask * 0.005 * obliqueZone;
     }
 
     // 5. POSTERIOR GLUTEAL HEMISPHERES & INTERGLUTEAL CLEFT (sinT < 0)
     if (detail.gluteMask > 0.001 && sinT < 0) {
       const backSin = -sinT;
-      // Bilateral gluteus maximus lobes centered at |cosT| ≈ 0.42
-      const gluteLobe = Math.exp(-Math.pow((absCos - 0.41) / 0.29, 2));
-      // Deep intergluteal natal cleft along center-back (cosT = 0, sinT = -1)
-      const natalCleft = Math.exp(-Math.pow(absCos / 0.11, 2)) * Math.pow(backSin, 3.5);
+      const gluteLobe = Math.exp(-Math.pow((absCos - 0.41) / 0.27, 2));
+      const natalCleft =
+        Math.exp(-Math.pow(absCos / 0.105, 2)) * Math.pow(backSin, 3.2);
 
       const dzGlute =
         detail.gluteMask *
         detail.gluteProjectionM *
-        Math.pow(backSin, 1.15) *
-        (1.08 * gluteLobe + 0.22 - 0.65 * natalCleft);
+        Math.pow(backSin, 1.12) *
+        (1.16 * gluteLobe + 0.18 - 0.78 * natalCleft);
 
       z -= dzGlute;
-
-      // Hip/trochanter lateral rounding
-      const trochanterMask = Math.exp(-Math.pow((absCos - 0.92) / 0.16, 2));
-      x += Math.sign(cosT) * detail.gluteMask * 0.004 * trochanterMask;
     }
 
     // 6. INFRAGLUTEAL FOLD (creased indentation directly below glutes)
-    if (detail.glutealFoldMask > 0.001 && sinT < -0.25) {
-      const foldLobe = Math.exp(-Math.pow((absCos - 0.42) / 0.3, 2));
-      z += detail.glutealFoldMask * 0.009 * Math.pow(-sinT, 1.5) * foldLobe;
+    if (detail.glutealFoldMask > 0.001 && sinT < -0.22) {
+      const foldLobe = Math.exp(-Math.pow((absCos - 0.41) / 0.28, 2));
+      z += detail.glutealFoldMask * 0.0125 * Math.pow(-sinT, 1.45) * foldLobe;
     }
 
     // 7. SPINAL FURROW (ERECTOR SPINAE) & SCAPULAE (UPPER BACK)
-    if (detail.spineGrooveM > 0.0002 && sinT < -0.4) {
+    if (detail.spineGrooveM > 0.0002 && sinT < -0.35) {
       const backSin = -sinT;
-      // Central vertebral groove
-      const spineFurrow = Math.exp(-Math.pow(absCos / 0.095, 2)) * Math.pow(backSin, 3.5);
-      // Flanking erector spinae muscle ridges at |cosT| ≈ 0.22
-      const erectorRidge = Math.exp(-Math.pow((absCos - 0.22) / 0.11, 2)) * Math.pow(backSin, 2.2);
-      z += detail.spineGrooveM * (spineFurrow - 0.38 * erectorRidge);
+      const spineFurrow =
+        Math.exp(-Math.pow(absCos / 0.09, 2)) * Math.pow(backSin, 3.2);
+      const erectorRidge =
+        Math.exp(-Math.pow((absCos - 0.23) / 0.11, 2)) * Math.pow(backSin, 2.0);
+      z += detail.spineGrooveM * (1.25 * spineFurrow - 0.45 * erectorRidge);
     }
 
     if (detail.scapulaMask > 0.001 && sinT < -0.15) {
       const backSin = -sinT;
-      const scapulaLobe = Math.exp(-Math.pow((absCos - 0.46) / 0.26, 2));
-      z -= detail.scapulaMask * 0.011 * Math.pow(backSin, 1.4) * scapulaLobe;
+      const scapulaLobe = Math.exp(-Math.pow((absCos - 0.46) / 0.24, 2));
+      z -= detail.scapulaMask * 0.0135 * Math.pow(backSin, 1.4) * scapulaLobe;
     }
 
-    // 8. CLAVICLE (COLLARBONE) & STERNOCLAVICULAR NOTCH
-    if (detail.clavicleMask > 0.001 && sinT > 0.25) {
-      const clavicleBar = Math.exp(-Math.pow((absCos - 0.52) / 0.32, 2));
-      const jugularNotch = Math.exp(-Math.pow(absCos / 0.13, 2));
-      z += detail.clavicleMask * 0.0055 * Math.pow(sinT, 1.6) * (clavicleBar - 0.7 * jugularNotch);
+    // 8. CLAVICLE (COLLARBONE) & SUPRASTERNAL NOTCH
+    if (detail.clavicleMask > 0.001 && sinT > 0.22) {
+      const clavicleBar = Math.exp(-Math.pow((absCos - 0.5) / 0.3, 2));
+      const jugularNotch = Math.exp(-Math.pow(absCos / 0.12, 2));
+      z +=
+        detail.clavicleMask *
+        0.0075 *
+        Math.pow(sinT, 1.5) *
+        (clavicleBar - 0.85 * jugularNotch);
     }
 
-    // 9. PELVIC SADDLE & INGUINAL ARCH (at bottom of pelvis near yCrotch)
+    // 9. PELVIC SADDLE & INGUINAL V-ARCH (at bottom of pelvis near yCrotch)
     if (detail.crotchSaddleMask > 0.001 && radialOffsetM === 0) {
-      // In human anatomy, the lateral hip arch rises along the inguinal fold while the center forms the pubic/perineal saddle
-      const lateralArch = Math.pow(absCos, 1.6);
-      yOffset += detail.crotchSaddleMask * 0.032 * lateralArch;
-      // Central perineal narrowing
-      const centerPinch = Math.exp(-Math.pow(absCos / 0.22, 2)) * Math.pow(absSin, 1.5);
-      z *= 1 - detail.crotchSaddleMask * 0.28 * centerPinch;
-    }
-
-    // 10. CRANIOFACIAL ANATOMY (Jawline/Chin, Cheekbones/Nose/Brow, Occiput)
-    if (detail.jawMask > 0.001) {
-      if (sinT > 0) {
-        // Forward chin/mandible projection & tapered jawline
-        const chinCenter = Math.exp(-Math.pow(absCos / 0.35, 2));
-        z += detail.jawMask * 0.022 * Math.pow(sinT, 1.5) * (0.55 + 0.45 * chinCenter);
-        x *= 1 - detail.jawMask * 0.12 * Math.pow(sinT, 2);
-      }
-    }
-    if (detail.noseBrowMask > 0.001 && sinT > 0.3) {
-      // Subtle nose bridge and zygomatic cheekbone structure
-      const noseRidge = Math.exp(-Math.pow(absCos / 0.11, 2)) * Math.pow(sinT, 4);
-      const cheekbone = Math.exp(-Math.pow((absCos - 0.58) / 0.2, 2)) * Math.pow(sinT, 1.6);
-      z += detail.noseBrowMask * (0.011 * noseRidge + 0.0045 * cheekbone);
-    }
-    if (detail.occiputMask > 0.001 && sinT < -0.2) {
-      // Rounded posterior cranium (occipital bone) above the nape of the neck
-      z -= detail.occiputMask * 0.016 * Math.pow(-sinT, 1.4);
+      const lateralArch = Math.pow(absCos, 1.45);
+      yOffset += detail.crotchSaddleMask * 0.044 * lateralArch;
+      // Narrow the pubic/perineal wedge cleanly between the thighs
+      x *= 1 - detail.crotchSaddleMask * 0.48 * Math.pow(absSin, 1.3);
+      const centerPinch =
+        Math.exp(-Math.pow(absCos / 0.24, 2)) * Math.pow(absSin, 1.4);
+      z *= 1 - detail.crotchSaddleMask * 0.32 * centerPinch;
     }
   }
 
@@ -365,16 +361,14 @@ export function computeAnatomicalLandmarks(
   const yFloor = 0;
   const yCrown = m.totalHeight * CM_TO_M;
 
-  // Couple leg heights with inseamLength, outseamFromWaist, waistToKneeLength, and rises
-  const avgRiseVertM = ((m.frontRise * 0.86 + m.backRise * 0.72) * 0.5) * CM_TO_M;
+  const avgRiseVertM =
+    ((m.frontRise * 0.86 + m.backRise * 0.72) * 0.5) * CM_TO_M;
   const yAnkle = Math.max(0.062, Math.min(0.105, m.totalHeight * 0.044 * CM_TO_M));
 
-  // Crotch height responds to both crotchHeight and inseamLength
   const yCrotchRaw =
     (m.crotchHeight * 0.45 + (m.inseamLength + yAnkle * 100) * 0.55) * CM_TO_M;
   const yCrotch = Math.max(0.55, Math.min(yCrown * 0.535, yCrotchRaw));
 
-  // Waist height responds to waistHeight, outseamFromWaist, and rise
   const yWaistFromOutseam = yAnkle + m.outseamFromWaist * CM_TO_M * 0.96;
   const yWaistFromRise = yCrotch + avgRiseVertM;
   const yWaistRaw =
@@ -383,7 +377,6 @@ export function computeAnatomicalLandmarks(
     yWaistFromRise * 0.25;
   const yWaist = Math.max(yCrotch + 0.165, Math.min(yCrown * 0.71, yWaistRaw));
 
-  // High hip and full hip heights between crotch and waist
   const yHighHipFromOutseam = yAnkle + m.outseamFromHighHip * CM_TO_M * 0.96;
   const yHighHip = Math.max(
     yCrotch + 0.095,
@@ -397,7 +390,6 @@ export function computeAnatomicalLandmarks(
     Math.min(yHighHip - 0.035, m.hipHeight * CM_TO_M)
   );
 
-  // Knee height responds to both kneeHeight and waistToKneeLength
   const yKneeFromWaist = yWaist - m.waistToKneeLength * CM_TO_M * 0.97;
   const yKnee = Math.max(
     yAnkle + 0.22,
@@ -408,7 +400,6 @@ export function computeAnatomicalLandmarks(
   const yMidThigh = (yThigh + yKnee) * 0.5;
   const yCalf = yAnkle + (yKnee - yAnkle) * 0.65;
 
-  // Upper torso vertical heights coupled with backWaistLength, frontWaistLength, sideTorsoLength
   const torsoVertFromBack = m.backWaistLength * CM_TO_M * 0.93;
   const torsoVertFromFront = m.frontWaistLength * CM_TO_M * 0.89;
   const torsoVertFromLoop = m.torsoLoop * CM_TO_M * 0.46 - (yWaist - yCrotch);
@@ -431,7 +422,6 @@ export function computeAnatomicalLandmarks(
   );
   const yShoulder = yCervicale - shoulderDropFromC7;
 
-  // Armpit height driven by sideTorsoLength
   const yArmpit = Math.max(
     yWaist + 0.13,
     Math.min(yShoulder - 0.055, yWaist + m.sideTorsoLength * CM_TO_M * 0.96)
@@ -459,14 +449,14 @@ export function computeAnatomicalLandmarks(
     Math.max(yChest + 0.048, yArmpit + 0.014)
   );
 
-  // Head and neck heights
   const headSpan = Math.max(0.19, yCrown - yCervicale);
-  const yNeckMid = yCervicale + headSpan * 0.19;
+  const yNeckMid = yCervicale + headSpan * 0.18;
+  // Clean collar cut plane for Headless reference mode
+  const yNeckCut = yCervicale + headSpan * 0.24;
   const yJaw = yCervicale + headSpan * 0.35;
   const yHeadMax = yCervicale + headSpan * 0.69;
 
-  // Shoulder & neck widths
-  const neckRadii = circumferenceToEllipseAxes(m.neck * CM_TO_M, 1.06);
+  const neckRadii = circumferenceToEllipseAxes(m.neck * CM_TO_M, 1.04);
   const neckHalfWidth = neckRadii.a;
   const shoulderHalfFromWidth = m.shoulderWidth * CM_TO_M * 0.49;
   const shoulderHalfFromSeam =
@@ -474,24 +464,22 @@ export function computeAnatomicalLandmarks(
   const shoulderHalfSpan =
     shoulderHalfFromWidth * 0.62 + shoulderHalfFromSeam * 0.38;
 
-  // Hip, knee & ankle natural anatomical stance X
+  // Hip, knee & ankle anime stance X (with subtle natural thigh gap like w1536-wm.webp)
   const hipRadii = circumferenceToEllipseAxes(
     m.hip * CM_TO_M,
-    isFemale ? 1.38 : 1.31
+    isFemale ? 1.42 : 1.32
   );
-  const thighRadii = circumferenceToEllipseAxes(m.thigh * CM_TO_M, 0.95);
-  // Position femur axes so inner thighs lightly touch/clear at crotch without overlapping
+  const thighRadii = circumferenceToEllipseAxes(m.thigh * CM_TO_M, 0.93);
   const hipStanceHalfX = Math.max(
-    thighRadii.a * 0.96,
-    hipRadii.a * (isFemale ? 0.51 : 0.53)
+    thighRadii.a * (isFemale ? 1.05 : 1.01),
+    hipRadii.a * (isFemale ? 0.54 : 0.54)
   );
-  const kneeStanceHalfX = hipStanceHalfX * 0.97;
-  const ankleStanceHalfX = hipStanceHalfX * 0.95;
+  const kneeStanceHalfX = hipStanceHalfX * (isFemale ? 0.84 : 0.92);
+  const ankleStanceHalfX = hipStanceHalfX * (isFemale ? 0.76 : 0.88);
 
-  // Natural anatomical arm posture (relaxed ~16 deg abduction, physiological carrying angle & slight elbow flexion)
-  const armAbductionRad = THREE.MathUtils.degToRad(isFemale ? 15.5 : 17.5);
-  const elbowFlexForwardRad = THREE.MathUtils.degToRad(9.5);
-  const carryingAngleRad = THREE.MathUtils.degToRad(isFemale ? 19.5 : 19.0);
+  const armAbductionRad = THREE.MathUtils.degToRad(isFemale ? 16.0 : 17.5);
+  const elbowFlexForwardRad = THREE.MathUtils.degToRad(10.5);
+  const carryingAngleRad = THREE.MathUtils.degToRad(isFemale ? 20.0 : 19.0);
 
   const upperArmLenM = Math.max(
     0.22,
@@ -508,8 +496,7 @@ export function computeAnatomicalLandmarks(
   );
   const forearmLenM = Math.max(0.18, totalSleeveM - upperArmLenM);
 
-  const armShoulderL = new THREE.Vector3(shoulderHalfSpan * 0.95, yShoulder, -0.012);
-  // Root tucked slightly inside lateral shoulder/clavicle so deltoid merges seamlessly into torso
+  const armShoulderL = new THREE.Vector3(shoulderHalfSpan * 0.94, yShoulder, -0.012);
   const armRootL = new THREE.Vector3(
     shoulderHalfSpan * 0.72,
     yShoulder + 0.008,
@@ -555,24 +542,23 @@ export function computeAnatomicalLandmarks(
     .addScaledVector(handDir, handLenM * 0.54);
   const handTipL = armWristL.clone().addScaledVector(handDir, handLenM);
 
-  // Leg centerline joints (Left side +X) — originates inside lateral pelvis at yHip for seamless hip-to-thigh curve!
   const legPelvisRootL = new THREE.Vector3(
     hipStanceHalfX * 0.94,
-    yHip - 0.005,
+    yHip - 0.004,
     -0.006
   );
-  const legTopL = new THREE.Vector3(hipStanceHalfX, yCrotch + 0.005, -0.002);
+  const legTopL = new THREE.Vector3(hipStanceHalfX, yCrotch + 0.004, -0.002);
   const legThighL = new THREE.Vector3(
     THREE.MathUtils.lerp(hipStanceHalfX, kneeStanceHalfX, 0.16),
     yThigh,
-    0.005
+    0.004
   );
   const legMidThighL = new THREE.Vector3(
     THREE.MathUtils.lerp(hipStanceHalfX, kneeStanceHalfX, 0.52),
     yMidThigh,
-    0.007
+    0.006
   );
-  const legKneeL = new THREE.Vector3(kneeStanceHalfX, yKnee, 0.003);
+  const legKneeL = new THREE.Vector3(kneeStanceHalfX, yKnee, 0.002);
   const legCalfL = new THREE.Vector3(
     THREE.MathUtils.lerp(kneeStanceHalfX, ankleStanceHalfX, 0.38),
     yCalf,
@@ -604,6 +590,7 @@ export function computeAnatomicalLandmarks(
     yShoulder,
     yCervicale,
     yNeckMid,
+    yNeckCut,
     yJaw,
     yHeadMax,
     yCrown,
@@ -656,35 +643,33 @@ export function createTorsoEvaluator(
   const L = landmarks ?? computeAnatomicalLandmarks(m, gender);
   const isFemale = gender === 'female';
 
-  // Convert key circumferences into base ellipse axes
   const hipAxes = circumferenceToEllipseAxes(
     m.hip * CM_TO_M,
-    isFemale ? 1.4 : 1.32
+    isFemale ? 1.42 : 1.32
   );
   const highHipAxes = circumferenceToEllipseAxes(
     m.highHip * CM_TO_M,
-    isFemale ? 1.37 : 1.31
+    isFemale ? 1.39 : 1.31
   );
   const waistAxes = circumferenceToEllipseAxes(
     m.waist * CM_TO_M,
-    isFemale ? 1.33 : 1.29
+    isFemale ? 1.35 : 1.29
   );
   const underbustAxes = circumferenceToEllipseAxes(
     m.underbust * CM_TO_M,
-    isFemale ? 1.36 : 1.34
+    isFemale ? 1.38 : 1.34
   );
   const chestAxes = circumferenceToEllipseAxes(
     m.chest * CM_TO_M,
-    isFemale ? 1.32 : 1.39
+    isFemale ? 1.35 : 1.39
   );
   const upperChestAxes = circumferenceToEllipseAxes(
     m.upperChest * CM_TO_M,
-    isFemale ? 1.46 : 1.52
+    isFemale ? 1.48 : 1.52
   );
-  const neckAxes = circumferenceToEllipseAxes(m.neck * CM_TO_M, 1.04);
+  const neckAxes = circumferenceToEllipseAxes(m.neck * CM_TO_M, 1.03);
   const headAxes = circumferenceToEllipseAxes(m.head * CM_TO_M, 0.81);
 
-  // Factor in acrossFrontWidth, acrossBackWidth, frontRise, backRise
   const acrossRatio =
     ((m.acrossFrontWidth + m.acrossBackWidth) * CM_TO_M) /
     Math.max(0.5, upperChestAxes.a * 4);
@@ -699,145 +684,128 @@ export function createTorsoEvaluator(
   const gluteDepthBoost = Math.max(0, (riseRatio - 0.52) * 0.14);
   const frontRiseBoost = Math.max(0, (0.48 - riseRatio) * 0.1);
 
-  // Bust / pectoral prominence from difference between chest and underbust
   const bustDeltaM = Math.max(0, (m.chest - m.underbust) * CM_TO_M);
   const bustProjectionM = isFemale
-    ? Math.min(0.058, 0.02 + bustDeltaM * 0.19)
+    ? Math.min(0.062, 0.025 + bustDeltaM * 0.21)
     : Math.min(0.024, 0.008 + bustDeltaM * 0.08);
 
-  // Gluteal hemisphere prominence from hip-to-waist ratio & backRise
   const hipWaistDeltaM = Math.max(0, (m.hip - m.waist) * CM_TO_M);
   const gluteProjectionM = isFemale
-    ? Math.min(0.052, 0.022 + hipWaistDeltaM * 0.08 + gluteDepthBoost)
+    ? Math.min(0.056, 0.025 + hipWaistDeltaM * 0.085 + gluteDepthBoost)
     : Math.min(0.038, 0.016 + hipWaistDeltaM * 0.06 + gluteDepthBoost);
 
-  // Physiological spinal S-curve (centerZ) + multi-station cross-sections from pelvis to crown
   const yTrapeziusMid = (L.yShoulder + L.yCervicale) * 0.5;
   const yBrow = L.yJaw + (L.yHeadMax - L.yJaw) * 0.55;
 
   const stations = [
-    // 1. Perineal Crotch Saddle Base
     {
       y: L.yCrotch,
-      a: hipAxes.a * 0.84,
-      bF: hipAxes.b * 0.68 + frontRiseBoost,
-      bB: hipAxes.b * 0.76 + gluteDepthBoost * 0.6,
-      n: 2.15,
+      a: hipAxes.a * 0.78,
+      bF: hipAxes.b * 0.64 + frontRiseBoost,
+      bB: hipAxes.b * 0.72 + gluteDepthBoost * 0.6,
+      n: 2.1,
       cZ: -0.004,
     },
-    // 2. Full Hip & Gluteal Apex
     {
       y: L.yHip,
       a: hipAxes.a,
-      bF: hipAxes.b * (isFemale ? 0.89 : 0.93) + frontRiseBoost,
-      bB: hipAxes.b * (isFemale ? 1.05 : 1.02) + gluteDepthBoost,
-      n: 2.18,
-      cZ: -0.01,
+      bF: hipAxes.b * (isFemale ? 0.88 : 0.93) + frontRiseBoost,
+      bB: hipAxes.b * (isFemale ? 1.06 : 1.02) + gluteDepthBoost,
+      n: 2.15,
+      cZ: -0.011,
     },
-    // 3. High Hip / Iliac Crest
     {
       y: L.yHighHip,
       a: highHipAxes.a,
-      bF: highHipAxes.b * 0.96,
+      bF: highHipAxes.b * 0.95,
       bB: highHipAxes.b * 1.02,
-      n: 2.16,
+      n: 2.14,
       cZ: -0.002,
     },
-    // 4. Natural Waist (Lumbar Lordosis curves forward +Z)
     {
       y: L.yWaist,
       a: waistAxes.a,
-      bF: waistAxes.b * 0.98,
-      bB: waistAxes.b * 0.99,
-      n: 2.08,
-      cZ: 0.009,
+      bF: waistAxes.b * 0.97,
+      bB: waistAxes.b * 0.98,
+      n: 2.06,
+      cZ: 0.01,
     },
-    // 5. Inframammary Underbust Ribcage
     {
       y: L.yUnderbust,
       a: underbustAxes.a,
-      bF: underbustAxes.b * 0.98,
-      bB: underbustAxes.b * 1.01,
-      n: 2.16,
+      bF: underbustAxes.b * 0.96,
+      bB: underbustAxes.b * 1.0,
+      n: 2.14,
       cZ: 0.004,
     },
-    // 6. Full Bust / Chest Apex
     {
       y: L.yChest,
-      a: chestAxes.a * (isFemale ? 0.97 : 1.0),
+      a: chestAxes.a * (isFemale ? 0.95 : 1.0),
       bF:
-        chestAxes.b * (isFemale ? 0.96 : 1.0) +
+        chestAxes.b * (isFemale ? 0.94 : 1.0) +
         frontBackChestBias * 0.025,
       bB:
         chestAxes.b * (isFemale ? 0.96 : 1.0) -
         frontBackChestBias * 0.025,
-      n: 2.22,
+      n: 2.2,
       cZ: -0.002,
     },
-    // 7. Upper Chest / Axillary Fold Level (Thoracic Kyphosis curves slightly back -Z)
     {
       y: L.yUpperChest,
       a: upperChestWidthAdjusted,
-      bF: upperChestAxes.b * 0.94 + frontBackChestBias * 0.02,
+      bF: upperChestAxes.b * 0.93 + frontBackChestBias * 0.02,
       bB: upperChestAxes.b * 1.01 - frontBackChestBias * 0.02,
-      n: 2.32,
+      n: 2.28,
       cZ: -0.007,
     },
-    // 8. Acromion Shoulder Girdle Level
     {
       y: L.yShoulder,
-      a: L.shoulderHalfSpan * 0.92,
-      bF: upperChestAxes.b * 0.74,
-      bB: upperChestAxes.b * 0.84,
-      n: 2.36,
+      a: L.shoulderHalfSpan * 0.91,
+      bF: upperChestAxes.b * 0.72,
+      bB: upperChestAxes.b * 0.82,
+      n: 2.32,
       cZ: -0.009,
     },
-    // 9. Mid-Trapezius Slope (smooth muscular slope from shoulder tips to neck base)
     {
       y: yTrapeziusMid,
-      a: THREE.MathUtils.lerp(L.shoulderHalfSpan * 0.92, neckAxes.a * 1.14, 0.64),
-      bF: neckAxes.b * 1.14,
-      bB: neckAxes.b * 1.24,
-      n: 2.15,
+      a: THREE.MathUtils.lerp(L.shoulderHalfSpan * 0.91, neckAxes.a * 1.1, 0.68),
+      bF: neckAxes.b * 1.1,
+      bB: neckAxes.b * 1.18,
+      n: 2.12,
       cZ: -0.005,
     },
-    // 10. Cervicale C7 Neck Base
     {
       y: L.yCervicale,
-      a: neckAxes.a * 1.06,
-      bF: neckAxes.b * 1.02,
-      bB: neckAxes.b * 1.05,
-      n: 2.02,
+      a: neckAxes.a * 1.02,
+      bF: neckAxes.b * 1.0,
+      bB: neckAxes.b * 1.03,
+      n: 2.0,
       cZ: -0.001,
     },
-    // 11. Mid-Neck Column (slight forward cervical tilt)
     {
       y: L.yNeckMid,
-      a: neckAxes.a * 0.95,
-      bF: neckAxes.b * 0.95,
-      bB: neckAxes.b * 0.95,
+      a: neckAxes.a * 0.91,
+      bF: neckAxes.b * 0.91,
+      bB: neckAxes.b * 0.91,
       n: 1.98,
       cZ: 0.005,
     },
-    // 12. Submental Under-Chin / Upper Neck Junction
     {
       y: L.yJaw - 0.014,
-      a: neckAxes.a * 0.96,
-      bF: neckAxes.b * 0.98,
-      bB: neckAxes.b * 0.98,
+      a: neckAxes.a * 0.92,
+      bF: neckAxes.b * 0.94,
+      bB: neckAxes.b * 0.94,
       n: 2.0,
       cZ: 0.008,
     },
-    // 13. Mandible / Chin / Jaw Level
     {
       y: L.yJaw,
-      a: headAxes.a * 0.82,
+      a: headAxes.a * 0.8,
       bF: headAxes.b * 0.9,
       bB: headAxes.b * 0.84,
       n: 2.06,
       cZ: 0.015,
     },
-    // 14. Cheekbone / Brow / Mid-Face Level
     {
       y: yBrow,
       a: headAxes.a * 0.97,
@@ -846,7 +814,6 @@ export function createTorsoEvaluator(
       n: 2.08,
       cZ: 0.011,
     },
-    // 15. Maximum Cranial Vault Perimeter
     {
       y: L.yHeadMax,
       a: headAxes.a,
@@ -855,7 +822,6 @@ export function createTorsoEvaluator(
       n: 2.06,
       cZ: 0.005,
     },
-    // 16. Parietal Crown Dome
     {
       y: L.yCrown - 0.022,
       a: headAxes.a * 0.68,
@@ -864,7 +830,6 @@ export function createTorsoEvaluator(
       n: 2.0,
       cZ: 0.003,
     },
-    // 17. Vertex Crown Apex
     {
       y: L.yCrown,
       a: 0.008,
@@ -875,7 +840,6 @@ export function createTorsoEvaluator(
     },
   ];
 
-  // Ensure strictly increasing Y for Hermite interpolation
   for (let i = 1; i < stations.length; i++) {
     if (stations[i].y <= stations[i - 1].y + 0.003) {
       stations[i].y = stations[i - 1].y + 0.003;
@@ -894,14 +858,19 @@ export function createTorsoEvaluator(
     return Math.exp(-0.5 * d * d);
   };
 
-  // Asymmetric breast/pectoral vertical profile (teardrop fuller lower pole, tapered upper pole)
   const evalBustMask = (y: number) => {
     if (y < L.yUnderbust - 0.02 || y > L.yShoulder) return 0;
     if (y <= L.yChest) {
-      const sigmaLow = Math.max(0.022, (L.yChest - L.yUnderbust) * (isFemale ? 0.58 : 0.65));
+      const sigmaLow = Math.max(
+        0.02,
+        (L.yChest - L.yUnderbust) * (isFemale ? 0.54 : 0.65)
+      );
       return gaussianWindow(y, L.yChest, sigmaLow);
     }
-    const sigmaHigh = Math.max(0.028, (L.yUpperChest - L.yChest) * (isFemale ? 0.78 : 0.68));
+    const sigmaHigh = Math.max(
+      0.026,
+      (L.yUpperChest - L.yChest) * (isFemale ? 0.74 : 0.68)
+    );
     return gaussianWindow(y, L.yChest, sigmaHigh);
   };
 
@@ -925,8 +894,8 @@ export function createTorsoEvaluator(
 
     const bustMask = evalBustMask(y);
     const underbustIndent =
-      (isFemale ? 0.009 : 0.0045) *
-      gaussianWindow(y, L.yUnderbust, 0.018);
+      (isFemale ? 0.012 : 0.005) *
+      gaussianWindow(y, L.yUnderbust, 0.016);
     const ribcageMask = gaussianWindow(
       y,
       (L.yUnderbust + L.yWaist) * 0.52,
@@ -937,7 +906,7 @@ export function createTorsoEvaluator(
 
     const abdomenLineaAlba =
       y > L.yHighHip && y < L.yChest
-        ? (isFemale ? 0.0032 : 0.0052) *
+        ? (isFemale ? 0.0042 : 0.0058) *
           Math.sin(
             ((y - L.yHighHip) / Math.max(0.1, L.yChest - L.yHighHip)) * Math.PI
           )
@@ -956,7 +925,7 @@ export function createTorsoEvaluator(
     const scapulaMask = gaussianWindow(y, L.yUpperChest - 0.01, 0.065);
     const spineGrooveM =
       y > L.yHip + 0.02 && y < L.yCervicale
-        ? (isFemale ? 0.0075 : 0.0095) *
+        ? (isFemale ? 0.0095 : 0.011) *
           Math.sin(
             ((y - (L.yHip + 0.02)) /
               Math.max(0.15, L.yCervicale - (L.yHip + 0.02))) *
@@ -974,7 +943,7 @@ export function createTorsoEvaluator(
     const crotchSpan = Math.max(0.035, L.yHip - L.yCrotch);
     const crotchSaddleMask =
       y < L.yHip
-        ? Math.pow(Math.max(0, 1 - (y - L.yCrotch) / crotchSpan), 1.8)
+        ? Math.pow(Math.max(0, 1 - (y - L.yCrotch) / crotchSpan), 1.75)
         : 0;
 
     const jawMask = gaussianWindow(y, L.yJaw + 0.006, 0.024);
@@ -1040,9 +1009,7 @@ export function createTorsoEvaluator(
 }
 
 /**
- * Evaluates anatomically sculpted arms/hands and legs with realistic muscle bellies,
- * articular joints (deltoid, bicep/tricep, elbow olecranon, forearm taper, wrist, palm/thumb,
- * pelvis-integrated hip root, quadriceps, patella knee, gastrocnemius calf, shinbone, and ankle malleoli).
+ * Evaluates anatomically sculpted arms/hands and legs.
  */
 export function createLimbEvaluators(
   m: MeasurementsRecord,
@@ -1052,18 +1019,8 @@ export function createLimbEvaluators(
   const L = landmarks ?? computeAnatomicalLandmarks(m, gender);
   const isFemale = gender === 'female';
 
-  // Arm radii at key anatomical stations:
-  // t=0.00: shoulder/clavicle root (tucked inside deltoid junction)
-  // t=0.08: acromion / deltoid fullness
-  // t=0.25: bicep / tricep mid-humeral belly
-  // t=0.48: elbow joint (olecranon & epicondyles)
-  // t=0.62: proximal forearm (brachioradialis fullness)
-  // t=0.84: distal wrist styloid
-  // t=0.90: palm / thenar thumb web
-  // t=0.95: metacarpal knuckles
-  // t=1.00: tapered fingertips
   const deltoidAxes = circumferenceToEllipseAxes(
-    m.bicep * (isFemale ? 1.16 : 1.22) * CM_TO_M,
+    m.bicep * (isFemale ? 1.14 : 1.22) * CM_TO_M,
     0.88
   );
   const bicepAxes = circumferenceToEllipseAxes(m.bicep * CM_TO_M, 0.92);
@@ -1093,7 +1050,7 @@ export function createLimbEvaluators(
 
   const interpArmA = createMonotoneHermiteInterpolator(armStationsT, [
     deltoidAxes.a * 0.95,
-    deltoidAxes.a * 1.06,
+    deltoidAxes.a * 1.05,
     bicepAxes.a,
     elbowAxes.a,
     forearmAxes.a,
@@ -1104,7 +1061,7 @@ export function createLimbEvaluators(
   ]);
   const interpArmB = createMonotoneHermiteInterpolator(armStationsT, [
     deltoidAxes.b * 1.02,
-    deltoidAxes.b * 1.05,
+    deltoidAxes.b * 1.04,
     bicepAxes.b,
     elbowAxes.b,
     forearmAxes.b,
@@ -1138,23 +1095,19 @@ export function createLimbEvaluators(
     const a = interpArmA(clampedT) + radialOffsetM;
     const b = interpArmB(clampedT) + radialOffsetM;
 
-    const cosA = Math.cos(angleRad); // +1 = lateral outer, -1 = medial inner (armpit side)
-    const sinA = Math.sin(angleRad); // +1 = anterior front, -1 = posterior back
+    const cosA = Math.cos(angleRad);
+    const sinA = Math.sin(angleRad);
 
-    // Anatomical muscle & joint sculpting along the arm:
-    // 1. Deltoid lateral sweep (t ≈ 0.08..0.20, outer side cosA > 0)
     const deltoidMask = gaussian1D(clampedT, 0.11, 0.075);
     const deltoidBulge =
-      cosA > 0 ? deltoidMask * 0.0075 * Math.pow(cosA, 1.3) : 0;
+      cosA > 0 ? deltoidMask * 0.0065 * Math.pow(cosA, 1.3) : 0;
 
-    // 2. Bicep anterior peak & Tricep posterior contour (t ≈ 0.25)
     const bicepMask = gaussian1D(clampedT, 0.26, 0.09);
     const bicepBulge =
       sinA > 0
-        ? bicepMask * (isFemale ? 0.0035 : 0.0065) * Math.pow(sinA, 1.6)
-        : -bicepMask * (isFemale ? 0.0025 : 0.0045) * Math.pow(-sinA, 1.6);
+        ? bicepMask * (isFemale ? 0.0028 : 0.006) * Math.pow(sinA, 1.6)
+        : -bicepMask * (isFemale ? 0.002 : 0.004) * Math.pow(-sinA, 1.6);
 
-    // 3. Elbow olecranon posterior tip & cubital hollow (t ≈ 0.48)
     const elbowMask = gaussian1D(clampedT, 0.48, 0.045);
     const elbowShift =
       sinA < -0.3
@@ -1163,14 +1116,8 @@ export function createLimbEvaluators(
         ? -elbowMask * 0.003 * Math.pow(sinA, 2)
         : 0;
 
-    // 4. Thumb / thenar projection on anterior-lateral side of palm (t ≈ 0.89..0.94)
-    const thumbMask = gaussian1D(clampedT, 0.91, 0.026);
-    const thumbAngleDist = Math.abs(angleRad - Math.PI * 0.42);
-    const thumbBulge =
-      thumbMask * 0.011 * Math.exp(-Math.pow(thumbAngleDist / 0.45, 2));
-
-    const localOut = cosA * (a + thumbBulge) + deltoidBulge;
-    const localAnt = sinA * (b + thumbBulge * 0.6) + bicepBulge + elbowShift;
+    const localOut = cosA * a + deltoidBulge;
+    const localAnt = sinA * b + bicepBulge + elbowShift;
 
     const ptL = centerL
       .clone()
@@ -1197,20 +1144,11 @@ export function createLimbEvaluators(
     return pts;
   };
 
-  // Leg stations:
-  // t=0.00: legPelvisRootL (at yHip inside lateral pelvis for seamless hip-to-thigh continuity!)
-  // t=0.06: legTopL (at yCrotch)
-  // t=0.14: legThighL (proximal thigh girth directly below gluteal fold)
-  // t=0.35: legMidThighL (mid-thigh quadriceps/hamstrings)
-  // t=0.56: legKneeL (patella knee center)
-  // t=0.75: legCalfL (maximum gastrocnemius calf belly)
-  // t=0.90: legLowerShinL (slender lower shin / Achilles transition)
-  // t=1.00: legAnkleL (ankle malleoli)
-  const thighAxes = circumferenceToEllipseAxes(m.thigh * CM_TO_M, 0.92);
-  const midThighAxes = circumferenceToEllipseAxes(m.midThigh * CM_TO_M, 0.94);
-  const kneeAxes = circumferenceToEllipseAxes(m.knee * CM_TO_M, 0.96);
-  const calfAxes = circumferenceToEllipseAxes(m.calf * CM_TO_M, 0.93);
-  const ankleAxes = circumferenceToEllipseAxes(m.ankle * CM_TO_M, 0.89);
+  const thighAxes = circumferenceToEllipseAxes(m.thigh * CM_TO_M, 0.91);
+  const midThighAxes = circumferenceToEllipseAxes(m.midThigh * CM_TO_M, 0.93);
+  const kneeAxes = circumferenceToEllipseAxes(m.knee * CM_TO_M, 0.95);
+  const calfAxes = circumferenceToEllipseAxes(m.calf * CM_TO_M, 0.92);
+  const ankleAxes = circumferenceToEllipseAxes(m.ankle * CM_TO_M, 0.88);
 
   const legStationsT = [0.0, 0.06, 0.14, 0.35, 0.56, 0.75, 0.9, 1.0];
   const legCurveL = new THREE.CatmullRomCurve3(
@@ -1230,23 +1168,23 @@ export function createLimbEvaluators(
   );
 
   const interpLegA = createMonotoneHermiteInterpolator(legStationsT, [
-    thighAxes.a * 0.94,
-    thighAxes.a * 1.01,
+    thighAxes.a * 0.92,
+    thighAxes.a * 0.98,
     thighAxes.a,
     midThighAxes.a,
     kneeAxes.a,
     calfAxes.a,
-    ankleAxes.a * 1.05,
+    ankleAxes.a * 1.04,
     ankleAxes.a,
   ]);
   const interpLegB = createMonotoneHermiteInterpolator(legStationsT, [
-    thighAxes.b * 1.04,
-    thighAxes.b * 1.03,
+    thighAxes.b * 1.02,
+    thighAxes.b * 1.02,
     thighAxes.b,
     midThighAxes.b,
     kneeAxes.b,
     calfAxes.b,
-    ankleAxes.b * 1.06,
+    ankleAxes.b * 1.05,
     ankleAxes.b,
   ]);
 
@@ -1261,44 +1199,41 @@ export function createLimbEvaluators(
     const a = interpLegA(clampedT) + radialOffsetM;
     const b = interpLegB(clampedT) + radialOffsetM;
 
-    const cosT = Math.cos(angleRad); // +1 = outer lateral, -1 = inner medial
-    const sinT = Math.sin(angleRad); // +1 = anterior front, -1 = posterior back
+    const cosT = Math.cos(angleRad);
+    const sinT = Math.sin(angleRad);
 
-    // 1. Quadriceps anterior sweep & Vastus Medialis teardrop above knee (t ≈ 0.25..0.46)
-    const quadMask = gaussian1D(clampedT, 0.32, 0.14);
-    const vastusMedialisMask = gaussian1D(clampedT, 0.45, 0.065);
-    const quadFrontShift =
-      sinT > 0 ? quadMask * 0.006 * Math.pow(sinT, 1.4) : 0;
-    const vastusInnerShift =
-      cosT < -0.2 && sinT > 0.1
-        ? -vastusMedialisMask * 0.0045 * Math.pow(-cosT, 1.4) * sinT
+    // Subtle inner thigh contour for clean anime thigh gap near crotch (t < 0.25, cosT < 0)
+    const innerThighCarve =
+      clampedT < 0.28 && cosT < 0
+        ? 0.0055 * (1 - clampedT / 0.28) * Math.pow(-cosT, 1.6)
         : 0;
 
-    // 2. Patella (kneecap) anterior prominence & popliteal posterior hollow (t ≈ 0.56)
+    const quadMask = gaussian1D(clampedT, 0.32, 0.14);
+    const quadFrontShift =
+      sinT > 0 ? quadMask * 0.0055 * Math.pow(sinT, 1.4) : 0;
+
     const kneeMask = gaussian1D(clampedT, 0.56, 0.042);
     const patellaShift =
       sinT > 0.35
         ? kneeMask * 0.0055 * Math.pow(sinT, 2.6)
         : sinT < -0.35
-        ? kneeMask * 0.004 * Math.pow(-sinT, 2.2) // popliteal hollow pulls slightly forward (+Z)
+        ? kneeMask * 0.004 * Math.pow(-sinT, 2.2)
         : 0;
 
-    // 3. Gastrocnemius calf muscle posterior projection & lateral/medial sweep (t ≈ 0.74)
     const calfMask = gaussian1D(clampedT, 0.74, 0.095);
     const calfBackBulge =
       sinT < 0 ? -calfMask * 0.0115 * Math.pow(-sinT, 1.35) : 0;
     const calfLateralCurve =
       cosT > 0 ? calfMask * 0.0038 * Math.pow(cosT, 1.5) : 0;
 
-    // 4. Achilles tendon narrowing & ankle malleoli bony landmarks (t ≈ 0.96..1.0)
     const ankleMask = gaussian1D(clampedT, 0.99, 0.035);
     const malleolusShift =
       Math.abs(cosT) > 0.75
-        ? Math.sign(cosT) * ankleMask * 0.0038 * Math.pow(Math.abs(cosT), 3)
+        ? Math.sign(cosT) * ankleMask * 0.0035 * Math.pow(Math.abs(cosT), 3)
         : 0;
 
     const xLocal =
-      cosT * a + vastusInnerShift + calfLateralCurve + malleolusShift;
+      cosT * a + innerThighCarve + calfLateralCurve + malleolusShift;
     const zLocal = sinT * b + quadFrontShift + patellaShift + calfBackBulge;
 
     const pt = new THREE.Vector3(
@@ -1337,9 +1272,7 @@ export function createLimbEvaluators(
 }
 
 /**
- * Generates exact 3D surface-hugging coordinates (+2.2mm offset) for all 50 measurement overlays
- * so `MeasurementOverlays.tsx` renders closed rings, geodesic seams, and height calipers
- * directly on the anatomically sculpted body.
+ * Generates exact 3D surface-hugging coordinates (+2.2mm offset) for all 50 measurement overlays.
  */
 export function computeAllMeasurementOverlays(
   m: MeasurementsRecord,
@@ -1386,9 +1319,6 @@ export function computeAllMeasurementOverlays(
     };
   };
 
-  // ============================================================================
-  // 1. ALL 17 CIRCUMFERENCE RINGS
-  // ============================================================================
   addRing('head', torso.sampleClosedRing(L.yHeadMax, 56, off), 0.18);
   addRing('neck', torso.sampleClosedRing(L.yCervicale + 0.012, 52, off), 0.2);
   addRing('upperChest', torso.sampleClosedRing(L.yUpperChest, 64, off), 0.22);
@@ -1398,23 +1328,17 @@ export function computeAllMeasurementOverlays(
   addRing('highHip', torso.sampleClosedRing(L.yHighHip, 64, off), 0.2);
   addRing('hip', torso.sampleClosedRing(L.yHip, 64, off), 0.23);
 
-  // Leg circumference rings on left leg (+X) matching updated station T parameters
   addRing('thigh', limbs.sampleLegRing('left', 0.14, 48, off), 0.15);
   addRing('midThigh', limbs.sampleLegRing('left', 0.35, 48, off), 0.15);
   addRing('knee', limbs.sampleLegRing('left', 0.56, 44, off), 0.2);
   addRing('calf', limbs.sampleLegRing('left', 0.75, 44, off), 0.2);
   addRing('ankle', limbs.sampleLegRing('left', 1.0, 40, off), 0.2);
 
-  // Arm circumference rings on left arm (+X) matching updated station T parameters
   addRing('bicep', limbs.sampleArmRing('left', 0.25, 44, off), 0.12);
   addRing('elbow', limbs.sampleArmRing('left', 0.48, 40, off), 0.12);
   addRing('forearm', limbs.sampleArmRing('left', 0.62, 40, off), 0.12);
   addRing('wrist', limbs.sampleArmRing('left', 0.84, 36, off), 0.15);
 
-  // ============================================================================
-  // 2. TORSO GEODESIC LINES (8 parameters)
-  // ============================================================================
-  // shoulderWidth: posterior arch from right shoulder tip (-X) across upper back to left shoulder tip (+X)
   {
     const pts: THREE.Vector3[] = [];
     const steps = 28;
@@ -1429,7 +1353,6 @@ export function computeAllMeasurementOverlays(
     addLine('shoulderWidth', pts, false, 0.5);
   }
 
-  // singleShoulderLength: left lateral neck base along trapezius ridge to left acromion tip
   {
     const pts: THREE.Vector3[] = [];
     const steps = 16;
@@ -1441,7 +1364,6 @@ export function computeAllMeasurementOverlays(
     addLine('singleShoulderLength', pts, false, 0.5);
   }
 
-  // acrossFrontWidth: anterior curve across upperChest from right armhole to left armhole
   {
     const pts: THREE.Vector3[] = [];
     const steps = 24;
@@ -1453,7 +1375,6 @@ export function computeAllMeasurementOverlays(
     addLine('acrossFrontWidth', pts, false, 0.5);
   }
 
-  // acrossBackWidth: posterior curve across upperChest from right back armhole to left back armhole
   {
     const pts: THREE.Vector3[] = [];
     const steps = 24;
@@ -1465,7 +1386,6 @@ export function computeAllMeasurementOverlays(
     addLine('acrossBackWidth', pts, false, 0.5);
   }
 
-  // frontWaistLength: left neck base over anterior bust apex down to anterior waist
   {
     const pts: THREE.Vector3[] = [];
     const steps = 28;
@@ -1482,7 +1402,6 @@ export function computeAllMeasurementOverlays(
     addLine('frontWaistLength', pts, false, 0.52);
   }
 
-  // backWaistLength: C7 center-back spine down to posterior waist
   {
     const pts: THREE.Vector3[] = [];
     const steps = 28;
@@ -1494,7 +1413,6 @@ export function computeAllMeasurementOverlays(
     addLine('backWaistLength', pts, false, 0.5);
   }
 
-  // sideTorsoLength: right lateral armpit down to natural waist (on -X side)
   {
     const pts: THREE.Vector3[] = [];
     const steps = 20;
@@ -1506,7 +1424,6 @@ export function computeAllMeasurementOverlays(
     addLine('sideTorsoLength', pts, false, 0.5);
   }
 
-  // torsoLoop: full vertical trunk loop from right shoulder down front through crotch and up back
   {
     const pts: THREE.Vector3[] = [];
     const halfSteps = 32;
@@ -1525,10 +1442,6 @@ export function computeAllMeasurementOverlays(
     addLine('torsoLoop', pts, true, 0.25);
   }
 
-  // ============================================================================
-  // 3. SLEEVE GEODESIC LINES (4 parameters)
-  // ============================================================================
-  // sleeveFromShoulder: outer sleeve seam from left acromion tip (t=0.08) over outer elbow to wrist (t=0.84)
   {
     const pts: THREE.Vector3[] = [];
     const steps = 28;
@@ -1540,7 +1453,6 @@ export function computeAllMeasurementOverlays(
     addLine('sleeveFromShoulder', pts, false, 0.52);
   }
 
-  // sleeveFromNeck: center-back C7 neck over shoulder tip down outer arm to wrist (on right arm -X)
   {
     const pts: THREE.Vector3[] = [];
     const shoulderSteps = 12;
@@ -1559,7 +1471,6 @@ export function computeAllMeasurementOverlays(
     addLine('sleeveFromNeck', pts, false, 0.55);
   }
 
-  // sleeveFromArmpit: inner underarm sleeve seam from armpit (t=0.14, angle=π) to inner wrist (t=0.84)
   {
     const pts: THREE.Vector3[] = [];
     const steps = 24;
@@ -1571,7 +1482,6 @@ export function computeAllMeasurementOverlays(
     addLine('sleeveFromArmpit', pts, false, 0.5);
   }
 
-  // shoulderToElbow: acromion shoulder tip (t=0.08) to outer elbow (t=0.48) on right arm
   {
     const pts: THREE.Vector3[] = [];
     const steps = 18;
@@ -1583,10 +1493,6 @@ export function computeAllMeasurementOverlays(
     addLine('shoulderToElbow', pts, false, 0.5);
   }
 
-  // ============================================================================
-  // 4. LEGS & RISE GEODESIC LINES (7 parameters)
-  // ============================================================================
-  // outseamFromWaist: lateral waist down outer hip and outer left leg to ankle
   {
     const pts: THREE.Vector3[] = [];
     const hipSteps = 12;
@@ -1603,7 +1509,6 @@ export function computeAllMeasurementOverlays(
     addLine('outseamFromWaist', pts, false, 0.52);
   }
 
-  // outseamFromHighHip: lateral high-hip down outer right leg (-X) to ankle
   {
     const pts: THREE.Vector3[] = [];
     const hipSteps = 8;
@@ -1620,7 +1525,6 @@ export function computeAllMeasurementOverlays(
     addLine('outseamFromHighHip', pts, false, 0.55);
   }
 
-  // inseamLength: medial inner leg seam from crotch (t=0.07) down to inner ankle (t=1.0) on left leg
   {
     const pts: THREE.Vector3[] = [];
     const steps = 28;
@@ -1632,7 +1536,6 @@ export function computeAllMeasurementOverlays(
     addLine('inseamLength', pts, false, 0.48);
   }
 
-  // waistToKneeLength: lateral right waist (-X) down outer thigh to mid-knee (t=0.56)
   {
     const pts: THREE.Vector3[] = [];
     const hipSteps = 10;
@@ -1649,7 +1552,6 @@ export function computeAllMeasurementOverlays(
     addLine('waistToKneeLength', pts, false, 0.5);
   }
 
-  // frontRise: center-front waist down abdominal/pubic curve to perineal crotch point
   const frontRisePts: THREE.Vector3[] = [];
   {
     const steps = 22;
@@ -1664,7 +1566,6 @@ export function computeAllMeasurementOverlays(
     addLine('frontRise', frontRisePts, false, 0.45);
   }
 
-  // backRise: center-back waist over gluteal contour to perineal crotch point
   const backRisePts: THREE.Vector3[] = [];
   {
     const steps = 24;
@@ -1679,7 +1580,6 @@ export function computeAllMeasurementOverlays(
     addLine('backRise', backRisePts, false, 0.48);
   }
 
-  // crotchCurveTotal: full front-to-back saddle curve
   {
     const combined = [
       ...frontRisePts.map((p) => p.clone().add(new THREE.Vector3(0.005, 0, 0))),
@@ -1691,10 +1591,6 @@ export function computeAllMeasurementOverlays(
     addLine('crotchCurveTotal', combined, false, 0.5);
   }
 
-  // ============================================================================
-  // 5. EXTREMITIES LINES (4 parameters)
-  // ============================================================================
-  // handLength: dorsal wrist to middle fingertip on left hand
   {
     const pts: THREE.Vector3[] = [];
     const steps = 12;
@@ -1705,7 +1601,6 @@ export function computeAllMeasurementOverlays(
     addLine('handLength', pts, false, 0.5);
   }
 
-  // handWidth: transverse width across knuckles (t=0.93) on left hand
   {
     const p1 = limbs.sampleArmPoint('left', 0.93, Math.PI * 0.5, off * 1.4);
     const pMid = limbs.sampleArmPoint('left', 0.93, 0, off * 1.6);
@@ -1713,7 +1608,6 @@ export function computeAllMeasurementOverlays(
     addLine('handWidth', [p1, pMid, p2], false, 0.5);
   }
 
-  // footLength: heel to longest toe along lateral sole of left foot
   {
     const footLenM = m.footLength * CM_TO_M;
     const footWidthM = m.footWidth * CM_TO_M;
@@ -1729,7 +1623,6 @@ export function computeAllMeasurementOverlays(
     addLine('footLength', pts, false, 0.5);
   }
 
-  // footWidth: transverse ball breadth across metatarsals of left foot
   {
     const footLenM = m.footLength * CM_TO_M;
     const footWidthM = m.footWidth * CM_TO_M;
@@ -1744,9 +1637,6 @@ export function computeAllMeasurementOverlays(
     addLine('footWidth', pts, false, 0.5);
   }
 
-  // ============================================================================
-  // 6. HEIGHTS CALIPERS (10 parameters)
-  // ============================================================================
   const heightConfigs: Array<{
     key: MeasurementKey;
     y: number;
