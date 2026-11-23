@@ -145,8 +145,21 @@ export interface TranslationDictionary {
     lightGlass: string;
     canvasBackground: string;
     showStudioFloor: string;
-    blenderBody: string;
-    blenderBodyHint: string;
+    bodyModel: string;
+    bodyModels: { anime: string; classic: string };
+    bodyModelHints: { anime: string; classic: string };
+    skinColor: string;
+    skinTexture: string;
+    lighting: string;
+    lightingPresets: {
+      studio: string;
+      soft: string;
+      contrast: string;
+      warm: string;
+    };
+    lightBrightness: string;
+    lightDirection: string;
+    lightWarmth: string;
     accentColor: string;
     backdropBlur: string;
     panelOpacity: string;
@@ -347,9 +360,26 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       lightGlass: 'Світле Скло',
       canvasBackground: 'Колір фону позаду манекена',
       showStudioFloor: 'Показувати подіум та сітку підлоги',
-      blenderBody: 'Модель Blender (бета)',
-      blenderBodyHint:
-        'Тіло з Blender: точно відтворює зріст, шию, груди, талію і стегна',
+      bodyModel: 'Манекен',
+      bodyModels: { anime: 'Аніме', classic: 'Класичний' },
+      bodyModelHints: {
+        anime:
+          'Стилізоване тіло: реагує на зріст, шию, груди, талію і стегна м’яко, щоб зберегти аніме-пропорції',
+        classic:
+          'Попередній манекен із зачісками та cel-шейдером; відтворює всі мірки',
+      },
+      skinColor: 'Колір тіла',
+      skinTexture: 'Текстура шкіри',
+      lighting: 'Освітлення',
+      lightingPresets: {
+        studio: 'Студія',
+        soft: 'М’яке',
+        contrast: 'Контраст',
+        warm: 'Тепле',
+      },
+      lightBrightness: 'Яскравість',
+      lightDirection: 'Напрям світла',
+      lightWarmth: 'Холодне ↔ тепле',
       accentColor: 'Акцентний спектр UI',
       backdropBlur: 'Глибина розмиття скла',
       panelOpacity: 'Щільність панелей',
@@ -743,9 +773,26 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       lightGlass: 'Light Liquid Glass',
       canvasBackground: 'Custom Background Color Behind Body',
       showStudioFloor: 'Show Floor Pedestal & Grid',
-      blenderBody: 'Blender Model (beta)',
-      blenderBodyHint:
-        'Body built in Blender: exact height, neck, chest, waist and hip',
+      bodyModel: 'Mannequin',
+      bodyModels: { anime: 'Anime', classic: 'Classic' },
+      bodyModelHints: {
+        anime:
+          'Stylized body: follows height, neck, chest, waist and hip softly to keep anime proportions',
+        classic:
+          'Previous mannequin with hairstyles and cel shader; follows all measurements',
+      },
+      skinColor: 'Body Color',
+      skinTexture: 'Skin Texture',
+      lighting: 'Lighting',
+      lightingPresets: {
+        studio: 'Studio',
+        soft: 'Soft',
+        contrast: 'Contrast',
+        warm: 'Warm',
+      },
+      lightBrightness: 'Brightness',
+      lightDirection: 'Light Direction',
+      lightWarmth: 'Cool ↔ Warm',
       accentColor: 'UI Accent Spectrum',
       backdropBlur: 'Glass Backdrop Blur',
       panelOpacity: 'Glass Surface Opacity',

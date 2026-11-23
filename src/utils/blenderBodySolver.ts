@@ -25,6 +25,39 @@ export interface BlenderBodyCalibration {
     stretchToM: number;
   };
   landmarksM: Record<string, number>;
+  /**
+   * Present on the anime body: it follows only a share of the difference from
+   * its base size and stays inside a safe range. Absent on exact bodies.
+   */
+  stylization?: {
+    mode: string;
+    response: { totalHeight: number; girths: number };
+    maxGirthChange: number;
+  } | null;
+}
+
+/**
+ * What the model should show for real measurements (cm). Exact bodies return
+ * the targets unchanged; the anime body softens them.
+ */
+export function effectiveBodyTargets(
+  calibration: BlenderBodyCalibration,
+  targets: Record<string, number>
+): Record<string, number> {
+  const st = calibration.stylization;
+  if (!st) return { ...targets };
+  const base = calibration.base;
+  const out: Record<string, number> = {
+    totalHeight:
+      base.totalHeight +
+      (targets.totalHeight - base.totalHeight) * st.response.totalHeight,
+  };
+  calibration.girthOrder.forEach((name) => {
+    const limit = base[name] * st.maxGirthChange;
+    const delta = (targets[name] - base[name]) * st.response.girths;
+    out[name] = base[name] + Math.min(limit, Math.max(-limit, delta));
+  });
+  return out;
 }
 
 /** Gaussian elimination with partial pivoting. Returns null for a singular matrix. */
@@ -56,8 +89,9 @@ export function solveLinearSystem(
  */
 export function solveBlenderBodyWeights(
   calibration: BlenderBodyCalibration,
-  targets: Record<string, number>
+  realTargets: Record<string, number>
 ): Record<string, number> {
+  const targets = effectiveBodyTargets(calibration, realTargets);
   const weights: Record<string, number> = {};
   const rhs = calibration.girthOrder.map(
     (name) => targets[name] - calibration.base[name]

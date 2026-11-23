@@ -1,10 +1,16 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { CameraFocusZone } from '../../data/measurementsSchema';
-import { useAtelierStore } from '../../store/useAtelierStore';
+import {
+  DEFAULT_BODY_MODEL,
+  DEFAULT_LIGHTING,
+  LIGHTING_PRESETS,
+  LightingSettings,
+  useAtelierStore,
+} from '../../store/useAtelierStore';
 import { CM_TO_M } from '../../utils/geometryMath';
 import { BlenderBody } from './BlenderBody';
 import { MeasurementOverlays } from './MeasurementOverlays';
@@ -99,6 +105,37 @@ const CameraTransitionController: React.FC<{
   return null;
 };
 
+type Vec3 = [number, number, number];
+
+/** Point on a circle around the mannequin; 0 deg = front (+Z), negative = left. */
+function orbit(azimuthDeg: number, radius: number, height: number): Vec3 {
+  const a = THREE.MathUtils.degToRad(azimuthDeg);
+  return [Math.sin(a) * radius, height, Math.cos(a) * radius];
+}
+
+/** Light intensities, positions and tint for the current lighting settings. */
+function buildLightRig(lighting: LightingSettings) {
+  const preset = LIGHTING_PRESETS[lighting.preset] ?? LIGHTING_PRESETS.studio;
+  const b = lighting.brightness;
+  const cool = new THREE.Color('#cfe1ff');
+  const warm = new THREE.Color('#ffd7ae');
+  const tint = new THREE.Color('#ffffff').lerp(
+    lighting.warmth >= 0 ? warm : cool,
+    Math.min(1, Math.abs(lighting.warmth))
+  );
+  return {
+    key: preset.key * b,
+    fill: preset.fill * b,
+    rim: preset.rim * b,
+    ambient: preset.ambient * b,
+    hemisphere: preset.hemisphere * b,
+    tint: `#${tint.getHexString()}`,
+    keyPosition: orbit(lighting.direction, 3.22, 2.8),
+    fillPosition: orbit(lighting.direction + 100, 2.6, 1.8),
+    rimPosition: orbit(lighting.direction + 216, 2.52, 2.5),
+  };
+}
+
 const StudioPedestal: React.FC = () => {
   const theme = useAtelierStore((s) => s.glassSettings.theme);
   const accentHex = useAtelierStore((s) => s.glassSettings.accentHex);
@@ -148,10 +185,15 @@ export const MannequinScene: React.FC = () => {
   const showStudioFloor = useAtelierStore(
     (s) => s.glassSettings.showStudioFloor
   );
-  const useBlenderBody = useAtelierStore(
-    (s) => s.glassSettings.useBlenderBody
+  const bodyModel = useAtelierStore(
+    (s) => s.glassSettings.bodyModel ?? DEFAULT_BODY_MODEL
+  );
+  const lighting = useAtelierStore(
+    (s) => s.glassSettings.lighting ?? DEFAULT_LIGHTING
   );
   const isLight = theme === 'light';
+  const rig = useMemo(() => buildLightRig(lighting), [lighting]);
+  const useBlenderBody = bodyModel !== 'classic';
 
   return (
     <div
@@ -168,36 +210,34 @@ export const MannequinScene: React.FC = () => {
         <color attach="background" args={[canvasBgColor]} />
 
         {/* Studio Lighting aligned with w1536-wm.webp (Key light from upper-left-front) */}
-        <ambientLight intensity={isLight ? 0.85 : 0.72} />
-        <hemisphereLight
-          args={[
-            '#ffffff',
-            '#94a3b8',
-            0.8,
-          ]}
+        <ambientLight
+          intensity={rig.ambient * (isLight ? 1.18 : 1)}
+          color={rig.tint}
         />
+        <hemisphereLight args={['#ffffff', '#94a3b8', rig.hemisphere]} />
 
-        {/* Upper-Left-Front Key Directional Light matching w1536-wm.webp */}
+        {/* Key light: angle, brightness and warmth come from the lighting settings */}
         <directionalLight
-          position={[-2.2, 2.8, 2.35]}
-          intensity={1.55}
+          position={rig.keyPosition}
+          intensity={rig.key}
+          color={rig.tint}
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
           shadow-bias={-0.0005}
         />
 
-        {/* Subtle Right Fill Light */}
+        {/* Fill light from the opposite side */}
         <directionalLight
-          position={[2.2, 1.8, 1.4]}
-          intensity={0.45}
+          position={rig.fillPosition}
+          intensity={rig.fill}
           color="#e2e8f0"
         />
 
-        {/* Back Rim Light */}
+        {/* Back rim light */}
         <directionalLight
-          position={[0.3, 2.5, -2.5]}
-          intensity={0.75}
+          position={rig.rimPosition}
+          intensity={rig.rim}
           color="#f8fafc"
         />
 

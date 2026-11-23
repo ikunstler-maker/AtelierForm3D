@@ -1,7 +1,9 @@
 {
   "version": 1,
   "gender": "female",
-  "model": "sims_female_mannequin.glb",
+  "style": "stylized",
+  "model": "body_female.glb",
+  "source": "Blender Studio Human Base Meshes v1.4.1 (CC0)",
   "generatedWith": "Blender 5.3.0",
   "units": {
     "girths": "cm",
@@ -22,6 +24,12 @@
     "waist": 68.0,
     "hip": 96.0
   },
+  "sourceGirthsCm": {
+    "neck": 26.86,
+    "chest": 68.01,
+    "waist": 51.33,
+    "hip": 86.36
+  },
   "girthOrder": [
     "neck",
     "chest",
@@ -36,43 +44,54 @@
   ],
   "matrixCmPerUnit": [
     [
-      3.3739,
-      0.0082,
-      0.0,
+      3.3667,
+      0.2722,
+      0.0006,
       0.0
     ],
     [
       0.0,
-      8.9907,
-      0.924,
-      0.0024
+      8.9678,
+      1.4444,
+      0.0013
     ],
     [
       0.0,
-      0.6982,
-      6.7936,
-      0.6356
+      1.094,
+      6.7723,
+      0.3034
     ],
     [
       0.0,
       0.0002,
-      0.4584,
-      9.5919
+      0.2081,
+      9.5679
     ]
   ],
   "heightKey": {
     "name": "M_height",
     "cmPerUnit": 10.0,
-    "stretchFromM": 0.0726,
-    "stretchToM": 1.4398
+    "stretchFromM": 0.0756,
+    "stretchToM": 1.3682
   },
   "landmarksM": {
-    "neck": 1.4703,
-    "chest": 1.2096,
-    "waist": 1.0494,
-    "hip": 0.8643
+    "neck": 1.385,
+    "chest": 1.215,
+    "waist": 1.07,
+    "hip": 0.86
+  },
+  "stylization": {
+    "mode": "anime",
+    "response": {
+      "totalHeight": 1.0,
+      "girths": 0.35
+    },
+    "maxGirthChange": 0.16
   },
   "checks": {
-    "heightCrossTalkCm": 0.0
+    "heightCrossTalkCm": 0.0,
+    "crotchM": 0.825,
+    "armpitM": 1.235,
+    "vertices": 14106
   }
 }

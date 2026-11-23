@@ -7,3 +7,4 @@ dist-ssr
 .env
 .env.*
 __pycache__/
+assets/human-base-meshes/

@@ -24,9 +24,11 @@ Source of truth: `docs/SPEC.md`, amended by `docs/decisions.md`. Conflict with a
 - Blender 5.3 via the Blender MCP server (tools `mcp__Blender__*`). Fallback: addon socket `localhost:9876`.
 
 ## Blender → site pipeline (invariants)
-- Generator: `scripts/blender_sims_human_generator.py`; output GLB → `public/models/`.
-- Ruler: `blender -b --factory-startup -P scripts/measure_glb.py -- --profile scripts/profiles/<name>.json`; exit 0 = within tolerance.
-- After any generator change: regenerate, then `blender -b --factory-startup -P scripts/verify_profiles.py -- --out docs/reports/stage2_verify.json` must exit 0.
+- Generator: `scripts/blender_base_body_generator.py` (Blender Studio Human Base Meshes, CC0; bundle in `assets/human-base-meshes/`, not in git) → `public/models/body_<gender>.glb` + `.calibration.json`. Old tube generator `blender_sims_human_generator.py` is a fallback only.
+- Two modes: anime (stylized body, soft response: `stylization` in the calibration) and realistic (exact; planned). Accuracy ±0.5 cm is promised for realistic only.
+- Ruler: `scripts/measure_glb.py`; import GLBs with `merge_vertices=True` (UV seams split the mesh).
+- After any generator change: regenerate, then `blender -b --factory-startup -P scripts/verify_profiles.py -- --out docs/reports/verify_latest.json` must exit 0.
+- Show the owner renders (base + extreme sizes) before wiring a new or changed body into the site.
 - Site solver `src/utils/blenderBodySolver.ts` and `scripts/verify_profiles.py` hold the same math; change both together.
 - Run Blender headless for builds and checks (`C:\Program Files\Blender Foundation\Blender 5.3\blender.exe`); use MCP only for the owner's open scene.
 - Units: meters in Blender, centimeters in the app schema (`src/data/measurementsSchema.ts`).

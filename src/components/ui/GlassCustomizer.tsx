@@ -2,7 +2,14 @@ import React from 'react';
 import { TRANSLATIONS } from '../../data/translations';
 import {
   ACCENT_SWATCHES,
+  BodyModel,
   CANVAS_BG_SWATCHES,
+  DEFAULT_BODY_MODEL,
+  DEFAULT_LIGHTING,
+  DEFAULT_SKIN_TEXTURE,
+  LIGHTING_PRESETS,
+  LightingPresetId,
+  SKIN_TONE_SWATCHES,
   SurfaceFinish,
   useAtelierStore,
 } from '../../store/useAtelierStore';
@@ -18,10 +25,55 @@ export const GlassCustomizer: React.FC = () => {
   const glassSettings = useAtelierStore((s) => s.glassSettings);
   const updateGlassSettings = useAtelierStore((s) => s.updateGlassSettings);
   const language = useAtelierStore((s) => s.language);
+  const skinToneHex = useAtelierStore((s) => s.appearance.skinToneHex);
+  const updateAppearance = useAtelierStore((s) => s.updateAppearance);
 
   if (!customizerOpen) return null;
 
   const t = TRANSLATIONS[language];
+  const bodyModel = glassSettings.bodyModel ?? DEFAULT_BODY_MODEL;
+  const skinTexture = glassSettings.skinTexture ?? DEFAULT_SKIN_TEXTURE;
+  const lighting = glassSettings.lighting ?? DEFAULT_LIGHTING;
+  const bodyModels: BodyModel[] = ['anime', 'classic'];
+  const lightingPresets: LightingPresetId[] = [
+    'studio',
+    'soft',
+    'contrast',
+    'warm',
+  ];
+  const lightingSliders: {
+    key: 'brightness' | 'direction' | 'warmth';
+    label: string;
+    min: number;
+    max: number;
+    step: number;
+    format: (v: number) => string;
+  }[] = [
+    {
+      key: 'brightness',
+      label: t.customizer.lightBrightness,
+      min: 0.4,
+      max: 1.8,
+      step: 0.05,
+      format: (v) => `${Math.round(v * 100)}%`,
+    },
+    {
+      key: 'direction',
+      label: t.customizer.lightDirection,
+      min: -180,
+      max: 180,
+      step: 5,
+      format: (v) => `${Math.round(v)}°`,
+    },
+    {
+      key: 'warmth',
+      label: t.customizer.lightWarmth,
+      min: -1,
+      max: 1,
+      step: 0.05,
+      format: (v) => (v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)),
+    },
+  ];
   const finishes: SurfaceFinish[] = [
     'animeCel',
     'clay',
@@ -107,27 +159,149 @@ export const GlassCustomizer: React.FC = () => {
             className="rounded accent-sky-400 w-4 h-4 cursor-pointer"
           />
         </label>
+      </div>
 
-        {/* Beta: Blender-built mannequin (GLB) driven by calibrated shape keys */}
-        <label className="flex items-start justify-between gap-2 p-2 rounded-xl liquid-glass-pill cursor-pointer mt-1">
-          <span>
-            <span className="block text-xs font-medium">
-              {t.customizer.blenderBody}
-            </span>
-            <span className="block text-[10px] opacity-70 leading-tight mt-0.5">
-              {t.customizer.blenderBodyHint}
-            </span>
+      {/* Mannequin model: stylized Blender body (anime) or the classic procedural one */}
+      <div className="space-y-1.5 pt-2 border-t border-white/10">
+        <div className="text-[11px] font-medium opacity-80">
+          {t.customizer.bodyModel}
+        </div>
+        <div
+          className="grid grid-cols-2 gap-1.5 p-1 rounded-xl border border-white/10"
+          style={{ background: 'var(--glass-bg-elevated)' }}
+        >
+          {bodyModels.map((model) => (
+            <button
+              key={model}
+              id={`body-model-${model}-btn`}
+              type="button"
+              onClick={() => updateGlassSettings({ bodyModel: model })}
+              className={`py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
+                bodyModel === model
+                  ? 'liquid-glass-pill-active'
+                  : 'opacity-70 hover:opacity-100'
+              }`}
+            >
+              {t.customizer.bodyModels[model]}
+            </button>
+          ))}
+        </div>
+        <div className="text-[10px] opacity-70 leading-tight">
+          {t.customizer.bodyModelHints[bodyModel]}
+        </div>
+
+        {/* Skin colour (shared with the character studio) */}
+        <div className="flex items-center justify-between gap-2 pt-1">
+          <span className="text-[11px] font-medium opacity-80">
+            {t.customizer.skinColor}
           </span>
           <input
-            id="blender-body-toggle"
-            type="checkbox"
-            checked={Boolean(glassSettings.useBlenderBody)}
-            onChange={(e) =>
-              updateGlassSettings({ useBlenderBody: e.target.checked })
-            }
-            className="rounded accent-sky-400 w-4 h-4 cursor-pointer mt-0.5 shrink-0"
+            id="skin-color-input"
+            type="color"
+            aria-label={t.customizer.skinColor}
+            value={skinToneHex}
+            onChange={(e) => updateAppearance({ skinToneHex: e.target.value })}
+            className="w-16 h-7 rounded-lg cursor-pointer bg-transparent border border-white/20"
           />
-        </label>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {SKIN_TONE_SWATCHES.map((sw) => (
+            <button
+              key={sw.id}
+              type="button"
+              title={sw.label}
+              aria-label={sw.label}
+              onClick={() => updateAppearance({ skinToneHex: sw.hex })}
+              className={`w-7 h-7 rounded-full border border-white/25 transition-transform ${
+                skinToneHex.toLowerCase() === sw.hex.toLowerCase()
+                  ? 'scale-110 ring-2 ring-white'
+                  : 'hover:scale-105'
+              }`}
+              style={{ backgroundColor: sw.hex }}
+            />
+          ))}
+        </div>
+
+        {/* Skin micro-texture strength (Blender body only) */}
+        {bodyModel !== 'classic' && (
+          <div className="space-y-1 pt-1">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="opacity-75 font-medium">
+                {t.customizer.skinTexture}
+              </span>
+              <span className="font-mono font-semibold tabular-nums">
+                {Math.round(skinTexture * 100)}%
+              </span>
+            </div>
+            <input
+              id="skin-texture-slider"
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={skinTexture}
+              onChange={(e) =>
+                updateGlassSettings({ skinTexture: parseFloat(e.target.value) })
+              }
+              className="glass-slider"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Lighting: presets + brightness, direction and warmth */}
+      <div className="space-y-1.5 pt-2 border-t border-white/10">
+        <div className="text-[11px] font-medium opacity-80">
+          {t.customizer.lighting}
+        </div>
+        <div className="grid grid-cols-2 gap-1.5">
+          {lightingPresets.map((preset) => (
+            <button
+              key={preset}
+              id={`lighting-preset-${preset}-btn`}
+              type="button"
+              onClick={() =>
+                updateGlassSettings({
+                  lighting: { preset, ...LIGHTING_PRESETS[preset].defaults },
+                })
+              }
+              className={`py-1.5 px-2 rounded-xl text-xs font-medium transition-all ${
+                lighting.preset === preset
+                  ? 'liquid-glass-pill-active'
+                  : 'liquid-glass-pill opacity-85 hover:opacity-100'
+              }`}
+            >
+              {t.customizer.lightingPresets[preset]}
+            </button>
+          ))}
+        </div>
+        {lightingSliders.map((slider) => (
+          <div key={slider.key} className="space-y-1">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="opacity-75 font-medium">{slider.label}</span>
+              <span className="font-mono font-semibold tabular-nums">
+                {slider.format(lighting[slider.key])}
+              </span>
+            </div>
+            <input
+              id={`lighting-${slider.key}-slider`}
+              type="range"
+              min={slider.min}
+              max={slider.max}
+              step={slider.step}
+              value={lighting[slider.key]}
+              onChange={(e) =>
+                updateGlassSettings({
+                  lighting: {
+                    ...lighting,
+                    [slider.key]: parseFloat(e.target.value),
+                  },
+                })
+              }
+              className="glass-slider"
+            />
+          </div>
+        ))}
       </div>
 
       {/* Mannequin Surface Finish (Anime Cel-Shading Reference, Matte Clay, Satin Resin, Translucent Shell) */}

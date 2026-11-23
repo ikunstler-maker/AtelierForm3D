@@ -151,6 +151,8 @@ def tape_girth(components):
         "contour_m": body["contour_m"],
         "width_m": body["max_x"] - body["min_x"],
         "depth_m": body["max_y"] - body["min_y"],
+        "max_abs_x_m": max(abs(body["min_x"]), abs(body["max_x"])),
+        "center_y_m": (body["min_y"] + body["max_y"]) * 0.5,
         "loops_in_slice": len(components),
         "loops_wrapped": len(group),
     }
@@ -262,7 +264,7 @@ def main():
         return 2
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    bpy.ops.import_scene.gltf(filepath=model_path)
+    bpy.ops.import_scene.gltf(filepath=model_path, merge_vertices=True)
     mesh_objects = [o for o in bpy.context.scene.objects if o.type == "MESH"]
     if not mesh_objects:
         print("ERROR: no mesh objects in the model")

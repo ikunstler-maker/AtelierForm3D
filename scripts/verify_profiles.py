@@ -29,10 +29,32 @@ REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 MODELS_DIR = os.path.join(REPO_ROOT, "public", "models")
 
 
+def effective_targets(calibration, targets_cm):
+    """Mirror of effectiveBodyTargets(): what the model should show for real measurements.
+
+    Exact bodies return the targets unchanged; the anime body follows only a share of
+    the difference from its base size, inside a safe range.
+    """
+    st = calibration.get("stylization")
+    if not st:
+        return dict(targets_cm)
+    base = calibration["base"]
+    out = {
+        "totalHeight": base["totalHeight"]
+        + (targets_cm["totalHeight"] - base["totalHeight"]) * st["response"]["totalHeight"]
+    }
+    for g in calibration["girthOrder"]:
+        limit = base[g] * st["maxGirthChange"]
+        delta = (targets_cm[g] - base[g]) * st["response"]["girths"]
+        out[g] = base[g] + min(limit, max(-limit, delta))
+    return out
+
+
 def solve_weights(calibration, targets_cm):
     """Mirror of solveBlenderBodyWeights() in src/utils/blenderBodySolver.ts."""
     from measure_glb import solve_linear
 
+    targets_cm = effective_targets(calibration, targets_cm)
     order = calibration["girthOrder"]
     base = calibration["base"]
     rhs = [targets_cm[g] - base[g] for g in order]
@@ -55,11 +77,12 @@ def verify_profile(profile):
     from measure_glb import measure_objects
 
     gender = profile["gender"]
-    with open(os.path.join(MODELS_DIR, f"sims_{gender}_mannequin.calibration.json"), "r", encoding="utf-8") as fh:
+    with open(os.path.join(MODELS_DIR, f"body_{gender}.calibration.json"), "r", encoding="utf-8") as fh:
         calibration = json.load(fh)
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
-    bpy.ops.import_scene.gltf(filepath=os.path.join(MODELS_DIR, calibration["model"]))
+    # merge_vertices: the exporter splits vertices along UV seams; weld them so slices stay closed loops.
+    bpy.ops.import_scene.gltf(filepath=os.path.join(MODELS_DIR, calibration["model"]), merge_vertices=True)
     objects = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 
     targets = profile["targets_cm"]
@@ -77,17 +100,26 @@ def verify_profile(profile):
         specs[name] = {"type": "girth", "height_m": landmark_height(calibration, name, height_weight)}
     measured, _ = measure_objects(objects, specs)
 
+    # The model must match the effective targets (equal to the real ones for exact bodies).
+    expected = effective_targets(calibration, targets)
     rows = {}
     ok = True
-    for name, target in targets.items():
+    for name, real in targets.items():
         value = measured[name]["value_cm"]
-        delta = value - target
+        delta = value - expected[name]
         row_ok = abs(delta) <= TOLERANCE_CM
         ok = ok and row_ok
-        rows[name] = {"target_cm": target, "value_cm": round(value, 2), "delta_cm": round(delta, 2), "ok": row_ok}
+        rows[name] = {
+            "real_cm": real,
+            "target_cm": round(expected[name], 2),
+            "value_cm": round(value, 2),
+            "delta_cm": round(delta, 2),
+            "ok": row_ok,
+        }
     return {
         "profile": profile["name"],
         "gender": gender,
+        "mode": (calibration.get("stylization") or {}).get("mode", "exact"),
         "weights": {k: round(v, 4) for k, v in weights.items()},
         "all_ok": ok,
         "measurements": rows,
@@ -116,10 +148,10 @@ def main():
 
     print("=== VERIFY_REPORT_BEGIN ===")
     for rep in reports:
-        print(f"{rep['profile']} ({rep['gender']}): {'OK' if rep['all_ok'] else 'FAIL'}")
+        print(f"{rep['profile']} ({rep['gender']}, {rep['mode']}):{'OK' if rep['all_ok'] else 'FAIL'}")
         for name, row in rep["measurements"].items():
             mark = "ok" if row["ok"] else "OUT"
-            print(f"  {name:<12} target {row['target_cm']:>7.2f}  measured {row['value_cm']:>7.2f}  delta {row['delta_cm']:>+6.2f}  {mark}")
+            print(f"  {name:<12} real {row['real_cm']:>7.2f}  target {row['target_cm']:>7.2f}  measured {row['value_cm']:>7.2f}  delta {row['delta_cm']:>+6.2f}  {mark}")
     all_ok = all(rep["all_ok"] for rep in reports)
     print(f"RESULT: {sum(r['all_ok'] for r in reports)}/{len(reports)} profiles within {TOLERANCE_CM} cm")
     print("=== VERIFY_REPORT_END ===")

@@ -214,9 +214,79 @@ export interface GlassSettings {
   surfaceFinish: SurfaceFinish;
   canvasBgColor: string;
   showStudioFloor: boolean;
-  /** Beta: show the Blender-built GLB mannequin instead of the procedural one. */
-  useBlenderBody?: boolean;
+  /** Which mannequin is shown. Missing in older saved settings: use DEFAULT_BODY_MODEL. */
+  bodyModel?: BodyModel;
+  /** Skin micro-texture strength for the Blender body, 0..1. */
+  skinTexture?: number;
+  lighting?: LightingSettings;
 }
+
+/** 'anime' = stylized Blender body (soft response to measurements); 'classic' = procedural mannequin. */
+export type BodyModel = 'anime' | 'classic';
+export const DEFAULT_BODY_MODEL: BodyModel = 'anime';
+export const DEFAULT_SKIN_TEXTURE = 0.5;
+
+export type LightingPresetId = 'studio' | 'soft' | 'contrast' | 'warm';
+
+export interface LightingSettings {
+  preset: LightingPresetId;
+  /** Multiplies every light, 0.4..1.8. */
+  brightness: number;
+  /** Key light angle around the mannequin in degrees; 0 = front, negative = left. */
+  direction: number;
+  /** -1 = cool, 0 = neutral, 1 = warm. */
+  warmth: number;
+}
+
+export interface LightingPreset {
+  key: number;
+  fill: number;
+  rim: number;
+  ambient: number;
+  hemisphere: number;
+  defaults: Omit<LightingSettings, 'preset'>;
+}
+
+/** 'studio' at its defaults reproduces the original fixed lighting. */
+export const LIGHTING_PRESETS: Record<LightingPresetId, LightingPreset> = {
+  studio: {
+    key: 1.55,
+    fill: 0.45,
+    rim: 0.75,
+    ambient: 0.72,
+    hemisphere: 0.8,
+    defaults: { brightness: 1, direction: -43, warmth: 0 },
+  },
+  soft: {
+    key: 0.85,
+    fill: 0.8,
+    rim: 0.35,
+    ambient: 1.0,
+    hemisphere: 1.0,
+    defaults: { brightness: 1, direction: -25, warmth: 0.1 },
+  },
+  contrast: {
+    key: 2.3,
+    fill: 0.12,
+    rim: 1.2,
+    ambient: 0.3,
+    hemisphere: 0.35,
+    defaults: { brightness: 1, direction: -60, warmth: 0 },
+  },
+  warm: {
+    key: 1.5,
+    fill: 0.5,
+    rim: 0.7,
+    ambient: 0.7,
+    hemisphere: 0.75,
+    defaults: { brightness: 1, direction: -43, warmth: 0.7 },
+  },
+};
+
+export const DEFAULT_LIGHTING: LightingSettings = {
+  preset: 'studio',
+  ...LIGHTING_PRESETS.studio.defaults,
+};
 
 export interface AtelierState {
   gender: Gender;
