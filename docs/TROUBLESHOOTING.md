@@ -69,6 +69,22 @@
 - Verify: render three-quarter and side close-ups for a small and a large cup before a full regeneration.
 - Seen: 2026-11-23
 
+## Pointed breasts, dents on small cups — Blender
+- Symptom: large bust looks like a cone; a bust below the base size leaves dents and wrinkles.
+- Root cause: a bump added along one direction keeps its peak; running the same key backwards digs into
+  the chest where the base breast has little relief.
+- Fix: `breast_fields()`: relax the surface inside the breast region to get the chest wall; grow towards a
+  target shape (shelf on the fold, round lower pole, upper slope), blended into the base near the rim and
+  smoothed; negative bust weights use `M_chestFlat` (back to the wall). Solver: `negKey` / `negScale`.
+- Verify: `contact_sheet.py --sheet torso`; tune first in a lab that applies the formula to a finished GLB.
+- Seen: 2026-11-23
+
+## Bust reads 114 cm on a 90 cm body — Blender
+- Symptom: base chest far too big after a generator change; fit does not reach the target.
+- Root cause: the "fullest level" search range for the bust tape reached the armpit and caught the arms.
+- Fix: cap the range at `armpit_z - 0.008`.
+- Seen: 2026-11-23
+
 ## A measure fails only when two keys are large together — Blender
 - Symptom: full bust passes alone but is 0.6–4 cm off with a big rib cage or with shape sliders.
 - Root cause: tape girth (convex hull, fullest level) is not a straight-line function of the breast key, of the
@@ -84,7 +100,7 @@
   so back growth (about 5 cm on `female-plus`) fades out in a short Gaussian right above the underbust
   level; the waist to underbust handover is only 5 % of height (8 cm). Found with a per-key displacement
   profile along the back strip.
-- Fix: planned for stage 1.2 (carry the rib cage growth up the back to the armpit, long smooth falloff).
+- Fix: the top torso frame fades out up to the shoulder line (`torso_profile`, `smoother01`).
 - Seen: 2026-11-23
 
 ## DTIC PDF links return 403 — Env

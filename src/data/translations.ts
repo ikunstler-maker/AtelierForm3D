@@ -161,6 +161,7 @@ export interface TranslationDictionary {
       breastSpacing: string;
       breastFullness: string;
       breastWidth: string;
+      breastSag: string;
     };
     lighting: string;
     lightingPresets: {
@@ -401,6 +402,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         breastSpacing: 'Груди: близько ↔ широко',
         breastFullness: 'Груди: крапля ↔ круглі',
         breastWidth: 'Груди: вузькі ↔ широкі',
+        breastSag: 'Груди: опущеність',
       },
       lighting: 'Освітлення',
       lightingPresets: {
@@ -834,6 +836,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         breastSpacing: 'Breasts: close ↔ wide apart',
         breastFullness: 'Breasts: teardrop ↔ round',
         breastWidth: 'Breasts: narrow ↔ wide',
+        breastSag: 'Breasts: sag',
       },
       lighting: 'Lighting',
       lightingPresets: {

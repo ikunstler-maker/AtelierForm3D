@@ -27,6 +27,10 @@ export interface BlenderBodyCurve {
   frameWeight?: number;
   /** Same as `points`, on a much bigger rib cage. */
   framePoints?: CurvePoints;
+  /** Key that carries negative weights: its value = -weight * negScale, at most negMax. */
+  negKey?: string;
+  negScale?: number;
+  negMax?: number;
   /** Rib cage key weight -> cm of this measure, curved key at 0. */
   frameCurve?: CurvePoints;
   /** Key weights at which the shape sliders were calibrated. */
@@ -238,7 +242,14 @@ export function solveBlenderBodyWeights(
       if (measureAt(mid) < targets[name]) lo = mid;
       else hi = mid;
     }
-    weights[curve.key] = (lo + hi) / 2;
+    const w = (lo + hi) / 2;
+    if (curve.negKey) {
+      // Negative weights are carried by a second key (female: back to the chest wall).
+      weights[curve.key] = Math.max(w, 0);
+      weights[curve.negKey] = Math.min(curve.negMax ?? 1, Math.max(-w, 0) * (curve.negScale ?? 0));
+    } else {
+      weights[curve.key] = w;
+    }
   });
 
   Object.assign(weights, shapes);

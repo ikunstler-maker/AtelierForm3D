@@ -157,7 +157,13 @@ def solve_weights(calibration, targets_cm, shape=None):
                 lo = mid
             else:
                 hi = mid
-        weights[curve["key"]] = (lo + hi) * 0.5
+        w = (lo + hi) * 0.5
+        if curve.get("negKey"):
+            # Negative weights are carried by a second key (female: back to the chest wall).
+            weights[curve["key"]] = max(w, 0.0)
+            weights[curve["negKey"]] = min(curve.get("negMax", 1.0), max(-w, 0.0) * curve["negScale"])
+        else:
+            weights[curve["key"]] = w
     weights.update(shapes)
     hk = calibration["heightKey"]
     weights[hk["name"]] = (targets_cm["totalHeight"] - base["totalHeight"]) / hk["cmPerUnit"]

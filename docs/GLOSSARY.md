@@ -20,6 +20,7 @@
 | Повзунок форми / Shape slider | changes the form, not the tape measures (`S_<id>` keys) | `BODY_SHAPE_SLIDERS`, `shapeKeys` in calibration |
 | М'язова маса / Muscle | shape slider: lats, pecs, deltoids, forearms, glutes, quads | `S_muscle` |
 | Купол грудей / Breast dome | smooth bump the full-bust key grows on each breast | `breast_dome()` in the generator |
+| Грудна стінка / Chest wall | surface under the breast, found by relaxing the breast region; small busts flatten to it | `breast_fields()`, key `M_chestFlat` |
 | Складка під грудьми / Fold | lower edge of the breast; the underbust tape lies just below it | `fold_z` |
 | Крива мірки / Measure curve | weight → cm table for a measure that is not a straight line (female bust) | `curveKeys` in calibration |
 | Аудит повзунків / Slider audit | sweep of every slider: what moves, what the ruler reads | `scripts/audit_sliders.py`, `docs/reports/slider_audit.md` |

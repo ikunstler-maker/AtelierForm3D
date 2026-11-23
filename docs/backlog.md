@@ -5,7 +5,9 @@
    2026-11-23, four PRs: 1.1 preparation (done: landmarks checked, contact sheets, back line diagnosed),
    1.2 torso, 1.3 pelvis / glutes / thighs / belly, 1.4 limbs / neck / hands. Each part: contact sheet
    (`scripts/contact_sheet.py`, "before" set in `renders/contact/before/`) → owner OK → wire → checks → merge.
-   - Part 1.2 also: new shape slider "breast sag"; try a denser mesh (measure load time, show the owner).
+   - Part 1.2 (built, waits for the owner's OK on `renders/contact/after12/`): new breast build, flat key,
+     "breast sag" slider, rib cage carried up the back. Left over: anime body with strong breast sliders
+     still droops to a point; male chest unchanged; denser mesh not needed so far.
    - Part 1.4 also: `shoulderWidth` moves to the tailoring definition (between shoulder points).
    - Math: smooth (C2) falloffs everywhere; smoothing pass in transition zones. Line on the back: the female
      back has no key above the underbust level (the bust key skips the back), so on large sizes the back

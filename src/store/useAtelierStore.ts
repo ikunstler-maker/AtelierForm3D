@@ -229,7 +229,8 @@ export type BodyShapeId =
   | 'breastLift'
   | 'breastSpacing'
   | 'breastFullness'
-  | 'breastWidth';
+  | 'breastWidth'
+  | 'breastSag';
 
 export const BODY_SHAPE_SLIDERS: {
   id: BodyShapeId;
@@ -242,6 +243,7 @@ export const BODY_SHAPE_SLIDERS: {
   { id: 'breastSpacing', min: -1, max: 1, femaleOnly: true },
   { id: 'breastFullness', min: -1, max: 1, femaleOnly: true },
   { id: 'breastWidth', min: -1, max: 1, femaleOnly: true },
+  { id: 'breastSag', min: 0, max: 1, femaleOnly: true },
 ];
 
 /**
