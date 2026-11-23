@@ -28,6 +28,9 @@ Source of truth: `docs/SPEC.md`, amended by `docs/decisions.md`. Conflict with a
 - Styles: `--style realistic` (default mannequin, exact → `body_<gender>_realistic.*`) and `--style stylized` (anime, soft response via `stylization` → `body_<gender>.*`). Both drive 10 measures (height, neck, chest, underbust, waist, hip, shoulderWidth, bicep, thigh, calf) plus shape sliders (`S_*`: muscle, 4 breast sliders on female). Run both after generator changes, in parallel, in the background (about 5 min). Accuracy ±0.5 cm is promised for realistic only.
 - Human bodies must look naturally anthropometric (owner). Tune shapes on close-up renders first, then regenerate.
 - Calibration `girthOrder` names must equal the site's `MeasurementKey` names; the site reads targets by these names.
+- Model files: generator writes uncompressed GLBs to `models_src/`; `node scripts/compress_models.mjs` writes the site copies to `public/models/` (meshopt, no per-key normals; fails if position error > 0.1 mm). Blender cannot read the compressed files: all Blender checks use `models_src/`. The site recomputes normals (`updateMorphedNormals` in `BlenderBody.tsx`).
+- Slider audit after generator or solver changes: `blender -b --factory-startup -P scripts/audit_sliders.py -- --out docs/reports/slider_audit.json` must report no `dead` or `drift` rows. `BLENDER_BODY_MEASURES` in the store must equal totalHeight + `girthOrder`.
+- Landmark definitions and sources: `docs/LANDMARKS.md` (ANSUR II; ISO 8559-1 text is not available).
 - Ruler: `scripts/measure_glb.py`; import GLBs with `merge_vertices=True` (UV seams split the mesh).
 - After any generator change: regenerate, then `blender -b --factory-startup -P scripts/verify_profiles.py -- --out docs/reports/verify_latest.json` must exit 0.
 - Show the owner renders (base + extreme sizes) before wiring a new or changed body into the site.

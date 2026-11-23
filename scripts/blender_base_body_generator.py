@@ -134,6 +134,9 @@ def run():
         raise FileNotFoundError(f"Human Base Meshes bundle not found: {bundle} (see the header of this script)")
     models_dir = os.path.join(REPO_ROOT, "public", "models")
     os.makedirs(models_dir, exist_ok=True)
+    # Uncompressed GLBs go to models_src/; run scripts/compress_models.mjs to refresh public/models.
+    source_dir = os.path.join(REPO_ROOT, "models_src")
+    os.makedirs(source_dir, exist_ok=True)
     measures = MEASURES
     fit_measures = STYLE_FIT[style]
 
@@ -894,14 +897,15 @@ def run():
         body.select_set(True)
         bpy.context.view_layer.objects.active = body
         bpy.ops.export_scene.gltf(
-            filepath=os.path.join(models_dir, f"{stem}.glb"),
+            filepath=os.path.join(source_dir, f"{stem}.glb"),
             export_format='GLB',
             use_selection=True,
             export_yup=True,
             export_apply=False,
             export_morph=True,
-            # Normals per key keep the shading right when the site applies the keys.
-            export_morph_normal=True,
+            # No normals per key: the site recomputes normals after it applies the keys
+            # (scripts/compress_models.mjs strips them from older files too).
+            export_morph_normal=False,
         )
         print(f"[AtelierForm base body] {gender} {style}: source {calibration['sourceMeasuresCm']}")
         print(f"[AtelierForm base body] {gender} {style}: base {calibration['base']}")

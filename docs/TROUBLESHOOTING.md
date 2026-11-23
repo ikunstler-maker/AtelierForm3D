@@ -78,6 +78,20 @@
 - Verify: `female-plus`, `female-cup-a`, `female-cup-f` pass on both styles.
 - Seen: 2026-11-23
 
+## Compression check reports errors of 1.5 m — Build
+- Symptom: `compress_models.mjs` prints `max error 1593 mm ... TOO LARGE` right after writing the files.
+- Root cause: meshopt reorders vertices, so comparing source and result by vertex index is meaningless.
+- Fix: match vertices by base position first (`matchVertices`), then compare every shape key.
+- Verify: errors around 0.02 mm.
+- Seen: 2026-11-23
+
+## Slider looks dead on the Blender bodies — UI
+- Symptom: moving a measurement slider changes nothing on the realistic or anime mannequin.
+- Root cause: the body drives 10 of 50 measures; the other 40 have no shape key yet (not a bug in the chain).
+- Fix: rows are tagged "ще не діє"; to connect a measure add a key in the generator, then add it to
+  `BLENDER_BODY_MEASURES`. Check with `scripts/audit_sliders.py` and the browser sweep in `slider_audit.md`.
+- Seen: 2026-11-23
+
 ## Body missing right after page load — UI
 - Symptom: empty canvas for a few seconds, then the body appears; no console errors.
 - Root cause: 3–4 MB GLB with 15 shape keys takes 3–9 s to parse and upload.

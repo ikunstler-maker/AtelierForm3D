@@ -1,0 +1,2299 @@
+{
+ "summary": {
+  "ok": 90,
+  "limit": 10,
+  "not_implemented": 160
+ },
+ "rows": [
+  {
+   "model": "body_female.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "min",
+   "value": 145.0,
+   "asked_cm": 145.0,
+   "measured_cm": 145.0,
+   "max_move_mm": 230.0,
+   "moved_vertices": 12790,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "max",
+   "value": 205.0,
+   "asked_cm": 205.0,
+   "measured_cm": 205.0,
+   "max_move_mm": 370.0,
+   "moved_vertices": 12794,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 31.9,
+   "measured_cm": 31.9,
+   "max_move_mm": 6.1,
+   "moved_vertices": 3741,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "max",
+   "value": 50.0,
+   "asked_cm": 39.44,
+   "measured_cm": 39.44,
+   "max_move_mm": 15.8,
+   "moved_vertices": 4233,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "min",
+   "value": 72.0,
+   "asked_cm": 83.7,
+   "measured_cm": 86.98,
+   "max_move_mm": 24.9,
+   "moved_vertices": 132,
+   "status": "limit",
+   "cause": "stops 3.3 cm short of the asked value"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "max",
+   "value": 145.0,
+   "asked_cm": 104.4,
+   "measured_cm": 105.09,
+   "max_move_mm": 99.7,
+   "moved_vertices": 138,
+   "status": "limit",
+   "cause": "stops 0.7 cm short of the asked value"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "min",
+   "value": 62.0,
+   "asked_cm": 70.45,
+   "measured_cm": 70.49,
+   "max_move_mm": 27.3,
+   "moved_vertices": 3524,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "max",
+   "value": 130.0,
+   "asked_cm": 87.0,
+   "measured_cm": 87.01,
+   "max_move_mm": 22.2,
+   "moved_vertices": 3772,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "min",
+   "value": 54.0,
+   "asked_cm": 63.1,
+   "measured_cm": 63.1,
+   "max_move_mm": 9.2,
+   "moved_vertices": 464,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 78.88,
+   "measured_cm": 78.88,
+   "max_move_mm": 20.4,
+   "moved_vertices": 496,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "min",
+   "value": 78.0,
+   "asked_cm": 89.7,
+   "measured_cm": 89.7,
+   "max_move_mm": 12.5,
+   "moved_vertices": 1204,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "max",
+   "value": 150.0,
+   "asked_cm": 111.36,
+   "measured_cm": 111.37,
+   "max_move_mm": 30.4,
+   "moved_vertices": 1334,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "min",
+   "value": 33.0,
+   "asked_cm": 23.83,
+   "measured_cm": 23.83,
+   "max_move_mm": 8.0,
+   "moved_vertices": 4237,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "max",
+   "value": 56.0,
+   "asked_cm": 28.98,
+   "measured_cm": 28.98,
+   "max_move_mm": 20.3,
+   "moved_vertices": 4974,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "min",
+   "value": 21.0,
+   "asked_cm": 22.3,
+   "measured_cm": 22.3,
+   "max_move_mm": 4.0,
+   "moved_vertices": 584,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "max",
+   "value": 48.0,
+   "asked_cm": 28.19,
+   "measured_cm": 28.19,
+   "max_move_mm": 7.8,
+   "moved_vertices": 674,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 42.0,
+   "asked_cm": 48.42,
+   "measured_cm": 48.42,
+   "max_move_mm": 8.4,
+   "moved_vertices": 1246,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 85.0,
+   "asked_cm": 61.55,
+   "measured_cm": 5.58,
+   "max_move_mm": 15.4,
+   "moved_vertices": 1343,
+   "status": "limit",
+   "cause": "stops 56.0 cm short of the asked value"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 31.25,
+   "measured_cm": 31.25,
+   "max_move_mm": 4.0,
+   "moved_vertices": 1288,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "max",
+   "value": 52.0,
+   "asked_cm": 38.97,
+   "measured_cm": 38.98,
+   "max_move_mm": 9.1,
+   "moved_vertices": 1568,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "muscle",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 6.1,
+   "moved_vertices": 5058,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastLift",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 16.1,
+   "moved_vertices": 124,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastLift",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 15.3,
+   "moved_vertices": 116,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastSpacing",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 11.8,
+   "moved_vertices": 120,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastSpacing",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 11.8,
+   "moved_vertices": 120,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastFullness",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 16.5,
+   "moved_vertices": 66,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastFullness",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 16.5,
+   "moved_vertices": 66,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastWidth",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 5.3,
+   "moved_vertices": 94,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "breastWidth",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 5.4,
+   "moved_vertices": 94,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "acrossBackWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "acrossFrontWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "backRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "backWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "cervicaleHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "chestHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "crotchCurveTotal",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "crotchHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "footLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "footWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "frontRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "frontWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "handLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "handWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "head",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "highHipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "inseamLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "kneeHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "outseamFromHighHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "outseamFromWaist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderToElbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "sideTorsoLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "singleShoulderLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "sleeveFromArmpit",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "sleeveFromNeck",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "torsoLoop",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "underbustHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "waistHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "waistToKneeLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "min",
+   "value": 145.0,
+   "asked_cm": 145.0,
+   "measured_cm": 145.0,
+   "max_move_mm": 230.0,
+   "moved_vertices": 9526,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "max",
+   "value": 205.0,
+   "asked_cm": 205.0,
+   "measured_cm": 205.0,
+   "max_move_mm": 370.0,
+   "moved_vertices": 9534,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 28.0,
+   "measured_cm": 28.07,
+   "max_move_mm": 13.7,
+   "moved_vertices": 1139,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "max",
+   "value": 50.0,
+   "asked_cm": 50.0,
+   "measured_cm": 50.06,
+   "max_move_mm": 36.4,
+   "moved_vertices": 1296,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "min",
+   "value": 72.0,
+   "asked_cm": 72.0,
+   "measured_cm": 86.82,
+   "max_move_mm": 25.0,
+   "moved_vertices": 123,
+   "status": "limit",
+   "cause": "stops 14.8 cm short of the asked value"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "max",
+   "value": 145.0,
+   "asked_cm": 145.0,
+   "measured_cm": 105.43,
+   "max_move_mm": 99.8,
+   "moved_vertices": 128,
+   "status": "limit",
+   "cause": "stops 39.6 cm short of the asked value"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "min",
+   "value": 62.0,
+   "asked_cm": 62.0,
+   "measured_cm": 62.35,
+   "max_move_mm": 53.6,
+   "moved_vertices": 1703,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "max",
+   "value": 130.0,
+   "asked_cm": 130.0,
+   "measured_cm": 130.0,
+   "max_move_mm": 105.3,
+   "moved_vertices": 2812,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "min",
+   "value": 54.0,
+   "asked_cm": 54.0,
+   "measured_cm": 54.02,
+   "max_move_mm": 26.8,
+   "moved_vertices": 414,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 135.0,
+   "measured_cm": 133.43,
+   "max_move_mm": 125.3,
+   "moved_vertices": 855,
+   "status": "limit",
+   "cause": "stops 1.6 cm short of the asked value"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "min",
+   "value": 78.0,
+   "asked_cm": 78.0,
+   "measured_cm": 78.02,
+   "max_move_mm": 36.7,
+   "moved_vertices": 566,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "max",
+   "value": 150.0,
+   "asked_cm": 150.0,
+   "measured_cm": 150.1,
+   "max_move_mm": 110.2,
+   "moved_vertices": 608,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "min",
+   "value": 33.0,
+   "asked_cm": 33.0,
+   "measured_cm": 33.0,
+   "max_move_mm": 34.0,
+   "moved_vertices": 4361,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "max",
+   "value": 56.0,
+   "asked_cm": 56.0,
+   "measured_cm": 56.0,
+   "max_move_mm": 86.4,
+   "moved_vertices": 4888,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "min",
+   "value": 21.0,
+   "asked_cm": 21.0,
+   "measured_cm": 21.0,
+   "max_move_mm": 12.1,
+   "moved_vertices": 573,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "max",
+   "value": 48.0,
+   "asked_cm": 48.0,
+   "measured_cm": 48.0,
+   "max_move_mm": 38.2,
+   "moved_vertices": 648,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 42.0,
+   "asked_cm": 42.0,
+   "measured_cm": 42.01,
+   "max_move_mm": 25.7,
+   "moved_vertices": 579,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 85.0,
+   "asked_cm": 85.0,
+   "measured_cm": 2.25,
+   "max_move_mm": 53.3,
+   "moved_vertices": 646,
+   "status": "limit",
+   "cause": "stops 82.8 cm short of the asked value"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 28.0,
+   "measured_cm": 28.0,
+   "max_move_mm": 12.5,
+   "moved_vertices": 563,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "max",
+   "value": 52.0,
+   "asked_cm": 52.0,
+   "measured_cm": 52.01,
+   "max_move_mm": 30.3,
+   "moved_vertices": 773,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "muscle",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 8.1,
+   "moved_vertices": 3629,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastLift",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 17.0,
+   "moved_vertices": 110,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastLift",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 16.3,
+   "moved_vertices": 109,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastSpacing",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 12.1,
+   "moved_vertices": 109,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastSpacing",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 12.2,
+   "moved_vertices": 113,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastFullness",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 9.5,
+   "moved_vertices": 110,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastFullness",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.9,
+   "moved_vertices": 110,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastWidth",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 5.0,
+   "moved_vertices": 90,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "breastWidth",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 5.2,
+   "moved_vertices": 88,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "acrossBackWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "acrossFrontWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "backRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "backWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "cervicaleHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "chestHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "crotchCurveTotal",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "crotchHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "footLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "footWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "frontRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "frontWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "handLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "handWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "head",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "highHipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "inseamLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "kneeHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "outseamFromHighHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "outseamFromWaist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderToElbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "sideTorsoLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "singleShoulderLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "sleeveFromArmpit",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "sleeveFromNeck",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "torsoLoop",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "underbustHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "waistHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "waistToKneeLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "min",
+   "value": 145.0,
+   "asked_cm": 145.0,
+   "measured_cm": 145.0,
+   "max_move_mm": 350.0,
+   "moved_vertices": 12788,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "max",
+   "value": 205.0,
+   "asked_cm": 205.0,
+   "measured_cm": 205.0,
+   "max_move_mm": 250.0,
+   "moved_vertices": 12778,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 35.48,
+   "measured_cm": 35.48,
+   "max_move_mm": 10.3,
+   "moved_vertices": 819,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "max",
+   "value": 50.0,
+   "asked_cm": 43.18,
+   "measured_cm": 43.18,
+   "max_move_mm": 9.4,
+   "moved_vertices": 806,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "min",
+   "value": 72.0,
+   "asked_cm": 90.2,
+   "measured_cm": 90.24,
+   "max_move_mm": 19.4,
+   "moved_vertices": 1537,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "max",
+   "value": 145.0,
+   "asked_cm": 115.75,
+   "measured_cm": 115.78,
+   "max_move_mm": 31.1,
+   "moved_vertices": 1846,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "min",
+   "value": 62.0,
+   "asked_cm": 80.85,
+   "measured_cm": 80.89,
+   "max_move_mm": 19.5,
+   "moved_vertices": 318,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "max",
+   "value": 130.0,
+   "asked_cm": 104.65,
+   "measured_cm": 104.71,
+   "max_move_mm": 26.2,
+   "moved_vertices": 325,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "min",
+   "value": 54.0,
+   "asked_cm": 73.5,
+   "measured_cm": 73.5,
+   "max_move_mm": 19.3,
+   "moved_vertices": 491,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 97.44,
+   "measured_cm": 97.44,
+   "max_move_mm": 24.7,
+   "moved_vertices": 497,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "min",
+   "value": 78.0,
+   "asked_cm": 91.0,
+   "measured_cm": 91.0,
+   "max_move_mm": 14.0,
+   "moved_vertices": 1090,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "max",
+   "value": 150.0,
+   "asked_cm": 113.68,
+   "measured_cm": 113.71,
+   "max_move_mm": 31.4,
+   "moved_vertices": 1189,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "min",
+   "value": 33.0,
+   "asked_cm": 41.15,
+   "measured_cm": 41.15,
+   "max_move_mm": 23.2,
+   "moved_vertices": 4321,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "max",
+   "value": 56.0,
+   "asked_cm": 49.14,
+   "measured_cm": 49.14,
+   "max_move_mm": 17.8,
+   "moved_vertices": 4172,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "min",
+   "value": 21.0,
+   "asked_cm": 30.08,
+   "measured_cm": 30.08,
+   "max_move_mm": 8.5,
+   "moved_vertices": 684,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "max",
+   "value": 48.0,
+   "asked_cm": 39.95,
+   "measured_cm": 39.95,
+   "max_move_mm": 10.6,
+   "moved_vertices": 704,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 42.0,
+   "asked_cm": 48.99,
+   "measured_cm": 49.0,
+   "max_move_mm": 9.4,
+   "moved_vertices": 1132,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 85.0,
+   "asked_cm": 62.91,
+   "measured_cm": 8.68,
+   "max_move_mm": 15.5,
+   "moved_vertices": 1201,
+   "status": "limit",
+   "cause": "stops 54.2 cm short of the asked value"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 33.71,
+   "measured_cm": 33.71,
+   "max_move_mm": 5.8,
+   "moved_vertices": 1586,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "max",
+   "value": 52.0,
+   "asked_cm": 41.91,
+   "measured_cm": 41.91,
+   "max_move_mm": 8.1,
+   "moved_vertices": 1732,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "muscle",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.3,
+   "moved_vertices": 3232,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "acrossBackWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "acrossFrontWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "backRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "backWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "cervicaleHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "chestHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "crotchCurveTotal",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "crotchHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "footLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "footWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "frontRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "frontWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "handLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "handWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "head",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "highHipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "inseamLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "kneeHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "outseamFromHighHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "outseamFromWaist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderToElbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "sideTorsoLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "singleShoulderLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "sleeveFromArmpit",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "sleeveFromNeck",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "torsoLoop",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "underbustHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "waistHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "waistToKneeLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "min",
+   "value": 145.0,
+   "asked_cm": 145.0,
+   "measured_cm": 145.0,
+   "max_move_mm": 350.0,
+   "moved_vertices": 9506,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "totalHeight",
+   "kind": "measure",
+   "at": "max",
+   "value": 205.0,
+   "asked_cm": 205.0,
+   "measured_cm": 205.0,
+   "max_move_mm": 250.0,
+   "moved_vertices": 9504,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 28.0,
+   "measured_cm": 28.12,
+   "max_move_mm": 27.6,
+   "moved_vertices": 1221,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "neck",
+   "kind": "measure",
+   "at": "max",
+   "value": 50.0,
+   "asked_cm": 50.0,
+   "measured_cm": 50.03,
+   "max_move_mm": 25.2,
+   "moved_vertices": 1217,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "min",
+   "value": 72.0,
+   "asked_cm": 72.0,
+   "measured_cm": 72.13,
+   "max_move_mm": 56.3,
+   "moved_vertices": 4269,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "chest",
+   "kind": "measure",
+   "at": "max",
+   "value": 145.0,
+   "asked_cm": 145.0,
+   "measured_cm": 145.07,
+   "max_move_mm": 90.5,
+   "moved_vertices": 4513,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "min",
+   "value": 62.0,
+   "asked_cm": 62.0,
+   "measured_cm": 62.74,
+   "max_move_mm": 55.9,
+   "moved_vertices": 536,
+   "status": "limit",
+   "cause": "stops 0.7 cm short of the asked value"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "underbust",
+   "kind": "measure",
+   "at": "max",
+   "value": 130.0,
+   "asked_cm": 130.0,
+   "measured_cm": 130.26,
+   "max_move_mm": 75.1,
+   "moved_vertices": 662,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "min",
+   "value": 54.0,
+   "asked_cm": 54.0,
+   "measured_cm": 54.48,
+   "max_move_mm": 60.0,
+   "moved_vertices": 384,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "waist",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 135.0,
+   "measured_cm": 135.32,
+   "max_move_mm": 102.1,
+   "moved_vertices": 397,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "min",
+   "value": 78.0,
+   "asked_cm": 78.0,
+   "measured_cm": 78.02,
+   "max_move_mm": 39.8,
+   "moved_vertices": 543,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hip",
+   "kind": "measure",
+   "at": "max",
+   "value": 150.0,
+   "asked_cm": 150.0,
+   "measured_cm": 150.07,
+   "max_move_mm": 103.5,
+   "moved_vertices": 557,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "min",
+   "value": 33.0,
+   "asked_cm": 33.0,
+   "measured_cm": 33.0,
+   "max_move_mm": 67.0,
+   "moved_vertices": 4287,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderWidth",
+   "kind": "measure",
+   "at": "max",
+   "value": 56.0,
+   "asked_cm": 56.0,
+   "measured_cm": 56.0,
+   "max_move_mm": 51.6,
+   "moved_vertices": 4147,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "min",
+   "value": 21.0,
+   "asked_cm": 21.0,
+   "measured_cm": 21.01,
+   "max_move_mm": 22.6,
+   "moved_vertices": 620,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "bicep",
+   "kind": "measure",
+   "at": "max",
+   "value": 48.0,
+   "asked_cm": 48.0,
+   "measured_cm": 48.0,
+   "max_move_mm": 28.2,
+   "moved_vertices": 621,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 42.0,
+   "asked_cm": 42.0,
+   "measured_cm": 42.0,
+   "max_move_mm": 28.8,
+   "moved_vertices": 508,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "thigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 85.0,
+   "asked_cm": 85.0,
+   "measured_cm": null,
+   "max_move_mm": 48.6,
+   "moved_vertices": 625,
+   "status": "limit",
+   "cause": "ruler finds no section at this extreme"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "min",
+   "value": 28.0,
+   "asked_cm": 28.0,
+   "measured_cm": 28.01,
+   "max_move_mm": 17.6,
+   "moved_vertices": 610,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "calf",
+   "kind": "measure",
+   "at": "max",
+   "value": 52.0,
+   "asked_cm": 52.0,
+   "measured_cm": 52.01,
+   "max_move_mm": 24.7,
+   "moved_vertices": 651,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "muscle",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.3,
+   "moved_vertices": 3936,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "acrossBackWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "acrossFrontWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "backRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "backWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "cervicaleHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "chestHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "crotchCurveTotal",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "crotchHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "footLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "footWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "frontRise",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "frontWaistLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "handLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "handWidth",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "head",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "highHipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "inseamLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "kneeHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "outseamFromHighHip",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "outseamFromWaist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderToElbow",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "sideTorsoLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "singleShoulderLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "sleeveFromArmpit",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "sleeveFromNeck",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "torsoLoop",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "underbustHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "waistHeight",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "waistToKneeLength",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "status": "not_implemented",
+   "cause": "the body has no key for this measure yet"
+  }
+ ]
+}

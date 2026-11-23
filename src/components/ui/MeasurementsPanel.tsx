@@ -7,7 +7,12 @@ import {
   MeasurementParameterMeta,
 } from '../../data/measurementsSchema';
 import { TRANSLATIONS } from '../../data/translations';
-import { DisplayMode, useAtelierStore } from '../../store/useAtelierStore';
+import {
+  BLENDER_BODY_MEASURES,
+  DEFAULT_BODY_MODEL,
+  DisplayMode,
+  useAtelierStore,
+} from '../../store/useAtelierStore';
 import { cmToUnit, unitToCm } from '../../utils/fitCalculator';
 import {
   IconCategory,
@@ -27,6 +32,9 @@ export const MeasurementsPanel: React.FC = () => {
   const measurements = useAtelierStore((s) => s.measurements);
   const setMeasurement = useAtelierStore((s) => s.setMeasurement);
   const unit = useAtelierStore((s) => s.unit);
+  const bodyModel = useAtelierStore(
+    (s) => s.glassSettings.bodyModel ?? DEFAULT_BODY_MODEL
+  );
   const language = useAtelierStore((s) => s.language);
   const displayMode = useAtelierStore((s) => s.displayMode);
   const setDisplayMode = useAtelierStore((s) => s.setDisplayMode);
@@ -292,6 +300,10 @@ export const MeasurementsPanel: React.FC = () => {
                   const isHovered = hoveredMeasurement === key;
                   const isHidden = Boolean(hiddenMeasurements[key]);
                   const loc = t.measurements[key];
+                  // The Blender bodies follow only some measures so far; mark the rest.
+                  const notOnModel =
+                    bodyModel !== 'classic' &&
+                    !BLENDER_BODY_MEASURES.includes(key);
 
                   return (
                     <div
@@ -302,8 +314,15 @@ export const MeasurementsPanel: React.FC = () => {
                       onClick={() => setSelectedMeasurement(key)}
                       onMouseEnter={() => setHoveredMeasurement(key)}
                       onMouseLeave={() => setHoveredMeasurement(null)}
-                      title={loc.tooltip}
+                      title={
+                        notOnModel
+                          ? `${loc.tooltip}\n\n${t.inspector.notOnModelHint}`
+                          : loc.tooltip
+                      }
+                      data-on-model={notOnModel ? 'no' : 'yes'}
                       className={`group rounded-xl px-2.5 py-1.5 transition-all cursor-pointer border ${
+                        notOnModel ? 'opacity-55 ' : ''
+                      }${
                         isSelected
                           ? 'liquid-glass-pill-active'
                           : isHovered
@@ -320,6 +339,11 @@ export const MeasurementsPanel: React.FC = () => {
                           <span className="text-xs font-medium truncate">
                             {loc.name}
                           </span>
+                          {notOnModel && (
+                            <span className="text-[9px] px-1 py-0.5 rounded border border-white/25 opacity-90 shrink-0 whitespace-nowrap">
+                              {t.inspector.notOnModel}
+                            </span>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-1 shrink-0">

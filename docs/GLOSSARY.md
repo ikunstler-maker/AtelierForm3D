@@ -22,6 +22,11 @@
 | Купол грудей / Breast dome | smooth bump the full-bust key grows on each breast | `breast_dome()` in the generator |
 | Складка під грудьми / Fold | lower edge of the breast; the underbust tape lies just below it | `fold_z` |
 | Крива мірки / Measure curve | weight → cm table for a measure that is not a straight line (female bust) | `curveKeys` in calibration |
+| Аудит повзунків / Slider audit | sweep of every slider: what moves, what the ruler reads | `scripts/audit_sliders.py`, `docs/reports/slider_audit.md` |
+| «Ще не діє» / Not on model | measure the Blender bodies do not follow yet | `BLENDER_BODY_MEASURES`, tag in `MeasurementsPanel.tsx` |
+| Вихідні моделі / Source models | uncompressed GLBs for Blender checks | `models_src/` |
+| Стиснення / Compression | meshopt + quantization for the site copies | `scripts/compress_models.mjs` |
+| Орієнтири / Landmarks | anatomical points and measure definitions with sources | `docs/LANDMARKS.md` |
 | Плечовий суглоб / Shoulder joint | point the arm rides on as one rigid piece | `joint_x`, `armShiftMPerUnit` in calibration |
 | Класичний манекен / Classic | previous procedural mannequin | `glassSettings.bodyModel = 'classic'`, `ParametricBody.tsx` |
 | М'який перерахунок / Stylization | share of the difference from base size the anime body follows | `stylization` in calibration, `effectiveBodyTargets()` |

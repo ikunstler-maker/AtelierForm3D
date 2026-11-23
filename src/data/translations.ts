@@ -88,6 +88,8 @@ export interface TranslationDictionary {
   inspector: {
     title: string;
     subtitle: string;
+    notOnModel: string;
+    notOnModelHint: string;
     searchPlaceholder: string;
     displayModeLabel: string;
     modes: {
@@ -306,6 +308,9 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     inspector: {
       title: 'Антропометрія Тіла',
       subtitle: '50 кравецьких параметрів у реальному часі',
+      notOnModel: 'ще не діє',
+      notOnModelHint:
+        'Цей манекен поки не реагує на цю мірку. Вона зберігається і працює в перевірці одягу та на класичному манекені.',
       searchPlaceholder: 'Пошук мірки (напр. талія, рукав, кроковий)...',
       displayModeLabel: 'Відображення 3D ліній',
       modes: {
@@ -736,6 +741,9 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     inspector: {
       title: 'Body Anthropometry',
       subtitle: '50 real-time tailoring parameters',
+      notOnModel: 'not yet',
+      notOnModelHint:
+        'This mannequin does not follow this measure yet. It is saved and still used by the fit check and the classic mannequin.',
       searchPlaceholder: 'Search parameter (e.g. waist, sleeve, inseam)...',
       displayModeLabel: '3D Overlay Mode',
       modes: {

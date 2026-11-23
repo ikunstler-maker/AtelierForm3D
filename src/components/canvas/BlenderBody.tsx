@@ -64,6 +64,116 @@ function getSkinGrainTexture(): THREE.CanvasTexture {
   return texture;
 }
 
+/** Last solved state, read by the slider audit (scripts and docs/reports/slider_audit.md). */
+export const blenderBodyDebug: {
+  model: string | null;
+  weights: Record<string, number>;
+} = { model: null, weights: {} };
+
+interface NormalCache {
+  base: Float32Array;
+  deltas: Float32Array[];
+  index: ArrayLike<number>;
+  /** Vertices split by the exporter (UV seams) share one normal: vertex -> group id. */
+  group: Uint32Array;
+  groupCount: number;
+  normal: THREE.BufferAttribute;
+}
+
+function readVec3(attr: THREE.BufferAttribute | THREE.InterleavedBufferAttribute) {
+  const out = new Float32Array(attr.count * 3);
+  for (let i = 0; i < attr.count; i++) {
+    out[i * 3] = attr.getX(i);
+    out[i * 3 + 1] = attr.getY(i);
+    out[i * 3 + 2] = attr.getZ(i);
+  }
+  return out;
+}
+
+function buildNormalCache(mesh: THREE.Mesh): NormalCache | null {
+  const geometry = mesh.geometry;
+  const position = geometry.attributes.position;
+  const morphs = geometry.morphAttributes.position;
+  if (!position || !morphs || !geometry.index) return null;
+  const base = readVec3(position);
+  const keyToGroup = new Map<string, number>();
+  const group = new Uint32Array(position.count);
+  for (let i = 0; i < position.count; i++) {
+    const key = `${base[i * 3]},${base[i * 3 + 1]},${base[i * 3 + 2]}`;
+    let id = keyToGroup.get(key);
+    if (id === undefined) {
+      id = keyToGroup.size;
+      keyToGroup.set(key, id);
+    }
+    group[i] = id;
+  }
+  const normal = new THREE.BufferAttribute(new Float32Array(position.count * 3), 3);
+  normal.setUsage(THREE.DynamicDrawUsage);
+  geometry.setAttribute('normal', normal);
+  // Per-key normals are not shipped; make sure the shader does not expect them.
+  delete geometry.morphAttributes.normal;
+  return {
+    base,
+    deltas: morphs.map((m) => readVec3(m)),
+    index: geometry.index.array,
+    group,
+    groupCount: keyToGroup.size,
+    normal,
+  };
+}
+
+/**
+ * The GLBs carry no normals for shape keys (that would double the files), so smooth
+ * normals are recomputed here from the morphed positions whenever the weights change.
+ */
+function updateMorphedNormals(mesh: THREE.Mesh) {
+  let cache = mesh.userData.atelierNormals as NormalCache | null | undefined;
+  if (cache === undefined) {
+    cache = buildNormalCache(mesh);
+    mesh.userData.atelierNormals = cache;
+  }
+  if (!cache) return;
+  const { base, deltas, index, group, groupCount, normal } = cache;
+  const influences = mesh.morphTargetInfluences ?? [];
+  const pos = new Float32Array(base);
+  deltas.forEach((delta, k) => {
+    const w = influences[k] ?? 0;
+    if (!w) return;
+    for (let i = 0; i < pos.length; i++) pos[i] += delta[i] * w;
+  });
+  const sum = new Float32Array(groupCount * 3);
+  for (let f = 0; f < index.length; f += 3) {
+    const a = index[f] * 3;
+    const b = index[f + 1] * 3;
+    const c = index[f + 2] * 3;
+    const e1x = pos[b] - pos[a];
+    const e1y = pos[b + 1] - pos[a + 1];
+    const e1z = pos[b + 2] - pos[a + 2];
+    const e2x = pos[c] - pos[a];
+    const e2y = pos[c + 1] - pos[a + 1];
+    const e2z = pos[c + 2] - pos[a + 2];
+    // Cross product: its length is twice the face area, so big faces weigh more.
+    const nx = e1y * e2z - e1z * e2y;
+    const ny = e1z * e2x - e1x * e2z;
+    const nz = e1x * e2y - e1y * e2x;
+    for (const v of [index[f], index[f + 1], index[f + 2]]) {
+      const g = group[v] * 3;
+      sum[g] += nx;
+      sum[g + 1] += ny;
+      sum[g + 2] += nz;
+    }
+  }
+  const out = normal.array as Float32Array;
+  for (let i = 0; i < group.length; i++) {
+    const g = group[i] * 3;
+    const len = Math.hypot(sum[g], sum[g + 1], sum[g + 2]) || 1;
+    out[i * 3] = sum[g] / len;
+    out[i * 3 + 1] = sum[g + 1] / len;
+    out[i * 3 + 2] = sum[g + 2] / len;
+  }
+  normal.needsUpdate = true;
+}
+
 /**
  * Mannequin built in Blender (GLB, meters, Y-up) on the Blender Studio Human
  * Base Meshes (CC0). Its shape keys are calibrated in centimeters and driven by
@@ -185,8 +295,12 @@ export const BlenderBody: React.FC<{ variant: BlenderBodyVariant }> = ({
         const index = dict[name];
         if (index !== undefined) influences[index] = value;
       });
+      updateMorphedNormals(mesh);
     });
-    scene.userData.blenderBodyWeights = weights;  }, [calibration, expectedModel, scene, parts, measurements, bodyShape]);
+    scene.userData.blenderBodyWeights = weights;
+    blenderBodyDebug.model = calibration.model;
+    blenderBodyDebug.weights = weights;
+  }, [calibration, expectedModel, scene, parts, measurements, bodyShape]);
 
   return <primitive object={scene} name="blender-mannequin" />;
 };

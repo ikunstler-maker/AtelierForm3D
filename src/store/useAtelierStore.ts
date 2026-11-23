@@ -251,6 +251,23 @@ export const BODY_SHAPE_SLIDERS: {
  */
 export type BodyModel = 'realistic' | 'anime' | 'classic';
 export const DEFAULT_BODY_MODEL: BodyModel = 'realistic';
+
+/**
+ * Measures the Blender bodies follow (totalHeight + `girthOrder` of the calibration
+ * files). scripts/audit_sliders.py reports the same list; keep them in sync.
+ */
+export const BLENDER_BODY_MEASURES: MeasurementKey[] = [
+  'totalHeight',
+  'neck',
+  'chest',
+  'underbust',
+  'waist',
+  'hip',
+  'shoulderWidth',
+  'bicep',
+  'thigh',
+  'calf',
+];
 export const DEFAULT_SKIN_TEXTURE = 0.5;
 
 export type LightingPresetId = 'studio' | 'soft' | 'contrast' | 'warm';

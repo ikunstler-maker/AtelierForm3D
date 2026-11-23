@@ -28,6 +28,8 @@ TOLERANCE_CM = 0.5
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 MODELS_DIR = os.path.join(REPO_ROOT, "public", "models")
+# Uncompressed GLBs from the generator; public/models holds the compressed copies for the site.
+SOURCE_DIR = os.path.join(REPO_ROOT, "models_src")
 
 
 def effective_targets(calibration, targets_cm):
@@ -199,7 +201,7 @@ def verify_profile(profile, calibration):
 
     bpy.ops.wm.read_factory_settings(use_empty=True)
     # merge_vertices: the exporter splits vertices along UV seams; weld them so slices stay closed loops.
-    bpy.ops.import_scene.gltf(filepath=os.path.join(MODELS_DIR, calibration["model"]), merge_vertices=True)
+    bpy.ops.import_scene.gltf(filepath=os.path.join(SOURCE_DIR, calibration["model"]), merge_vertices=True)
     objects = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 
     targets = profile["targets_cm"]
