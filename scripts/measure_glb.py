@@ -194,9 +194,53 @@ def measure(bm, bounds, spec):
     }
 
 
-def main():
+def bmesh_from_objects(mesh_objects):
+    """World-space bmesh of the evaluated objects (shape key values applied)."""
     import bpy
     import bmesh
+
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    depsgraph.update()
+    bm = bmesh.new()
+    for obj in mesh_objects:
+        eval_obj = obj.evaluated_get(depsgraph)
+        mesh = eval_obj.to_mesh()
+        mesh.transform(obj.matrix_world)
+        bm.from_mesh(mesh)
+        eval_obj.to_mesh_clear()
+    bm.verts.ensure_lookup_table()
+    return bm
+
+
+def measure_objects(mesh_objects, measurements):
+    """Measure a dict of specs on the given objects; returns {name: result}."""
+    bm = bmesh_from_objects(mesh_objects)
+    zs = [v.co.z for v in bm.verts]
+    bounds = {"min_z": min(zs), "max_z": max(zs)}
+    results = {name: measure(bm, bounds, spec) for name, spec in measurements.items()}
+    bm.free()
+    return results, bounds
+
+
+def solve_linear(matrix, rhs):
+    """Gaussian elimination with partial pivoting; matrix is a list of rows."""
+    n = len(rhs)
+    a = [list(matrix[i]) + [rhs[i]] for i in range(n)]
+    for col in range(n):
+        pivot = max(range(col, n), key=lambda r: abs(a[r][col]))
+        if abs(a[pivot][col]) < 1e-12:
+            raise ValueError("calibration matrix is singular")
+        a[col], a[pivot] = a[pivot], a[col]
+        for r in range(n):
+            if r != col:
+                f = a[r][col] / a[col][col]
+                for c in range(col, n + 1):
+                    a[r][c] -= f * a[col][c]
+    return [a[i][n] / a[i][i] for i in range(n)]
+
+
+def main():
+    import bpy
 
     args = parse_args(sys.argv)
     if not args["profile"]:
@@ -232,30 +276,20 @@ def main():
                 if kb.name not in shape_key_names:
                     shape_key_names.append(kb.name)
                 if kb.name in key_values:
-                    kb.value = float(key_values[kb.name])
+                    value = float(key_values[kb.name])
+                    kb.slider_min = min(kb.slider_min, value)
+                    kb.slider_max = max(kb.slider_max, value)
+                    kb.value = value
     unknown_keys = [k for k in key_values if k not in shape_key_names]
 
-    depsgraph = bpy.context.evaluated_depsgraph_get()
-    depsgraph.update()
-    bm = bmesh.new()
-    vertex_count = 0
-    for obj in mesh_objects:
-        eval_obj = obj.evaluated_get(depsgraph)
-        mesh = eval_obj.to_mesh()
-        mesh.transform(obj.matrix_world)
-        bm.from_mesh(mesh)
-        vertex_count += len(mesh.vertices)
-        eval_obj.to_mesh_clear()
-    bm.verts.ensure_lookup_table()
-
-    zs = [v.co.z for v in bm.verts]
-    bounds = {"min_z": min(zs), "max_z": max(zs)}
+    vertex_count = sum(len(o.data.vertices) for o in mesh_objects)
+    measured, bounds = measure_objects(mesh_objects, profile["measurements"])
 
     tolerance = float(profile.get("tolerance_cm", 0.5))
     results = {}
     all_ok = True
     for name, spec in profile["measurements"].items():
-        r = measure(bm, bounds, spec)
+        r = measured[name]
         target = spec.get("target_cm")
         r["target_cm"] = target
         if r["value_cm"] is None:
@@ -271,7 +305,6 @@ def main():
             if isinstance(v, float):
                 r[k] = round(v, 2) if k.endswith("_cm") else v
         results[name] = r
-    bm.free()
 
     report = {
         "profile": profile.get("name"),

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, OrbitControls } from '@react-three/drei';
@@ -6,6 +6,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { CameraFocusZone } from '../../data/measurementsSchema';
 import { useAtelierStore } from '../../store/useAtelierStore';
 import { CM_TO_M } from '../../utils/geometryMath';
+import { BlenderBody } from './BlenderBody';
 import { MeasurementOverlays } from './MeasurementOverlays';
 import { ParametricBody } from './ParametricBody';
 
@@ -147,6 +148,9 @@ export const MannequinScene: React.FC = () => {
   const showStudioFloor = useAtelierStore(
     (s) => s.glassSettings.showStudioFloor
   );
+  const useBlenderBody = useAtelierStore(
+    (s) => s.glassSettings.useBlenderBody
+  );
   const isLight = theme === 'light';
 
   return (
@@ -199,7 +203,13 @@ export const MannequinScene: React.FC = () => {
 
         {/* Parametric 3D Mannequin + 3D Interactive Measurement Overlays */}
         <group position={[0, 0, 0]}>
-          <ParametricBody />
+          {useBlenderBody ? (
+            <Suspense fallback={null}>
+              <BlenderBody />
+            </Suspense>
+          ) : (
+            <ParametricBody />
+          )}
           <MeasurementOverlays />
           {showStudioFloor && <StudioPedestal />}
           <ContactShadows

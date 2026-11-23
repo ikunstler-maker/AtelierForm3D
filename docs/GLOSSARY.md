@@ -12,6 +12,9 @@
 | Профіль мірок / Profile | JSON: heights, target values, tolerance for one body | `scripts/profiles/*.json` |
 | Обхват стрічкою / Tape girth | convex hull length of a body slice, arms excluded | `tape_girth()` in `measure_glb.py` |
 | Точка відліку / Baseline | first measurement of the existing models | `docs/reports/baseline.md` |
+| Повзунок мірки / Measurement key | calibrated shape key `M_<name>`; weight 1 = known cm | generator, `BlenderBody.tsx` |
+| Таблиця калібрування / Calibration | JSON: base girths + cm per unit weight per key | `public/models/*.calibration.json` |
+| Модель Blender (бета) | GLB mannequin shown instead of the procedural one | `glassSettings.useBlenderBody`, `src/utils/blenderBodySolver.ts` |
 | GLB | binary 3D model file exported from Blender | `public/` |
 | Shape key | Blender morph target to change body shape | generator script |
 | Blender MCP | connector that lets Claude control Blender | `mcp__Blender__*` |

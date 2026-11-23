@@ -1,17 +1,17 @@
 # Backlog
 
 ## Next by plan
-1. Stage 2 / PR 2: generator takes a measurement profile JSON, works in Blender 5.3, compensates bust/glute bumps.
-2. Stage 2 / PR 2: calibrate shape keys in cm (+ calibration table JSON next to the GLB).
-3. Stage 2 / PR 2: site loads the GLB behind a "Blender model (beta)" switch and sets morph weights from measurements.
-4. Stage 2 / PR 2: verify 3 profiles (female, male, extreme) with `scripts/measure_glb.py`, tolerance 0.5 cm.
-5. Stage 3: snap overlays to the GLB surface.
+1. Stage 3: snap overlays (rings, lines) to the Blender body surface; today they follow the procedural body.
+2. Blender body quality: boxy shoulders (deltoid caps), visible ledge where pelvis meets legs, rough hands.
+3. Extend measurement keys: remaining 12 girths, then lengths and landmark heights (chestHeight, waistHeight, ...).
+4. Stage 4: load time and phone check with the Blender body.
 
 ## Known gaps / follow-ups
-- Site does not load `public/models/*.glb` yet (no `useGLTF` in `src/`); 11 MB ships to Pages unused until PR 2.
-- Baseline (docs/reports/baseline.md): chest +1.3..+3.5 cm, hip +2.7..+4.4 cm, male waist −0.55 cm vs generator targets.
-- Feet float 1.5 mm above the floor in both GLBs (height −0.15 cm).
-- Remaining 12 girths and all lengths are not measured yet; extend `scripts/profiles/*.json` after stage 2.
+- Blender body (beta switch in the customizer) drives only totalHeight, neck, chest, waist, hip.
+- Blender body ignores the anime cel shader, hair, face and head display modes; it uses one physical material.
+- Height key stretches ankle..neck base; hands stretch with it by a few percent.
+- CAS style keys are off by default (`--cas-keys`); they are not calibrated and would change girths.
+- `scripts/profiles/sims_*_default.json` use pre-normalisation heights (about 1 mm off); still within tolerance.
+- Generator warns: `Material.use_nodes` will be removed in Blender 6.0.
 - Blender MCP requests time out while the owner's Blender is open with an unsaved scene; headless Blender works.
-- README has broken encoding (mojibake in the title dash) — re-save as UTF-8.
-- No tests yet; only `npm run lint` (tsc) and build. `gh` CLI is not installed (PRs are opened by the owner).
+- No JS tests yet; only `npm run lint` (tsc) and build. `gh` CLI is not installed (PRs are opened by the owner).

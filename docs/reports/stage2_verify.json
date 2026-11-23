@@ -1,0 +1,226 @@
+{
+  "tolerance_cm": 0.5,
+  "all_ok": true,
+  "profiles": [
+    {
+      "profile": "female-l",
+      "gender": "female",
+      "weights": {
+        "M_neck": 0.4432,
+        "M_chest": 0.5883,
+        "M_waist": 0.7676,
+        "M_hip": 0.5888,
+        "M_height": 0.2
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "target_cm": 170,
+          "value_cm": 170.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "target_cm": 35.5,
+          "value_cm": 35.5,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "chest": {
+          "target_cm": 96,
+          "value_cm": 96.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "waist": {
+          "target_cm": 74,
+          "value_cm": 74.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "hip": {
+          "target_cm": 102,
+          "value_cm": 102.0,
+          "delta_cm": 0.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "profile": "female-plus",
+      "gender": "female",
+      "weights": {
+        "M_neck": 2.3623,
+        "M_chest": 3.6318,
+        "M_waist": 5.7781,
+        "M_hip": 3.477,
+        "M_height": 0.8
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "target_cm": 176,
+          "value_cm": 176.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "target_cm": 42,
+          "value_cm": 42.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "chest": {
+          "target_cm": 128,
+          "value_cm": 128.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "waist": {
+          "target_cm": 112,
+          "value_cm": 112.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "hip": {
+          "target_cm": 132,
+          "value_cm": 132.0,
+          "delta_cm": 0.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "profile": "female-xs",
+      "gender": "female",
+      "weights": {
+        "M_neck": -0.5909,
+        "M_chest": -0.7844,
+        "M_waist": -1.0235,
+        "M_hip": -0.7851,
+        "M_height": -0.5
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "target_cm": 163,
+          "value_cm": 163.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "target_cm": 32,
+          "value_cm": 32.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "chest": {
+          "target_cm": 82,
+          "value_cm": 82.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "waist": {
+          "target_cm": 60,
+          "value_cm": 60.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "hip": {
+          "target_cm": 88,
+          "value_cm": 88.0,
+          "delta_cm": -0.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "profile": "male-s",
+      "gender": "male",
+      "weights": {
+        "M_neck": -0.3825,
+        "M_chest": -0.5783,
+        "M_waist": -0.6505,
+        "M_hip": -0.4794,
+        "M_height": -0.5
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "target_cm": 175,
+          "value_cm": 175.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "neck": {
+          "target_cm": 38,
+          "value_cm": 38.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "chest": {
+          "target_cm": 94,
+          "value_cm": 94.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "waist": {
+          "target_cm": 78,
+          "value_cm": 78.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "hip": {
+          "target_cm": 93,
+          "value_cm": 93.0,
+          "delta_cm": 0.0,
+          "ok": true
+        }
+      }
+    },
+    {
+      "profile": "male-xl",
+      "gender": "male",
+      "weights": {
+        "M_neck": 1.4027,
+        "M_chest": 2.0958,
+        "M_waist": 3.1075,
+        "M_hip": 1.6894,
+        "M_height": 1.0
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "target_cm": 190,
+          "value_cm": 190.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "target_cm": 45,
+          "value_cm": 45.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "chest": {
+          "target_cm": 122,
+          "value_cm": 122.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "waist": {
+          "target_cm": 112,
+          "value_cm": 112.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "hip": {
+          "target_cm": 116,
+          "value_cm": 116.0,
+          "delta_cm": 0.0,
+          "ok": true
+        }
+      }
+    }
+  ]
+}

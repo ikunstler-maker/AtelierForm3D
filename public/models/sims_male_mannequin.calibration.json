@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "gender": "male",
+  "model": "sims_male_mannequin.glb",
+  "generatedWith": "Blender 5.3.0",
+  "units": {
+    "girths": "cm",
+    "heights": "cm",
+    "landmarks": "m"
+  },
+  "base": {
+    "totalHeight": 180.0,
+    "neck": 39.5,
+    "chest": 100.0,
+    "waist": 84.0,
+    "hip": 98.0
+  },
+  "targets": {
+    "totalHeight": 180.0,
+    "neck": 39.5,
+    "chest": 100.0,
+    "waist": 84.0,
+    "hip": 98.0
+  },
+  "girthOrder": [
+    "neck",
+    "chest",
+    "waist",
+    "hip"
+  ],
+  "girthKeys": [
+    "M_neck",
+    "M_chest",
+    "M_waist",
+    "M_hip"
+  ],
+  "matrixCmPerUnit": [
+    [
+      3.9111,
+      0.0067,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      9.9928,
+      0.3398,
+      0.0005
+    ],
+    [
+      0.0,
+      0.2865,
+      8.39,
+      0.7858
+    ],
+    [
+      0.0,
+      0.0,
+      0.4666,
+      9.7964
+    ]
+  ],
+  "heightKey": {
+    "name": "M_height",
+    "cmPerUnit": 10.0,
+    "stretchFromM": 0.0776,
+    "stretchToM": 1.5448
+  },
+  "landmarksM": {
+    "neck": 1.5778,
+    "chest": 1.3096,
+    "waist": 1.1144,
+    "hip": 0.9293
+  },
+  "checks": {
+    "heightCrossTalkCm": 0.0
+  }
+}

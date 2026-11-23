@@ -107,6 +107,27 @@ export const GlassCustomizer: React.FC = () => {
             className="rounded accent-sky-400 w-4 h-4 cursor-pointer"
           />
         </label>
+
+        {/* Beta: Blender-built mannequin (GLB) driven by calibrated shape keys */}
+        <label className="flex items-start justify-between gap-2 p-2 rounded-xl liquid-glass-pill cursor-pointer mt-1">
+          <span>
+            <span className="block text-xs font-medium">
+              {t.customizer.blenderBody}
+            </span>
+            <span className="block text-[10px] opacity-70 leading-tight mt-0.5">
+              {t.customizer.blenderBodyHint}
+            </span>
+          </span>
+          <input
+            id="blender-body-toggle"
+            type="checkbox"
+            checked={Boolean(glassSettings.useBlenderBody)}
+            onChange={(e) =>
+              updateGlassSettings({ useBlenderBody: e.target.checked })
+            }
+            className="rounded accent-sky-400 w-4 h-4 cursor-pointer mt-0.5 shrink-0"
+          />
+        </label>
       </div>
 
       {/* Mannequin Surface Finish (Anime Cel-Shading Reference, Matte Clay, Satin Resin, Translucent Shell) */}

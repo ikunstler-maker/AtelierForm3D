@@ -214,6 +214,8 @@ export interface GlassSettings {
   surfaceFinish: SurfaceFinish;
   canvasBgColor: string;
   showStudioFloor: boolean;
+  /** Beta: show the Blender-built GLB mannequin instead of the procedural one. */
+  useBlenderBody?: boolean;
 }
 
 export interface AtelierState {

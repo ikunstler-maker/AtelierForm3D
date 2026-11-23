@@ -26,6 +26,8 @@ Source of truth: `docs/SPEC.md`, amended by `docs/decisions.md`. Conflict with a
 ## Blender → site pipeline (invariants)
 - Generator: `scripts/blender_sims_human_generator.py`; output GLB → `public/models/`.
 - Ruler: `blender -b --factory-startup -P scripts/measure_glb.py -- --profile scripts/profiles/<name>.json`; exit 0 = within tolerance.
+- After any generator change: regenerate, then `blender -b --factory-startup -P scripts/verify_profiles.py -- --out docs/reports/stage2_verify.json` must exit 0.
+- Site solver `src/utils/blenderBodySolver.ts` and `scripts/verify_profiles.py` hold the same math; change both together.
 - Run Blender headless for builds and checks (`C:\Program Files\Blender Foundation\Blender 5.3\blender.exe`); use MCP only for the owner's open scene.
 - Units: meters in Blender, centimeters in the app schema (`src/data/measurementsSchema.ts`).
 - Body measurements in the GLB must match the 50 parameters; check numerically, not only by eye.

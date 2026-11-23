@@ -145,6 +145,8 @@ export interface TranslationDictionary {
     lightGlass: string;
     canvasBackground: string;
     showStudioFloor: string;
+    blenderBody: string;
+    blenderBodyHint: string;
     accentColor: string;
     backdropBlur: string;
     panelOpacity: string;
@@ -345,6 +347,9 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       lightGlass: 'Світле Скло',
       canvasBackground: 'Колір фону позаду манекена',
       showStudioFloor: 'Показувати подіум та сітку підлоги',
+      blenderBody: 'Модель Blender (бета)',
+      blenderBodyHint:
+        'Тіло з Blender: точно відтворює зріст, шию, груди, талію і стегна',
       accentColor: 'Акцентний спектр UI',
       backdropBlur: 'Глибина розмиття скла',
       panelOpacity: 'Щільність панелей',
@@ -738,6 +743,9 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       lightGlass: 'Light Liquid Glass',
       canvasBackground: 'Custom Background Color Behind Body',
       showStudioFloor: 'Show Floor Pedestal & Grid',
+      blenderBody: 'Blender Model (beta)',
+      blenderBodyHint:
+        'Body built in Blender: exact height, neck, chest, waist and hip',
       accentColor: 'UI Accent Spectrum',
       backdropBlur: 'Glass Backdrop Blur',
       panelOpacity: 'Glass Surface Opacity',

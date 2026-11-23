@@ -2,8 +2,13 @@
 """
 AtelierForm 3D — Blender 4.x Sims-Style Parametric Human Generator & Shape-Key Rig
 ===================================================================================
-Run in headless Blender or inside the Blender Scripting workspace / MCP for Blender:
-    blender -b -P scripts/blender_sims_human_generator.py
+Tested with Blender 5.3. Run in headless Blender or inside the Scripting workspace:
+    blender -b --factory-startup -P scripts/blender_sims_human_generator.py [-- --profile p.json] [--cas-keys]
+
+Output per gender in public/models/:
+    sims_<gender>_mannequin.glb               body fitted to the profile girths (tape measure)
+    sims_<gender>_mannequin.calibration.json  cm per unit weight for M_height, M_neck, M_chest, M_waist, M_hip
+Check the result with scripts/verify_profiles.py.
 
 Also supports sending directly to a running Blender MCP socket server (port 9876):
     python3 scripts/blender_sims_human_generator.py --send-mcp localhost:9876
@@ -30,9 +35,20 @@ def solve_ellipse_axes(circ_m: float, rho: float):
     return a, b
 
 
+AXIS_ATTR = "atelier_axis"
+RIGID_ATTR = "atelier_rigid"
+HEIGHT_KEY_NAME = "M_height"
+HEIGHT_KEY_M = 0.10       # M_height = 1.0 adds 10 cm between ankle and neck base
+GIRTH_KEY_SCALE = 0.10    # M_<girth> = 1.0 scales the cross-section by 10 % at its landmark
+FIT_PASSES = 2
+
+
 def run_blender_generation():
     import bpy
     from mathutils import Vector
+
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from measure_glb import measure_objects, solve_linear
 
     def clear_scene():
         bpy.ops.object.select_all(action='SELECT')
@@ -62,7 +78,7 @@ def run_blender_generation():
                 bsdf.inputs["Subsurface"].default_value = 0.15
         return mat
 
-    def create_lofted_mesh_data(name: str, rings: list, cap_bottom=True, cap_top=True):
+    def create_lofted_mesh_data(name: str, rings: list, cap_bottom=True, cap_top=True, rigid=False):
         """Builds a quad-dominant Blender Mesh from a list of 3D vertex rings (glTF Y-up, Z-forward -> Blender Z-up, -Y-forward)."""
         num_rings = len(rings)
         segs = len(rings[0])
@@ -111,15 +127,33 @@ def run_blender_generation():
         mesh.update()
         for poly in mesh.polygons:
             poly.use_smooth = True
+
+        if rigid:
+            # Arms and hands follow girth changes as rigid rings: every vertex stores
+            # the centre of its ring, and measurement keys move the ring as a whole.
+            axis_attr = mesh.attributes.new(AXIS_ATTR, 'FLOAT_VECTOR', 'POINT')
+            rigid_attr = mesh.attributes.new(RIGID_ATTR, 'FLOAT', 'POINT')
+            centers = []
+            for ring in rings:
+                c = Vector((0.0, 0.0, 0.0))
+                for pt in ring:
+                    c += pt
+                c /= segs
+                centers.extend([to_blender_coords(c)] * segs)
+            while len(centers) < len(verts):
+                centers.append(verts[len(centers)])  # cap centre vertices
+            for i, c in enumerate(centers):
+                axis_attr.data[i].vector = c
+                rigid_attr.data[i].value = 1.0
         return mesh
 
-    def link_lofted_object(name: str, rings: list, cap_bottom=True, cap_top=True):
-        mesh = create_lofted_mesh_data(name, rings, cap_bottom, cap_top)
+    def link_lofted_object(name: str, rings: list, cap_bottom=True, cap_top=True, rigid=False):
+        mesh = create_lofted_mesh_data(name, rings, cap_bottom, cap_top, rigid)
         obj = bpy.data.objects.new(name, mesh)
         bpy.context.collection.objects.link(obj)
         return obj
 
-    def build_sims_character(gender: str, export_path: str):
+    def build_sims_character(gender: str, export_path: str, overrides=None, cas_keys=False):
         is_female = (gender == "female")
 
         p = {
@@ -163,6 +197,11 @@ def run_blender_generation():
             "upperArmLen": 0.31 if is_female else 0.34,
             "forearmLen": 0.25 if is_female else 0.27,
         }
+        if overrides:
+            unknown = [k for k in overrides if k not in p]
+            if unknown:
+                raise ValueError(f"unknown profile params: {unknown}")
+            p.update(overrides)
 
         hip_a, hip_b = solve_ellipse_axes(p["hip"], 1.39 if is_female else 1.32)
         hhip_a, hhip_b = solve_ellipse_axes(p["highHip"], 1.36 if is_female else 1.31)
@@ -381,7 +420,7 @@ def run_blender_generation():
                 if side_sign < 0:
                     ring.reverse()
                 arm_rings.append(ring)
-            link_lofted_object(f"Sims_{gender}_Arm_{side_name}", arm_rings, True, True)
+            link_lofted_object(f"Sims_{gender}_Arm_{side_name}", arm_rings, True, True, rigid=True)
 
             # 5-Finger Sculpted Hand (Palm + 4 Fingers + Opposable Thumb)
             dorsal_out = h_dir.cross(fwd_ref).normalized()
@@ -414,7 +453,7 @@ def run_blender_generation():
                 if side_sign < 0:
                     pring.reverse()
                 palm_rings.append(pring)
-            link_lofted_object(f"Sims_{gender}_Palm_{side_name}", palm_rings, True, True)
+            link_lofted_object(f"Sims_{gender}_Palm_{side_name}", palm_rings, True, True, rigid=True)
 
             finger_specs = [
                 ("Index", 0.51, 0.44, 0.72, 0.78, 0.21, 0.46, -0.22),
@@ -437,7 +476,7 @@ def run_blender_generation():
                     if side_sign < 0:
                         fring.reverse()
                     frings.append(fring)
-                link_lofted_object(f"Sims_{gender}_{fname}_{side_name}", frings, True, True)
+                link_lofted_object(f"Sims_{gender}_{fname}_{side_name}", frings, True, True, rigid=True)
 
         # =====================================================================
         # 3. PELVIS-INTEGRATED LEGS + 5-TOE ANATOMICAL FEET (Left & Right)
@@ -561,14 +600,160 @@ def run_blender_generation():
         bpy.context.view_layer.objects.active = torso_obj
         bpy.ops.object.join()
 
+        # The Y-up -> Z-up axis swap mirrors face winding; make every shell face outward.
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.normals_make_consistent(inside=False)
+        bpy.ops.object.mode_set(mode='OBJECT')
+
         skin_mat = create_sims_skin_material(f"Sims_{gender}_Skin", is_female)
         torso_obj.data.materials.append(skin_mat)
 
         # =====================================================================
-        # 4. CREATE 15 CREATE-A-SIM (CAS) SHAPE KEYS (MORPH TARGETS)
+        # 4. NORMALISE: FEET ON THE FLOOR, EXACT TOTAL HEIGHT
         # =====================================================================
-        basis_key = torso_obj.shape_key_add(name="Basis", from_mix=False)
-        basis_coords = [v.co.copy() for v in basis_key.data]
+        mesh = torso_obj.data
+        axis_attr = mesh.attributes.get(AXIS_ATTR)
+        rigid_attr = mesh.attributes.get(RIGID_ATTR)
+        vert_count = len(mesh.vertices)
+        is_rigid = [d.value > 0.5 for d in rigid_attr.data] if rigid_attr else [False] * vert_count
+
+        min_z = min(v.co.z for v in mesh.vertices)
+        max_z = max(v.co.z for v in mesh.vertices)
+        kz = p["totalHeight"] / (max_z - min_z)
+
+        def to_final_z(z: float) -> float:
+            return (z - min_z) * kz
+
+        for v in mesh.vertices:
+            v.co.z = to_final_z(v.co.z)
+        for i in range(vert_count):
+            if is_rigid[i]:
+                ax = axis_attr.data[i].vector
+                axis_attr.data[i].vector = (ax[0], ax[1], to_final_z(ax[2]))
+        mesh.update()
+
+        # =====================================================================
+        # 5. MEASUREMENT SHAPE KEYS (calibrated in cm) + FIT TO THE PROFILE
+        # =====================================================================
+        landmarks = {
+            "neck": to_final_z((p["yCervicale"] + p["yJaw"] - 0.014) * 0.5),
+            "chest": to_final_z(p["yChest"]),
+            "waist": to_final_z(p["yWaist"]),
+            "hip": to_final_z(p["yHip"]),
+        }
+        girth_specs = [
+            ("neck", landmarks["neck"], 0.026),
+            ("chest", landmarks["chest"], 0.075),
+            ("waist", landmarks["waist"], 0.075),
+            ("hip", landmarks["hip"], 0.085),
+        ]
+        girth_order = [name for name, _, _ in girth_specs]
+        targets_cm = {name: p[name] * 100.0 for name in girth_order}
+        z_from = to_final_z(p["yAnkle"])
+        z_to = to_final_z(p["yCervicale"])
+
+        def read_state():
+            coords = [v.co.copy() for v in mesh.vertices]
+            axes = [Vector(axis_attr.data[i].vector) if is_rigid[i] else None for i in range(vert_count)]
+            return coords, axes
+
+        def girth_shift(anchor, weights):
+            """XY shift of a point for key weights; a uniform scale about the body axis."""
+            sx = sy = 0.0
+            for (_, center, sigma), wk in zip(girth_specs, weights):
+                if wk:
+                    g = gaussian(anchor.z, center, sigma) * GIRTH_KEY_SCALE * wk
+                    sx += anchor.x * g
+                    sy += anchor.y * g
+            return sx, sy
+
+        def height_shift(z: float) -> float:
+            return HEIGHT_KEY_M * min(1.0, max(0.0, (z - z_from) / (z_to - z_from)))
+
+        def add_measurement_keys():
+            torso_obj.shape_key_add(name="Basis", from_mix=False)
+            coords, axes = read_state()
+            hk = torso_obj.shape_key_add(name=HEIGHT_KEY_NAME, from_mix=False)
+            for i, co in enumerate(coords):
+                hk.data[i].co.z = co.z + height_shift(co.z)
+            for k, name in enumerate(girth_order):
+                sk = torso_obj.shape_key_add(name=f"M_{name}", from_mix=False)
+                unit = [1.0 if j == k else 0.0 for j in range(len(girth_order))]
+                for i, co in enumerate(coords):
+                    sx, sy = girth_shift(axes[i] if is_rigid[i] else co, unit)
+                    if sx or sy:
+                        sk.data[i].co.x = co.x + sx
+                        sk.data[i].co.y = co.y + sy
+
+        def measure_with(key_values):
+            for kb in mesh.shape_keys.key_blocks[1:]:
+                kb.value = key_values.get(kb.name, 0.0)
+            h_shift = key_values.get(HEIGHT_KEY_NAME, 0.0)
+            specs = {"height": {"type": "height"}}
+            for name in girth_order:
+                z = landmarks[name]
+                specs[name] = {"type": "girth", "height_m": z + h_shift * height_shift(z)}
+            results, _ = measure_objects([torso_obj], specs)
+            return {name: r["value_cm"] for name, r in results.items()}
+
+        def calibrate():
+            base = measure_with({})
+            columns = []
+            for name in girth_order:
+                one = measure_with({f"M_{name}": 1.0})
+                columns.append([one[g] - base[g] for g in girth_order])
+            matrix = [[columns[k][g] for k in range(len(girth_order))] for g in range(len(girth_order))]
+            tall = measure_with({HEIGHT_KEY_NAME: 1.0})
+            for kb in mesh.shape_keys.key_blocks[1:]:
+                kb.value = 0.0
+            return base, matrix, tall["height"] - base["height"], tall
+
+        for _ in range(FIT_PASSES):
+            add_measurement_keys()
+            base, matrix, _, _ = calibrate()
+            weights = solve_linear(matrix, [targets_cm[g] - base[g] for g in girth_order])
+            coords, axes = read_state()
+            torso_obj.shape_key_clear()
+            for i, v in enumerate(mesh.vertices):
+                sx, sy = girth_shift(axes[i] if is_rigid[i] else coords[i], weights)
+                v.co.x = coords[i].x + sx
+                v.co.y = coords[i].y + sy
+                if is_rigid[i]:
+                    axis_attr.data[i].vector = (axes[i].x + sx, axes[i].y + sy, axes[i].z)
+            mesh.update()
+
+        add_measurement_keys()
+        base, matrix, height_cm_per_unit, tall = calibrate()
+        # Girths re-measured at the shifted landmarks must not change with height.
+        height_cross_talk = max(abs(tall[g] - base[g]) for g in girth_order)
+
+        calibration = {
+            "version": 1,
+            "gender": gender,
+            "model": os.path.basename(export_path) if export_path else None,
+            "generatedWith": f"Blender {bpy.app.version_string}",
+            "units": {"girths": "cm", "heights": "cm", "landmarks": "m"},
+            "base": {"totalHeight": round(base["height"], 3), **{g: round(base[g], 3) for g in girth_order}},
+            "targets": {"totalHeight": p["totalHeight"] * 100.0, **targets_cm},
+            "girthOrder": girth_order,
+            "girthKeys": [f"M_{g}" for g in girth_order],
+            "matrixCmPerUnit": [[round(x, 4) for x in row] for row in matrix],
+            "heightKey": {
+                "name": HEIGHT_KEY_NAME,
+                "cmPerUnit": round(height_cm_per_unit, 4),
+                "stretchFromM": round(z_from, 4),
+                "stretchToM": round(z_to, 4),
+            },
+            "landmarksM": {g: round(z, 4) for g, z in landmarks.items()},
+            "checks": {"heightCrossTalkCm": round(height_cross_talk, 4)},
+        }
+        print(f"[AtelierForm 3D Blender Pipeline] {gender} base (cm): {calibration['base']}")
+
+        # =====================================================================
+        # 6. OPTIONAL: 15 CREATE-A-SIM (CAS) STYLE SHAPE KEYS (not calibrated)
+        # =====================================================================
+        basis_coords = [v.co.copy() for v in mesh.vertices] if cas_keys else []
 
         shape_key_specs = [
             ("Chest_Size", p["yChest"], 0.075, 0.18, 0.24),
@@ -588,7 +773,8 @@ def run_blender_generation():
             ("Head_Size", p["yHeadMax"], 0.09, 0.14, 0.14),
         ]
 
-        for sk_name, center_h, sigma_h, scale_x, scale_depth in shape_key_specs:
+        for sk_name, center_h, sigma_h, scale_x, scale_depth in (shape_key_specs if cas_keys else []):
+            center_h = to_final_z(center_h)
             sk = torso_obj.shape_key_add(name=sk_name, from_mix=False)
             for idx, v in enumerate(sk.data):
                 base = basis_coords[idx]
@@ -600,6 +786,13 @@ def run_blender_generation():
 
         if export_path:
             os.makedirs(os.path.dirname(export_path), exist_ok=True)
+            bpy.ops.object.select_all(action='DESELECT')
+            torso_obj.select_set(True)
+            bpy.context.view_layer.objects.active = torso_obj
+            calibration_path = os.path.splitext(export_path)[0] + ".calibration.json"
+            with open(calibration_path, "w", encoding="utf-8") as fh:
+                json.dump(calibration, fh, indent=2)
+                fh.write("\n")
             bpy.ops.export_scene.gltf(
                 filepath=export_path,
                 export_format='GLB',
@@ -614,11 +807,26 @@ def run_blender_generation():
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     models_dir = os.path.join(repo_root, "public", "models")
 
-    clear_scene()
-    build_sims_character("female", os.path.join(models_dir, "sims_female_mannequin.glb"))
+    # Optional arguments after "--":
+    #   --profile <json>  build one body: {"gender", "params": {...meters}, "output": "public/models/x.glb"}
+    #   --cas-keys        also add the 15 uncalibrated CAS style keys (bigger file)
+    cli = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    cas_keys = "--cas-keys" in cli
+    if "--profile" in cli:
+        with open(cli[cli.index("--profile") + 1], "r", encoding="utf-8") as fh:
+            profile = json.load(fh)
+        output = profile["output"]
+        if not os.path.isabs(output):
+            output = os.path.join(repo_root, output)
+        clear_scene()
+        build_sims_character(profile["gender"], output, profile.get("params"), cas_keys)
+        return
 
     clear_scene()
-    build_sims_character("male", os.path.join(models_dir, "sims_male_mannequin.glb"))
+    build_sims_character("female", os.path.join(models_dir, "sims_female_mannequin.glb"), None, cas_keys)
+
+    clear_scene()
+    build_sims_character("male", os.path.join(models_dir, "sims_male_mannequin.glb"), None, cas_keys)
 
 
 def send_to_blender_mcp(host_port: str):
