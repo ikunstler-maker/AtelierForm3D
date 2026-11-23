@@ -2,6 +2,7 @@ import React from 'react';
 import { TRANSLATIONS } from '../../data/translations';
 import {
   ACCENT_SWATCHES,
+  BODY_SHAPE_SLIDERS,
   BodyModel,
   CANVAS_BG_SWATCHES,
   DEFAULT_BODY_MODEL,
@@ -26,6 +27,7 @@ export const GlassCustomizer: React.FC = () => {
   const updateGlassSettings = useAtelierStore((s) => s.updateGlassSettings);
   const language = useAtelierStore((s) => s.language);
   const skinToneHex = useAtelierStore((s) => s.appearance.skinToneHex);
+  const gender = useAtelierStore((s) => s.gender);
   const updateAppearance = useAtelierStore((s) => s.updateAppearance);
 
   if (!customizerOpen) return null;
@@ -34,6 +36,10 @@ export const GlassCustomizer: React.FC = () => {
   const bodyModel = glassSettings.bodyModel ?? DEFAULT_BODY_MODEL;
   const skinTexture = glassSettings.skinTexture ?? DEFAULT_SKIN_TEXTURE;
   const lighting = glassSettings.lighting ?? DEFAULT_LIGHTING;
+  const bodyShape = glassSettings.bodyShape ?? {};
+  const shapeSliders = BODY_SHAPE_SLIDERS.filter(
+    (s) => !s.femaleOnly || gender === 'female'
+  );
   const bodyModels: BodyModel[] = ['realistic', 'anime', 'classic'];
   const lightingPresets: LightingPresetId[] = [
     'studio',
@@ -245,6 +251,60 @@ export const GlassCustomizer: React.FC = () => {
               }
               className="glass-slider"
             />
+          </div>
+        )}
+
+        {/* Body shape: muscle mass and breast form (they keep the tape measures) */}
+        {bodyModel !== 'classic' && (
+          <div className="space-y-1 pt-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-medium opacity-80">
+                {t.customizer.bodyShape}
+              </span>
+              <button
+                id="body-shape-reset-btn"
+                type="button"
+                onClick={() => updateGlassSettings({ bodyShape: {} })}
+                className="text-[10px] opacity-70 hover:opacity-100 underline"
+              >
+                {t.customizer.bodyShapeReset}
+              </button>
+            </div>
+            <div className="text-[10px] opacity-70 leading-tight">
+              {t.customizer.bodyShapeHint}
+            </div>
+            {shapeSliders.map((slider) => {
+              const value = bodyShape[slider.id] ?? 0;
+              return (
+                <div key={slider.id} className="space-y-0.5">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="opacity-75 font-medium">
+                      {t.customizer.bodyShapes[slider.id]}
+                    </span>
+                    <span className="font-mono font-semibold tabular-nums">
+                      {Math.round(value * 100)}
+                    </span>
+                  </div>
+                  <input
+                    id={`body-shape-${slider.id}-slider`}
+                    type="range"
+                    min={slider.min}
+                    max={slider.max}
+                    step={0.05}
+                    value={value}
+                    onChange={(e) =>
+                      updateGlassSettings({
+                        bodyShape: {
+                          ...bodyShape,
+                          [slider.id]: parseFloat(e.target.value),
+                        },
+                      })
+                    }
+                    className="glass-slider"
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

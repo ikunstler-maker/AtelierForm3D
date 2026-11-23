@@ -80,6 +80,7 @@ export const BlenderBody: React.FC<{ variant: BlenderBodyVariant }> = ({
     (s) => s.glassSettings.skinTexture ?? DEFAULT_SKIN_TEXTURE
   );
   const skinToneHex = useAtelierStore((s) => s.appearance.skinToneHex);
+  const bodyShape = useAtelierStore((s) => s.glassSettings.bodyShape);
 
   const { scene } = useGLTF(modelUrl(gender, variant));
   const [calibration, setCalibration] =
@@ -174,7 +175,7 @@ export const BlenderBody: React.FC<{ variant: BlenderBodyVariant }> = ({
     calibration.girthOrder.forEach((name) => {
       targets[name] = measurements[name as MeasurementKey];
     });
-    const weights = solveBlenderBodyWeights(calibration, targets);
+    const weights = solveBlenderBodyWeights(calibration, targets, bodyShape);
     parts.forEach(({ mesh }) => {
       const dict = mesh.morphTargetDictionary;
       const influences = mesh.morphTargetInfluences;
@@ -185,8 +186,7 @@ export const BlenderBody: React.FC<{ variant: BlenderBodyVariant }> = ({
         if (index !== undefined) influences[index] = value;
       });
     });
-    scene.userData.blenderBodyWeights = weights;
-  }, [calibration, expectedModel, scene, parts, measurements]);
+    scene.userData.blenderBodyWeights = weights;  }, [calibration, expectedModel, scene, parts, measurements, bodyShape]);
 
   return <primitive object={scene} name="blender-mannequin" />;
 };

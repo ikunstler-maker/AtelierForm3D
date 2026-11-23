@@ -17,6 +17,11 @@
 | Режим «Аніме» / Anime mode | stylized Blender body; real measurements, softened response | `glassSettings.bodyModel = 'anime'`, `BlenderBody.tsx` |
 | Режим «Реалістичний» / Realistic mode | exact body, ±0.5 cm on 9 driven measures; default | `glassSettings.bodyModel = 'realistic'`, `body_<gender>_realistic.glb` |
 | Керовані мірки / Driven measures | measures a body follows: `girthOrder` in its calibration | realistic 9, anime 5 |
+| Повзунок форми / Shape slider | changes the form, not the tape measures (`S_<id>` keys) | `BODY_SHAPE_SLIDERS`, `shapeKeys` in calibration |
+| М'язова маса / Muscle | shape slider: lats, pecs, deltoids, forearms, glutes, quads | `S_muscle` |
+| Купол грудей / Breast dome | smooth bump the full-bust key grows on each breast | `breast_dome()` in the generator |
+| Складка під грудьми / Fold | lower edge of the breast; the underbust tape lies just below it | `fold_z` |
+| Крива мірки / Measure curve | weight → cm table for a measure that is not a straight line (female bust) | `curveKeys` in calibration |
 | Плечовий суглоб / Shoulder joint | point the arm rides on as one rigid piece | `joint_x`, `armShiftMPerUnit` in calibration |
 | Класичний манекен / Classic | previous procedural mannequin | `glassSettings.bodyModel = 'classic'`, `ParametricBody.tsx` |
 | М'який перерахунок / Stylization | share of the difference from base size the anime body follows | `stylization` in calibration, `effectiveBodyTargets()` |

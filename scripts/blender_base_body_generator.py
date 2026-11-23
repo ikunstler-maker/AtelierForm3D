@@ -900,9 +900,8 @@ def run():
             export_yup=True,
             export_apply=False,
             export_morph=True,
-            # Normals are recomputed by the site after it applies the keys; storing them
-            # per key would double the file.
-            export_morph_normal=False,
+            # Normals per key keep the shading right when the site applies the keys.
+            export_morph_normal=True,
         )
         print(f"[AtelierForm base body] {gender} {style}: source {calibration['sourceMeasuresCm']}")
         print(f"[AtelierForm base body] {gender} {style}: base {calibration['base']}")

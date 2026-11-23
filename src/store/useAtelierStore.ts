@@ -219,7 +219,30 @@ export interface GlassSettings {
   /** Skin micro-texture strength for the Blender body, 0..1. */
   skinTexture?: number;
   lighting?: LightingSettings;
+  /** Shape sliders of the Blender bodies, keyed by BodyShapeId; missing = 0. */
+  bodyShape?: Partial<Record<BodyShapeId, number>>;
 }
+
+/** Sliders that change the form but not the tape measures. */
+export type BodyShapeId =
+  | 'muscle'
+  | 'breastLift'
+  | 'breastSpacing'
+  | 'breastFullness'
+  | 'breastWidth';
+
+export const BODY_SHAPE_SLIDERS: {
+  id: BodyShapeId;
+  min: number;
+  max: number;
+  femaleOnly: boolean;
+}[] = [
+  { id: 'muscle', min: 0, max: 1, femaleOnly: false },
+  { id: 'breastLift', min: -1, max: 1, femaleOnly: true },
+  { id: 'breastSpacing', min: -1, max: 1, femaleOnly: true },
+  { id: 'breastFullness', min: -1, max: 1, femaleOnly: true },
+  { id: 'breastWidth', min: -1, max: 1, femaleOnly: true },
+];
 
 /**
  * 'realistic' = exact Blender body (your copy, ±0.5 cm on the driven measures);

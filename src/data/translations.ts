@@ -150,6 +150,16 @@ export interface TranslationDictionary {
     bodyModelHints: { realistic: string; anime: string; classic: string };
     skinColor: string;
     skinTexture: string;
+    bodyShape: string;
+    bodyShapeHint: string;
+    bodyShapeReset: string;
+    bodyShapes: {
+      muscle: string;
+      breastLift: string;
+      breastSpacing: string;
+      breastFullness: string;
+      breastWidth: string;
+    };
     lighting: string;
     lightingPresets: {
       studio: string;
@@ -376,6 +386,17 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
       skinColor: 'Колір тіла',
       skinTexture: 'Текстура шкіри',
+      bodyShape: 'Форма тіла',
+      bodyShapeHint:
+        'Змінює форму, а мірки лишаються ті самі. Обхват під грудьми керує грудною кліткою, повний обхват — об’ємом грудей.',
+      bodyShapeReset: 'Скинути',
+      bodyShapes: {
+        muscle: 'М’язова маса',
+        breastLift: 'Груди: опущені ↔ підтягнуті',
+        breastSpacing: 'Груди: близько ↔ широко',
+        breastFullness: 'Груди: крапля ↔ круглі',
+        breastWidth: 'Груди: вузькі ↔ широкі',
+      },
       lighting: 'Освітлення',
       lightingPresets: {
         studio: 'Студія',
@@ -795,6 +816,17 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
       skinColor: 'Body Color',
       skinTexture: 'Skin Texture',
+      bodyShape: 'Body Shape',
+      bodyShapeHint:
+        'Changes the form; measurements stay the same. Underbust drives the rib cage, full bust drives the breast volume.',
+      bodyShapeReset: 'Reset',
+      bodyShapes: {
+        muscle: 'Muscle mass',
+        breastLift: 'Breasts: low ↔ lifted',
+        breastSpacing: 'Breasts: close ↔ wide apart',
+        breastFullness: 'Breasts: teardrop ↔ round',
+        breastWidth: 'Breasts: narrow ↔ wide',
+      },
       lighting: 'Lighting',
       lightingPresets: {
         studio: 'Studio',

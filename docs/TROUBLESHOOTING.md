@@ -59,6 +59,31 @@
 - Fix: `MULTIRES_LEVEL = 0` (11.7k vertices, 2.6 MB).
 - Seen: 2026-11-23
 
+## Breasts look like boxes, cones or pinched spikes — Blender
+- Symptom: after the fit or with a large bust the breasts are box-like, pointed, or the surface folds.
+- Root cause (three cases): (1) wrong landmarks: the underbust level sat far below the real fold, so the fit
+  shrank the rib cage and inflated the breasts; (2) scaling the mound about one root point stretches the tip;
+  (3) a smooth bump profile, zero slope at the edge, gives a cone on a coarse mesh.
+- Fix: find the fold from the body (front-most point returns to the midline); grow a dome along one direction;
+  profile `(1 - rho^2)^e`, e = 0.5 on the underside (ball), 1.0 on top; downward motion fades to 0 at the fold.
+- Verify: render three-quarter and side close-ups for a small and a large cup before a full regeneration.
+- Seen: 2026-11-23
+
+## A measure fails only when two keys are large together — Blender
+- Symptom: full bust passes alone but is 0.6–4 cm off with a big rib cage or with shape sliders.
+- Root cause: tape girth (convex hull, fullest level) is not a straight-line function of the breast key, of the
+  rib cage key, or of the shape sliders.
+- Fix: store curves in the calibration (`curveKeys`): bust curve, the same on a big rib cage, rib cage curve,
+  slider effects at three breast sizes in both directions; the solver halves the interval.
+- Verify: `female-plus`, `female-cup-a`, `female-cup-f` pass on both styles.
+- Seen: 2026-11-23
+
+## Body missing right after page load — UI
+- Symptom: empty canvas for a few seconds, then the body appears; no console errors.
+- Root cause: 3–4 MB GLB with 15 shape keys takes 3–9 s to parse and upload.
+- Fix: wait before taking a screenshot; a loading indicator is in the backlog.
+- Seen: 2026-11-23
+
 ## PowerShell cannot touch .blend paths — Env
 - Symptom: `resolve-path targeting '...blend' was blocked` in the Claude session.
 - Root cause: `.claude/settings.json` denies reading `*.blend`; path cmdlets on such files are blocked too.
