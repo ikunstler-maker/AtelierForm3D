@@ -16,10 +16,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Build and deploy are separate jobs (the layout GitHub recommends): when both ran in one job the
+  # deploy step sometimes could not find the artifact uploaded a moment earlier.
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -45,6 +44,13 @@ jobs:
         with:
           path: './dist'
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
