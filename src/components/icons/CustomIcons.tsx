@@ -535,3 +535,23 @@ export const IconCategory: React.FC<{
       );
   }
 };
+
+export const IconBodyShape: React.FC<IconProps> = ({ className = '', size = 16 }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="12" cy="4.5" r="2" />
+    <path d="M8.5 9.5c1-1 6-1 7 0" />
+    <path d="M9 10c0 3 1.2 4 .2 6l-.7 5" />
+    <path d="M15 10c0 3-1.2 4-.2 6l.7 5" />
+    <path d="M10 14c1.2.6 2.8.6 4 0" />
+  </svg>
+);

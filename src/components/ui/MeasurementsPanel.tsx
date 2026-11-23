@@ -13,6 +13,7 @@ import {
   DisplayMode,
   useAtelierStore,
 } from '../../store/useAtelierStore';
+import { LINKED_MEASURE_MOVES, isLinkedMeasure } from '../../utils/linkedMeasures';
 import { cmToUnit, unitToCm } from '../../utils/fitCalculator';
 import {
   IconCategory,
@@ -115,10 +116,11 @@ export const MeasurementsPanel: React.FC = () => {
         type="button"
         onClick={() => setLeftPanelOpen(true)}
         title={t.inspector.expandPanel}
-        className="fixed left-3 top-20 z-20 liquid-glass rounded-2xl px-3 py-2.5 flex items-center gap-2 text-xs font-medium hover:scale-[1.02] transition-all"
+        aria-label={t.inspector.expandPanel}
+        className="fixed left-3 top-[calc(var(--header-bottom,60px)+8px)] z-20 liquid-glass rounded-2xl px-3 py-2.5 flex items-center gap-2 text-xs font-medium hover:scale-[1.02] transition-all"
       >
         <IconChevronRight size={16} />
-        <span>{t.inspector.title}</span>
+        <span>{t.inspector.stubLabel}</span>
       </button>
     );
   }
@@ -132,7 +134,7 @@ export const MeasurementsPanel: React.FC = () => {
   return (
     <aside
       id="measurements-inspector-panel"
-      className="fixed left-3 top-[68px] bottom-16 z-20 w-[335px] sm:w-[360px] max-w-[calc(100vw-24px)] liquid-glass rounded-2xl flex flex-col overflow-hidden mobile-drawer-panel"
+      className="fixed left-3 top-[calc(var(--header-bottom,60px)+8px)] bottom-16 z-20 w-[335px] sm:w-[360px] max-w-[calc(100vw-24px)] liquid-glass rounded-2xl flex flex-col overflow-hidden mobile-drawer-panel"
     >
       {/* Panel Header */}
       <div className="px-3.5 pt-3 pb-2.5 border-b border-white/10 flex items-center justify-between gap-2">
@@ -152,6 +154,9 @@ export const MeasurementsPanel: React.FC = () => {
             </span>
           </div>
           <p className="text-[11px] opacity-65 mt-0.5">{t.inspector.subtitle}</p>
+          <p className="text-[10px] opacity-55 mt-1 leading-snug">
+            {t.inspector.linkedNote}
+          </p>
         </div>
 
         <button
@@ -159,6 +164,7 @@ export const MeasurementsPanel: React.FC = () => {
           type="button"
           onClick={() => setLeftPanelOpen(false)}
           title={t.inspector.collapsePanel}
+          aria-label={t.inspector.collapsePanel}
           className="liquid-glass-pill p-1.5 rounded-xl opacity-75 hover:opacity-100"
         >
           <IconChevronLeft size={15} />
@@ -301,9 +307,16 @@ export const MeasurementsPanel: React.FC = () => {
                   const isHidden = Boolean(hiddenMeasurements[key]);
                   const loc = t.measurements[key];
                   // The Blender bodies follow only some measures so far; mark the rest.
+                  const linked = isLinkedMeasure(key);
                   const notOnModel =
                     bodyModel !== 'classic' &&
+                    !linked &&
                     !BLENDER_BODY_MEASURES.includes(key);
+                  const linkedHint = linked
+                    ? `${t.inspector.linkedMoves} ${(LINKED_MEASURE_MOVES[key] ?? [])
+                        .map((k) => t.measurements[k].name)
+                        .join(', ')}`
+                    : '';
 
                   return (
                     <div
@@ -339,6 +352,14 @@ export const MeasurementsPanel: React.FC = () => {
                           <span className="text-xs font-medium truncate">
                             {loc.name}
                           </span>
+                          {linked && (
+                            <span
+                              title={linkedHint}
+                              className="text-[9px] px-1 py-0.5 rounded border border-white/20 opacity-80 shrink-0 whitespace-nowrap"
+                            >
+                              {t.inspector.linkedTag}
+                            </span>
+                          )}
                           {notOnModel && (
                             <span className="text-[9px] px-1 py-0.5 rounded border border-white/25 opacity-90 shrink-0 whitespace-nowrap">
                               {t.inspector.notOnModel}

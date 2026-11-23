@@ -36,21 +36,30 @@ TARGETS_CM = {
     "female": {
         "totalHeight": 168.0, "neck": 34.0, "upperChest": 86.0, "chest": 90.0, "underbust": 75.0,
         "waist": 68.0, "hip": 96.0, "shoulderWidth": 39.5, "bicep": 27.5, "thigh": 56.0, "calf": 35.0,
+        "head": 56.0, "highHip": 85.0, "midThigh": 48.0, "knee": 36.5, "ankle": 21.5,
+        "elbow": 24.0, "forearm": 23.0, "wrist": 15.5,
     },
     "male": {
         "totalHeight": 180.0, "neck": 39.5, "upperChest": 98.0, "chest": 100.0, "underbust": 91.0,
         "waist": 84.0, "hip": 98.0, "shoulderWidth": 46.0, "bicep": 33.0, "thigh": 58.0, "calf": 38.0,
+        "head": 58.0, "highHip": 91.0, "midThigh": 51.0, "knee": 39.0, "ankle": 23.5,
+        "elbow": 28.0, "forearm": 27.5, "wrist": 17.5,
     },
 }
 # Measures every body is driven by. Names match the site's MeasurementKey.
 MEASURES = [
     "neck", "chest", "underbust", "waist", "hip",
     "shoulderWidth", "bicep", "thigh", "calf",
+    "head", "upperChest", "highHip", "midThigh", "knee", "ankle", "elbow", "forearm", "wrist",
 ]
 # Measures the base shape is fitted to at build time. The anime body keeps its own limbs.
+# Measures the model follows as a difference from the standard value, not as an absolute number:
+# their tape level on the mesh does not match the tailor's one. Upper chest: right under the
+# armpits the slice still catches the roots of the arms, so the absolute girth reads too big.
+DELTA_MEASURES = ["upperChest"]
 STYLE_FIT = {
     "stylized": ["neck", "chest", "underbust", "waist", "hip"],
-    "realistic": MEASURES,
+    "realistic": [m for m in MEASURES if m not in DELTA_MEASURES],
 }
 STYLE_SUFFIX = {"stylized": "", "realistic": "_realistic"}
 # Shape sliders: they change the form, not the tape measures (the solver compensates).
@@ -79,7 +88,11 @@ SHAPE_KEYS = {
 KEY_SIGMA = {
     "neck": 0.013, "upperChest": 0.045, "chest": 0.045, "underbust": 0.045, "waist": 0.045, "hip": 0.05,
     "shoulderWidth": 0.035, "bicep": 0.08, "thigh": 0.04, "calf": 0.055,
+    "head": 0.03, "highHip": 0.045, "midThigh": 0.04, "knee": 0.04, "ankle": 0.03,
+    "elbow": 0.08, "forearm": 0.08, "wrist": 0.08,
 }
+LEG_FRAMES = ["ankle", "calf", "knee", "midThigh", "thigh"]   # bottom to top
+ARM_FRAMES = ["bicep", "elbow", "forearm", "wrist"]            # shoulder to hand
 # Where a girth key puts its depth: > 0 more to the front (belly), < 0 more to the back (glutes).
 # The tape measure is the same either way; the solver reads it from the calibration.
 DEPTH_BIAS = {"chest": 0.2, "underbust": 0.25, "waist": 0.45, "hip": -0.3}
@@ -87,6 +100,8 @@ KEY_KIND = {
     "neck": "girth", "upperChest": "girth", "chest": "girth", "underbust": "girth",
     "waist": "girth", "hip": "girth",
     "shoulderWidth": "shoulder", "bicep": "arm", "thigh": "leg", "calf": "leg",
+    "head": "head", "highHip": "girth", "midThigh": "leg", "knee": "leg", "ankle": "leg",
+    "elbow": "arm", "forearm": "arm", "wrist": "arm",
 }
 BREAST_STEP_M = 0.01      # M_chest = 1.0 brings the apex of each breast forward by 1 cm (female)
 FLAT_KEY_NAME = "M_chestFlat"  # female: takes the breast back to the chest wall (negative bust weights)
@@ -126,9 +141,32 @@ STYLIZATION = {
     "realistic": None,
 }
 
-HEIGHT_KEY_NAME = "M_height"
-HEIGHT_KEY_M = 0.10       # M_height = 1.0 adds 10 cm between ankle and neck
+HEIGHT_KEY_M = 0.10       # a level key at 1.0 raises its level by 10 cm
+# Height levels, bottom to top: one key each ("L_<measure>"). A key raises its own level and
+# stretches the body between the neighbouring levels, so every height can be set on its own.
+LEVELS = [
+    "kneeHeight", "crotchHeight", "hipHeight", "highHipHeight", "waistHeight", "underbustHeight",
+    "chestHeight", "shoulderHeight", "cervicaleHeight", "totalHeight",
+]
+# Standard values (cm) the level, length, hand and foot measures are followed from: the site's defaults.
+REFERENCE_CM = {
+    "female": {
+        "kneeHeight": 46.0, "crotchHeight": 77.0, "hipHeight": 86.5, "highHipHeight": 96.0,
+        "waistHeight": 105.0, "underbustHeight": 113.0, "chestHeight": 121.0, "shoulderHeight": 137.5,
+        "cervicaleHeight": 144.0, "shoulderToElbow": 33.0, "sleeveFromShoulder": 59.0,
+        "handLength": 17.5, "handWidth": 8.0, "footLength": 24.5, "footWidth": 9.0,
+    },
+    "male": {
+        "kneeHeight": 49.5, "crotchHeight": 82.5, "hipHeight": 93.0, "highHipHeight": 102.5,
+        "waistHeight": 111.5, "underbustHeight": 123.0, "chestHeight": 131.0, "shoulderHeight": 147.5,
+        "cervicaleHeight": 154.5, "shoulderToElbow": 36.0, "sleeveFromShoulder": 64.0,
+        "handLength": 19.5, "handWidth": 9.5, "footLength": 27.0, "footWidth": 10.5,
+    },
+}
+ARM_LENGTH_KEYS = ["A_upperArm", "A_forearm"]
+EXTREMITY_KEYS = ["E_handLength", "E_handWidth", "E_footLength", "E_footWidth"]
 KEY_SCALE = 0.10          # M_<measure> = 1.0 scales its cross-section by 10 % at the landmark
+RESIDUAL_WEIGHTS = [-2.0, -1.0, 0.0, 1.5, 3.0, 4.5, 6.0]
 FIT_PASSES = 3
 MULTIRES_LEVEL = 0        # realistic bodies carry a multires modifier; level 1 makes a 14 MB GLB
 PROFILE_STEP_M = 0.005
@@ -335,7 +373,7 @@ def run():
             fold_z = fold_found - 0.007 * height_m
             underbust_z = fold_found - 0.011 * height_m
         else:
-            chest_z = armpit_z - 0.03 * height_m
+            chest_z = armpit_z - 0.04 * height_m
             underbust_z = chest_z - 0.045 * height_m
             fold_z = underbust_z + 0.003 * height_m
             mound_x = front_point(bm, chest_z)[0]
@@ -352,8 +390,14 @@ def run():
         }
         # All-round "frame" keys, bottom to top. On a female body the full-bust measure drives
         # the breast volume instead, so the rib cage is set by the underbust measure alone.
-        frames = ["hip", "waist", "underbust"] if gender == "female" else [
-            "hip", "waist", "underbust", "chest"]
+        # Female: the rib cage (underbust key) stays the top frame; the upper chest key only moves
+        # the back and sides above the bust (see upper_back_shift), so it never fights the breasts.
+        frames = ["hip", "highHip", "waist", "underbust"] if gender == "female" else [
+            "hip", "highHip", "waist", "underbust", "chest", "upperChest"]
+        centers["highHip"] = hip_row[0] + 0.55 * (waist_row[0] - hip_row[0])
+        # Upper chest: the tape right under the armpits, above the bust.
+        centers["upperChest"] = armpit_z - 0.012 * height_m
+        head_range = (0.925 * height_m, 0.975 * height_m)
 
         def leg_section(bm, z):
             comps = [c for c in slice_components(bm, z) if c["min_x"] > 0.0]
@@ -367,7 +411,7 @@ def run():
             bm = bmesh_from_objects([body])
             best = None
             z = 0.14 * height_m
-            while z <= 0.30 * height_m:
+            while z <= 0.25 * height_m:  # stay below the knee (0.30 picked the knee itself)
                 sec = leg_section(bm, z)
                 if sec and (best is None or sec[0] > best[1]):
                     best = (z, sec[0])
@@ -376,6 +420,22 @@ def run():
             centers["calf"] = best[0]
 
         knee_z = 0.285 * height_m
+        centers["knee"] = knee_z
+        centers["midThigh"] = (centers["thigh"] + knee_z) * 0.5
+        # Ankle: the thinnest level of the lower leg above the foot.
+        bm = bmesh_from_objects([body])
+        best = None
+        z = 0.04 * height_m
+        while z <= 0.10 * height_m:
+            sec = leg_section(bm, z)
+            if sec and (best is None or sec[0] < best[1]):
+                best = (z, sec[0])
+            z += 0.005
+        # Centre of the head (for the head girth key).
+        head_loop = tape_girth(slice_components(bm, 0.95 * height_m))
+        head_y = head_loop["center_y_m"]
+        bm.free()
+        centers["ankle"] = best[0]
 
         hip_low_z = knee_z + 0.02 * height_m
 
@@ -566,6 +626,16 @@ def run():
                 "breast_max_w": max_w, "breast_min_w": -FLAT_MAX / neg_scale,
             }
 
+        UPPER_BACK_SIDE = smoother01(0.2 / 0.6)  # share of the key at the very side of the torso
+
+        def upper_back_profile(z):
+            """Vertical reach of the female upper chest key: from the underbust up to the shoulders."""
+            if z <= centers["underbust"]:
+                return 0.0
+            if z <= centers["upperChest"]:
+                return smoother01((z - centers["underbust"]) / (centers["upperChest"] - centers["underbust"]))
+            return 1.0 - smoother01((z - centers["upperChest"]) / (shoulder_z - centers["upperChest"]))
+
         def breast_shift(an, i, w):
             """Displacement of vertex i for bust weight w (either sign)."""
             if w >= 0.0:
@@ -584,17 +654,48 @@ def run():
 
         def leg_profile(name, z):
             """Thigh key fades out towards the knee; calf key is a bump around the calf."""
-            center = centers[name]
-            sigma = KEY_SIGMA[name] * height_m
-            if name == "thigh":
-                if z <= center:
-                    return 1.0 - smoother01((center - z) / (center - knee_z))
+            idx = LEG_FRAMES.index(name)
+            here = centers[name]
+            if z <= here:
+                if idx == 0:
+                    # Below the ankle the key fades out into the foot.
+                    return smoother01((z - 0.03 * height_m) / (here - 0.03 * height_m))
+                below = centers[LEG_FRAMES[idx - 1]]
+                return smoother01((z - below) / (here - below))
+            if idx == len(LEG_FRAMES) - 1:
                 # Above its tape the thigh key hands over to the hips.
-                return 1.0 - smoother01((z - center) / (centers["hip"] - center))
-            return gaussian(z, center, sigma)
+                return 1.0 - smoother01((z - here) / (centers["hip"] - here))
+            above = centers[LEG_FRAMES[idx + 1]]
+            return 1.0 - smoother01((z - here) / (above - here))
 
-        def height_shift(z):
-            return HEIGHT_KEY_M * min(1.0, max(0.0, (z - z_from) / (z_to - z_from)))
+        # Height levels on this body (metres). Cervicale: the base of the neck at the back.
+        jaw_z = neck_z + 0.02 * height_m
+        level_z = {
+            "kneeHeight": knee_z, "crotchHeight": crotch_z, "hipHeight": centers["hip"],
+            "highHipHeight": centers["highHip"], "waistHeight": centers["waist"],
+            "underbustHeight": centers["underbust"], "chestHeight": centers["chest"],
+            "shoulderHeight": shoulder_z, "cervicaleHeight": shoulder_z + 0.4 * (neck_z - shoulder_z),
+            "totalHeight": height_m,
+        }
+        # Nodes of the stretch: ankle, the nine levels, then the jaw (the head above it is rigid).
+        level_nodes = [z_from] + [level_z[n] for n in LEVELS[:-1]] + [jaw_z]
+        assert all(b > a for a, b in zip(level_nodes, level_nodes[1:])), level_nodes
+
+        def level_shift(name, z):
+            """Vertical shift (m) of height z for level key L_<name> at weight 1."""
+            j = LEVELS.index(name)
+            lo, own = level_nodes[j], level_nodes[j + 1]
+            if z <= lo:
+                return 0.0
+            if z <= own:
+                return HEIGHT_KEY_M * (z - lo) / (own - lo)
+            if name == "totalHeight":
+                return HEIGHT_KEY_M  # everything above the jaw rides up as one piece
+            hi = level_nodes[j + 2]
+            return HEIGHT_KEY_M * max(0.0, (hi - z) / (hi - own))
+
+        def stretched(z, key_values):
+            return z + sum(key_values.get(f"L_{n}", 0.0) * level_shift(n, z) for n in LEVELS)
 
         # ---- 3. Geometry analysis: redone after every fit pass --------------------------------
         def analyze():
@@ -645,6 +746,10 @@ def run():
             }
             if gender == "female":
                 an.update(breast_fields(an))
+            # Shoulder width: arc across the back / straight distance, on the current shape.
+            arc = measure_objects([body], {"s": {
+                "type": "shoulder_arc", "range_m": [shoulder_z - 0.05, shoulder_z + 0.07]}})[0]["s"]
+            an["shoulder_arc_ratio"] = round(arc["value_cm"] / arc["straight_cm"], 5)
 
             if "thigh" in measures or "calf" in measures:
                 bm = bmesh_from_objects([body])
@@ -699,10 +804,32 @@ def run():
                 t_bicep = t_min
                 while t_bicep < t_max and arm_center(t_bicep).z > target_z:
                     t_bicep += 0.002
+                # Keep the tape on the upper arm even if the arm zone starts lower after a fit pass.
+                t_bicep = min(max(t_bicep, t_min + 0.18 * length), t_min + 0.36 * length)
                 an.update({
                     "arm_mean": mean, "arm_dir": direction, "arm_center": arm_center, "t_min": t_min,
                     "arm_length": length, "t_bicep": t_bicep, "bicep_point": arm_center(t_bicep),
                 })
+
+                def arm_girth(t):
+                    c = arm_center(t)
+                    res = measure_objects([body], {"g": {
+                        "type": "plane_girth", "point_m": list(c), "normal": list(direction)}})[0]["g"]
+                    return res["value_cm"] or 0.0
+
+                # Wrist: the thinnest section before the hand. Elbow: 43 % of the way from the
+                # upper-arm tape to the wrist (ANSUR II segment lengths). Forearm: the fullest
+                # section between them.
+                samples = [t_min + length * (0.56 + 0.02 * k) for k in range(12)]
+                t_wrist = min(samples, key=arm_girth)
+                t_elbow = t_bicep + 0.43 * (t_wrist - t_bicep)
+                between = [t_elbow + (t_wrist - t_elbow) * f for f in (0.15, 0.25, 0.35, 0.45)]
+                t_forearm = max(between, key=arm_girth)
+                arm_t = {"bicep": t_bicep, "elbow": t_elbow, "forearm": t_forearm, "wrist": t_wrist}
+                an["arm_t"] = arm_t
+                print(f"[AtelierForm base body] arm frames (share of arm length): "
+                      f"{ {k: round((v - t_min) / length, 3) for k, v in arm_t.items()} }")
+                an["arm_points"] = {name: arm_center(t) for name, t in arm_t.items()}
             return an
 
         # ---- 4. Deformation fields (all linear in the key weight) ----------------------------
@@ -728,6 +855,20 @@ def run():
             if name == "chest" and gender == "female":
                 # Full bust: each breast grows towards a big natural shape; back and rib cage stay.
                 return Vector(an["breast_grow"][i])
+
+            if name == "upperChest" and gender == "female":
+                g = upper_back_profile(co.z) * KEY_SCALE
+                if g < 1e-6:
+                    return None
+                dy = co.y - axis_y
+                r = math.hypot(co.x, dy)
+                around = smoother01(((dy / r if r > 1e-6 else 0.0) + 0.2) / 0.6)  # 0 in front, 1 at the back
+                g_joint = upper_back_profile(armpit_z) * KEY_SCALE * UPPER_BACK_SIDE
+                return Vector((
+                    (1.0 - arm) * co.x * g * around + arm * side * an["joint_x"] * g_joint,
+                    (1.0 - an["arm_depth"][i]) * dy * g * around,
+                    0.0,
+                ))
 
             if kind == "girth":
                 g = torso_profile(name, co.z) * KEY_SCALE
@@ -757,13 +898,36 @@ def run():
                 m = 1.0 + (smooth01(ax / lx) - 1.0) * blend
                 return Vector((side * (ax - lx) * g * m, (co.y - ly) * g * m, 0.0))
 
+            if kind == "head":
+                # The head grows around its own axis; nothing below the jaw moves.
+                g = smoother01((co.z - (neck_z + 0.015 * height_m)) / (0.04 * height_m)) * KEY_SCALE * (1.0 - arm)
+                if g < 1e-5:
+                    return None
+                return Vector((co.x * g, (co.y - head_y) * g, 0.0))
+
             if kind == "arm":
                 if arm <= 0.0:
                     return None
                 p = Vector((abs(co.x), co.y, co.z))
                 d = an["arm_dir"]
                 t = (p - an["arm_mean"]).dot(d)
-                g = gaussian(t, an["t_bicep"], KEY_SIGMA[name] * an["arm_length"]) * KEY_SCALE * arm
+                # The whole arm follows the upper-arm measure: full down to the elbow, then
+                # tapering to the wrist and hand (a local bump left a lump above the elbow).
+                ts = an["arm_t"]
+                idx = ARM_FRAMES.index(name)
+                here = ts[name]
+                if t <= here:
+                    # The top of the shoulder is bone: the upper-arm key fades in below it, so the
+                    # shoulder points (shoulder width) do not move with the arm girth.
+                    prev_t = (an["t_min"] + 0.35 * (here - an["t_min"])) if idx == 0 else ts[ARM_FRAMES[idx - 1]]
+                    along = smoother01((t - prev_t) / max(here - prev_t, 1e-4))
+                elif idx == len(ARM_FRAMES) - 1:
+                    # Past the wrist the key fades out into the hand.
+                    along = 1.0 - smoother01((t - here) / (0.07 * an["arm_length"]))
+                else:
+                    along = 1.0 - smoother01(
+                        (t - here) / max(ts[ARM_FRAMES[idx + 1]] - here, 1e-4))
+                g = along * KEY_SCALE * arm
                 if g < 1e-5:
                     return None
                 r = p - an["arm_center"](t)
@@ -840,20 +1004,22 @@ def run():
                     if m <= 1e-5:
                         return None
                     if shape_id == "gluteProjection":
-                        return Vector((0.0, 0.015 * m, 0.0))
+                        return Vector((0.0, 0.030 * m, 0.0))
                     # Lift: the fullest part moves up (and a little out); down for a negative value.
-                    return Vector((0.0, 0.004 * m, 0.014 * m))
+                    return Vector((0.0, 0.008 * m, 0.028 * m))
                 # Side of the hips.
                 flank = smoother01((abs(co.x) / r - 0.45) / 0.45) * keep
                 if flank <= 1e-5:
                     return None
                 if shape_id == "hipRoundness":
                     m = flank * gaussian(co.z, glute_z + 0.01 * height_m, 0.05 * height_m)
-                    return Vector((side * 0.012 * m, 0.0, 0.0))
+                    return Vector((side * 0.024 * m, 0.0, 0.0))
                 # Widest point: fuller above the hip line, slimmer below (or the reverse).
                 t = (co.z - glute_z) / (0.055 * height_m)
                 m = flank * t * math.exp(-0.5 * t * t)
-                return Vector((side * 0.016 * m, 0.0, 0.0))
+                # ...but nothing moves at the thigh tape or below it.
+                m *= smoother01((co.z - centers["thigh"]) / (glute_z - centers["thigh"]))
+                return Vector((side * 0.032 * m, 0.0, 0.0))
 
             m = breast_dome(an, i, soft=True)
             if m <= 0.0:
@@ -877,7 +1043,7 @@ def run():
 
         def arm_shift_per_unit(an):
             """How far the +x arm moves as a rigid piece per unit weight of every key (meters)."""
-            shifts = {HEIGHT_KEY_NAME: [0.0, 0.0, height_shift(armpit_z)]}
+            shifts = {f"L_{n}": [0.0, 0.0, level_shift(n, shoulder_z)] for n in LEVELS}
             for shape in shapes:
                 dx = an["joint_x"] * lats_profile(armpit_z) * muscle_gain if shape["id"] == "muscle" else 0.0
                 shifts[f"S_{shape['id']}"] = [dx, 0.0, 0.0]
@@ -885,6 +1051,9 @@ def run():
                 kind = KEY_KIND[name]
                 if name == "chest" and gender == "female":
                     shifts[f"M_{name}"] = [0.0, 0.0, 0.0]
+                elif name == "upperChest" and gender == "female":
+                    g = upper_back_profile(armpit_z) * KEY_SCALE * UPPER_BACK_SIDE
+                    shifts[f"M_{name}"] = [an["joint_x"] * g, 0.0, 0.0]
                 elif kind == "girth":
                     g = torso_profile(name, armpit_z) * KEY_SCALE
                     shifts[f"M_{name}"] = [an["joint_x"] * g, 0.0, 0.0]
@@ -894,15 +1063,87 @@ def run():
                     shifts[f"M_{name}"] = [0.0, 0.0, 0.0]
             return shifts
 
+        def arm_stretch(an, key, t):
+            """Shift along the arm (m) at arm position t for an arm length key at weight 1."""
+            ts = an["arm_t"]
+            start = an["t_min"] + 0.35 * (ts["bicep"] - an["t_min"])
+            lo, hi = (start, ts["elbow"]) if key == "A_upperArm" else (ts["elbow"], ts["wrist"])
+            return HEIGHT_KEY_M * min(1.0, max(0.0, (t - lo) / max(hi - lo, 1e-4)))
+
+        def extremity_shift(an, i, key):
+            """Displacement of vertex i for a hand / foot key at weight 1 (10 % of its size)."""
+            co = an["coords"][i]
+            arm = an["arm"][i]
+            side = 1.0 if co.x >= 0 else -1.0
+            if key in ("E_handLength", "E_handWidth"):
+                if arm <= 0.0:
+                    return None
+                d = an["arm_dir"]
+                p = Vector((abs(co.x), co.y, co.z))
+                t = (p - an["arm_mean"]).dot(d)
+                past = t - an["arm_t"]["wrist"]
+                if past <= 0.0:
+                    return None
+                if key == "E_handLength":
+                    k = KEY_SCALE * past * arm
+                    return Vector((side * d.x * k, d.y * k, d.z * k))
+                g = KEY_SCALE * smoother01(past / (0.03 * height_m)) * arm
+                r = p - an["arm_center"](t)
+                r = r - d * r.dot(d)
+                return Vector((side * r.x * g, r.y * g, r.z * g))
+            # Feet: below the ankle, around the ankle axis.
+            ankle = centers["ankle"]
+            if arm > 0.0 or co.z >= ankle:
+                return None
+            m = KEY_SCALE * (1.0 - smoother01((co.z - 0.5 * ankle) / (0.5 * ankle)))
+            lx, ly = leg_center(an, ankle)
+            if key == "E_footLength":
+                return Vector((0.0, (co.y - ly) * m, 0.0))
+            return Vector((side * (abs(co.x) - lx) * m, 0.0, 0.0))
+
+        def point_shifts(an):
+            """How far each arm tape point moves per unit of the arm length keys (metres)."""
+            d = an["arm_dir"]
+            out = {}
+            for name, t in an["arm_t"].items():
+                out[name] = {
+                    key: [d.x * arm_stretch(an, key, t), d.y * arm_stretch(an, key, t), d.z * arm_stretch(an, key, t)]
+                    for key in ARM_LENGTH_KEYS
+                }
+            return out
+
         def add_measurement_keys(an):
             body.shape_key_add(name="Basis", from_mix=False)
             coords = an["coords"]
-            hk = body.shape_key_add(name=HEIGHT_KEY_NAME, from_mix=False)
-            arm_dz = height_shift(armpit_z)
-            for i, co in enumerate(coords):
-                # Arms keep their length: they ride on the shoulder joint.
-                arm = an["arm"][i]
-                hk.data[i].co.z = co.z + (1.0 - arm) * height_shift(co.z) + arm * arm_dz
+            for level in LEVELS:
+                hk = body.shape_key_add(name=f"L_{level}", from_mix=False)
+                # Arms keep their length: they ride with the shoulder level, so the shoulder
+                # points (shoulder width) keep their shape when heights change.
+                arm_dz = level_shift(level, shoulder_z)
+                for i, co in enumerate(coords):
+                    arm = an["arm"][i]
+                    dz = (1.0 - arm) * level_shift(level, co.z) + arm * arm_dz
+                    if dz:
+                        hk.data[i].co.z = co.z + dz
+            # Arm lengths: the arm stretches along its axis; everything further down rides along.
+            d = an["arm_dir"]
+            for key in ARM_LENGTH_KEYS:
+                sk = body.shape_key_add(name=key, from_mix=False)
+                for i, co in enumerate(coords):
+                    arm = an["arm"][i]
+                    if arm <= 0.0:
+                        continue
+                    t = (Vector((abs(co.x), co.y, co.z)) - an["arm_mean"]).dot(d)
+                    k = arm_stretch(an, key, t) * arm
+                    if k:
+                        side = 1.0 if co.x >= 0 else -1.0
+                        sk.data[i].co = co + Vector((side * d.x * k, d.y * k, d.z * k))
+            for key in EXTREMITY_KEYS:
+                sk = body.shape_key_add(name=key, from_mix=False)
+                for i, co in enumerate(coords):
+                    shift = extremity_shift(an, i, key)
+                    if shift is not None and shift.length_squared > 0.0:
+                        sk.data[i].co = co + shift
             for name in measures:
                 sk = body.shape_key_add(name=f"M_{name}", from_mix=False)
                 for i, co in enumerate(coords):
@@ -932,43 +1173,53 @@ def run():
                         "type": "girth", "pick": "max", "steps": 11,
                         # ...but always below the armpit, or the tape would catch the arms.
                         "range_m": [chest_z + BUST_RANGE_M[0],
-                                    min(chest_z + BUST_RANGE_M[1], armpit_z - 0.008)],
+                                    min(chest_z + BUST_RANGE_M[1], centers["upperChest"] - 0.012)],
                     }
+                elif kind == "head":
+                    specs[name] = {"type": "girth", "pick": "max", "steps": 6, "range_m": list(head_range)}
                 elif kind == "girth":
                     specs[name] = {"type": "girth", "height_m": centers[name]}
                 elif kind == "shoulder":
-                    specs[name] = {"type": "width", "height_m": centers[name]}
+                    # Tailor's measure: shoulder point to shoulder point across the back.
+                    specs[name] = {
+                        "type": "shoulder_arc", "range_m": [shoulder_z - 0.05, shoulder_z + 0.07],
+                        "ratio": an["shoulder_arc_ratio"],
+                    }
                 elif kind == "leg":
                     specs[name] = {"type": "limb_girth", "height_m": centers[name]}
                 else:
                     specs[name] = {
                         "type": "plane_girth",
-                        "point_m": list(an["bicep_point"]),
+                        "point_m": list(an["arm_points"][name]),
                         "normal": list(an["arm_dir"]),
                     }
             return specs
 
-        def measure_with(an, key_values):
+        def measure_with(an, key_values, only=None):
+            """Measures (cm) with the given key weights; only=[names] measures just those (faster)."""
             key_values = expand_keys(an, key_values)
             for kb in mesh.shape_keys.key_blocks[1:]:
                 value = key_values.get(kb.name, 0.0)
                 kb.slider_min = min(kb.slider_min, value)
                 kb.slider_max = max(kb.slider_max, value)
                 kb.value = value
-            h_weight = key_values.get(HEIGHT_KEY_NAME, 0.0)
             shifts = arm_shift_per_unit(an)
-            specs = {"height": {"type": "height"}}
+            own_shifts = point_shifts(an)
+            specs = {"height": {"type": "height"}} if only is None else {}
             for name, spec in base_specs(an).items():
+                if only is not None and name not in only:
+                    continue
                 spec = dict(spec)
                 if "height_m" in spec:
-                    spec["height_m"] += h_weight * height_shift(spec["height_m"])
+                    spec["height_m"] = stretched(spec["height_m"], key_values)
                 elif "range_m" in spec:
-                    spec["range_m"] = [z + h_weight * height_shift(z) for z in spec["range_m"]]
+                    spec["range_m"] = [stretched(z, key_values) for z in spec["range_m"]]
                 else:
                     point = list(spec["point_m"])
                     for key, weight in key_values.items():
+                        own = own_shifts.get(name, {}).get(key, (0.0, 0.0, 0.0))
                         for axis in range(3):
-                            point[axis] += weight * shifts.get(key, (0.0, 0.0, 0.0))[axis]
+                            point[axis] += weight * (shifts.get(key, (0.0, 0.0, 0.0))[axis] + own[axis])
                     spec["point_m"] = point
                 specs[name] = spec
             results, _ = measure_objects([body], specs)
@@ -986,12 +1237,33 @@ def run():
             n = len(measures)
             matrix = [[columns[c][r] for c in range(n)] for r in range(n)]
             shape_matrix = [[] for _ in range(n)]
+            shape_matrix_minus = [[] for _ in range(n)]
             if with_shapes:
                 for shape in shapes:
                     one = measure_with(an, {f"S_{shape['id']}": 1.0})
+                    # A slider does not always change a tape by the same amount in its two directions.
+                    neg = measure_with(an, {f"S_{shape['id']}": -1.0}) if shape["min"] < 0.0 else None
                     for r, m in enumerate(measures):
                         shape_matrix[r].append(one[m] - base[m])
-            tall = measure_with(an, {HEIGHT_KEY_NAME: 1.0})
+                        shape_matrix_minus[r].append(neg[m] - base[m] if neg else -(one[m] - base[m]))
+            calibrate.shape_matrix_minus = shape_matrix_minus
+            # The top torso frame pushes the arms out, and the shoulder points do not follow it in
+            # a straight line: keep what is left over after the straight-line part as a curve.
+            residuals = []
+            if with_shapes and "shoulderWidth" in measures:
+                top_key = f"M_{frames[-1]}"
+                col = measures.index(frames[-1])
+                row = measures.index("shoulderWidth")
+                points = []
+                for u in RESIDUAL_WEIGHTS:
+                    if u == 0.0:
+                        points.append([0.0, 0.0])
+                        continue
+                    got = measure_with(an, {top_key: u}, only=["shoulderWidth"])["shoulderWidth"]
+                    points.append([u, round(got - base["shoulderWidth"] - matrix[row][col] * u, 3)])
+                residuals.append({"key": top_key, "measure": "shoulderWidth", "points": points})
+            # All levels raised together: a check that heights do not change the girths.
+            tall = measure_with(an, {f"L_{n}": 1.0 for n in LEVELS})
             # The bust does not grow in a straight line with the breast key: store the curve.
             curves = {}
             if with_shapes and gender == "female":
@@ -1003,21 +1275,27 @@ def run():
                     round(sh * (an["breast_max_w"] if sh > 0 else -an["breast_min_w"]), 4)
                     for sh in SHAPE_CAL_SHARES
                 ]
-                points = [
-                    [w, base["chest"] if w == 0.0 else measure_with(an, {"M_chest": w})["chest"]]
-                    for w in curve_weights
-                ]
+                at_weight = [base if w == 0.0 else measure_with(an, {"M_chest": w}) for w in curve_weights]
+                points = [[w, res["chest"]] for w, res in zip(curve_weights, at_weight)]
+                # The breast also moves other tapes a little (upper chest): keep those curves too.
+                cross = {}
+                for m in measures:
+                    if m == "chest":
+                        continue
+                    row = [[w, round(res[m] - base[m], 3)] for w, res in zip(curve_weights, at_weight)]
+                    if max(abs(v) for _, v in row) >= 0.05:
+                        cross[m] = row
                 # The dome and the rib cage do not simply add up: one extra measurement gives
                 # the interaction term  chest = f(w) + L + c * L * (f(w) - f(0)),  L = frame part.
                 # The breast and the rib cage do not simply add up, so the same curve is measured
                 # again on a much bigger rib cage; the solver blends the two by rib cage size.
                 frame_points = [
-                    [w, measure_with(an, {"M_underbust": FRAME_CAL_WEIGHT, "M_chest": w})["chest"]]
+                    [w, measure_with(an, {"M_underbust": FRAME_CAL_WEIGHT, "M_chest": w}, only=["chest"])["chest"]]
                     for w in curve_weights
                 ]
                 # The rib cage key itself does not move the bust tape in a straight line either.
                 frame_curve = [
-                    [u, base["chest"] if u == 0.0 else measure_with(an, {"M_underbust": u})["chest"]]
+                    [u, base["chest"] if u == 0.0 else measure_with(an, {"M_underbust": u}, only=["chest"])["chest"]]
                     for u in FRAME_CURVE_WEIGHTS
                 ]
                 # A shape slider changes the bust tape by a different amount on a small and on a
@@ -1029,11 +1307,11 @@ def run():
                     key = f"S_{shape['id']}"
                     plus, minus = [], []
                     for level in shape_levels:
-                        at_level = measure_with(an, {"M_chest": level})["chest"]
-                        up = measure_with(an, {"M_chest": level, key: 1.0})["chest"] - at_level
+                        at_level = measure_with(an, {"M_chest": level}, only=["chest"])["chest"]
+                        up = measure_with(an, {"M_chest": level, key: 1.0}, only=["chest"])["chest"] - at_level
                         plus.append(round(up, 3))
                         if shape["min"] < 0.0:
-                            down = measure_with(an, {"M_chest": level, key: -1.0})["chest"] - at_level
+                            down = measure_with(an, {"M_chest": level, key: -1.0}, only=["chest"])["chest"] - at_level
                             minus.append(round(down, 3))
                         else:
                             minus.append(round(-up, 3))
@@ -1044,6 +1322,7 @@ def run():
                     "negKey": FLAT_KEY_NAME,
                     "negScale": round(an["breast_neg_scale"], 6),
                     "negMax": FLAT_MAX,
+                    "crossTalk": cross,
                     "points": [[w, round(v, 3)] for w, v in points],
                     "framePoints": [[w, round(v, 3)] for w, v in frame_points],
                     "frameKey": "M_underbust",
@@ -1054,14 +1333,14 @@ def run():
                 }
             for kb in mesh.shape_keys.key_blocks[1:]:
                 kb.value = 0.0
-            return base, matrix, tall, shape_matrix, curves
+            return base, matrix, tall, shape_matrix, curves, residuals
 
         fit_idx = [measures.index(m) for m in fit_measures]
         source = None
         for _ in range(FIT_PASSES):
             an = analyze()
             add_measurement_keys(an)
-            base, matrix, _, _, _ = calibrate(an, with_shapes=False)
+            base, matrix, _, _, _, _ = calibrate(an, with_shapes=False)
             if source is None:
                 source = dict(base)
             sub = [[matrix[r][c] for c in fit_idx] for r in fit_idx]
@@ -1074,7 +1353,7 @@ def run():
                 lo, hi = an["breast_min_w"], an["breast_max_w"]
                 for _ in range(12):
                     mid = (lo + hi) * 0.5
-                    if measure_with(an, {**others, "M_chest": mid})["chest"] < targets["chest"]:
+                    if measure_with(an, {**others, "M_chest": mid}, only=["chest"])["chest"] < targets["chest"]:
                         lo = mid
                     else:
                         hi = mid
@@ -1094,7 +1373,32 @@ def run():
 
         an = analyze()
         add_measurement_keys(an)
-        base, matrix, tall, shape_matrix, curves = calibrate(an, with_shapes=True)
+        base, matrix, tall, shape_matrix, curves, residuals = calibrate(an, with_shapes=True)
+
+        def extra_rows(an):
+            ref = REFERENCE_CM[gender]
+            step = HEIGHT_KEY_M * 100.0
+            ts = an["arm_t"]
+            hand_cm = (an["t_min"] + an["arm_length"] - ts["wrist"]) * 100.0
+            foot = [co for i, co in enumerate(an["coords"]) if an["arm"][i] <= 0.0 and co.z < 0.03 * height_m]
+            foot_len_cm = (max(c.y for c in foot) - min(c.y for c in foot)) * 100.0
+            right = [c.x for c in foot if c.x > 0.0]
+            foot_wid_cm = (max(right) - min(right)) * 100.0
+            return [
+                {"measure": "shoulderToElbow", "reference": ref["shoulderToElbow"], "keys": {"A_upperArm": step}},
+                {"measure": "sleeveFromShoulder", "reference": ref["sleeveFromShoulder"],
+                 "keys": {"A_upperArm": step, "A_forearm": step}},
+                # Hands and feet scale by 10 % per unit: the change in cm is taken from the model's own size
+                # for lengths, and from the reference value for widths.
+                {"measure": "handLength", "reference": ref["handLength"],
+                 "keys": {"E_handLength": round(hand_cm * KEY_SCALE, 4)}},
+                {"measure": "handWidth", "reference": ref["handWidth"],
+                 "keys": {"E_handWidth": round(ref["handWidth"] * KEY_SCALE, 4)}},
+                {"measure": "footLength", "reference": ref["footLength"],
+                 "keys": {"E_footLength": round(foot_len_cm * KEY_SCALE, 4)}},
+                {"measure": "footWidth", "reference": ref["footWidth"],
+                 "keys": {"E_footWidth": round(foot_wid_cm * KEY_SCALE, 4)}},
+            ]
 
         # ---- 5. Export ------------------------------------------------------------------------
         stem = f"body_{gender}{STYLE_SUFFIX[style]}"
@@ -1116,16 +1420,32 @@ def run():
             # Shape sliders: how much every measure (row) changes per unit of every slider (column).
             "shapeKeys": [{**shape, "key": f"S_{shape['id']}"} for shape in shapes],
             "shapeMatrixCmPerUnit": [[round(x, 4) for x in row] for row in shape_matrix],
+            # The same for a slider at -1 (cm change at -1, not per unit of sign).
+            "shapeMatrixMinusCm": [[round(x, 4) for x in row] for row in calibrate.shape_matrix_minus],
             "fitted": fit_measures,
+            # Followed as (value - reference) added to the model's own base value.
+            "deltaMeasures": {m: targets[m] for m in DELTA_MEASURES if m in measures},
             # Measures that do not follow their key in a straight line: weight -> cm with all
             # other keys at 0. The solver inverts the curve after the linear part.
             "curveKeys": curves,
-            "heightKey": {
-                "name": HEIGHT_KEY_NAME,
-                "cmPerUnit": round(tall["height"] - base["height"], 4),
-                "stretchFromM": round(z_from, 4),
-                "stretchToM": round(z_to, 4),
-            },
+            # Left-over (cm) of a measure after the straight-line part, by the weight of one key.
+            "residualCurves": residuals,
+            # Height levels, bottom to top. A key raises its level by cmPerUnit and stretches the
+            # body from fromM up to levelM and back down to toM (no toM: everything above rides up).
+            "levelKeys": [
+                {
+                    "measure": n, "key": f"L_{n}",
+                    "fromM": round(level_nodes[j], 4), "levelM": round(level_nodes[j + 1], 4),
+                    "toM": None if n == "totalHeight" else round(level_nodes[j + 2], 4),
+                    "cmPerUnit": HEIGHT_KEY_M * 100.0,
+                    "reference": targets["totalHeight"] if n == "totalHeight" else REFERENCE_CM[gender][n],
+                }
+                for j, n in enumerate(LEVELS)
+            ],
+            # Lengths, hands and feet: followed as a difference from the reference value.
+            # row: measure change (cm) = sum of key weight x cm per unit.
+            "deltaKeys": extra_rows(an),
+            "pointShiftMPerUnit": point_shifts(an),
             "landmarksM": {m: round(centers[m], 4) for m in measures if m in centers},
             "measureSpecs": base_specs(an),
             "armShiftMPerUnit": arm_shift_per_unit(an),

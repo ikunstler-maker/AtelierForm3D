@@ -10,6 +10,18 @@ export type Language = 'ua' | 'en';
 export interface TranslationDictionary {
   appTitle: string;
   appSubtitle: string;
+  common: {
+    close: string;
+    loading: string;
+  };
+  bodyPanel: {
+    title: string;
+    subtitle: string;
+    groupMuscle: string;
+    groupBreast: string;
+    groupGlutes: string;
+    groupSkin: string;
+  };
   gender: {
     female: string;
     male: string;
@@ -25,6 +37,19 @@ export interface TranslationDictionary {
     'male-m': string;
     'male-l': string;
   };
+  myPresets: {
+    group: string;
+    save: string;
+    update: string;
+    rename: string;
+    remove: string;
+    ok: string;
+    cancel: string;
+    namePlaceholder: string;
+    confirmDelete: string;
+    confirmYes: string;
+    modified: string;
+  };
   units: {
     cm: string;
     in: string;
@@ -38,6 +63,14 @@ export interface TranslationDictionary {
     resetPreset: string;
     bgColorTooltip: string;
     headModeTooltip: string;
+    resetLabel: string;
+    exportLabel: string;
+    importLabel: string;
+    viewLabel: string;
+    moreLabel: string;
+    moreTooltip: string;
+    bodyShapeLabel: string;
+    bodyShapeTooltip: string;
   };
   cas: {
     title: string;
@@ -90,6 +123,9 @@ export interface TranslationDictionary {
     subtitle: string;
     notOnModel: string;
     notOnModelHint: string;
+    linkedTag: string;
+    linkedMoves: string;
+    linkedNote: string;
     searchPlaceholder: string;
     displayModeLabel: string;
     modes: {
@@ -103,6 +139,7 @@ export interface TranslationDictionary {
     noResults: string;
     collapsePanel: string;
     expandPanel: string;
+    stubLabel: string;
   };
   categories: Record<MeasurementCategory, string>;
   fitPanel: {
@@ -202,6 +239,7 @@ export interface TranslationDictionary {
     back: string;
     reset: string;
     autoFocus: string;
+    ariaLabel: string;
   };
   measurements: Record<
     MeasurementKey,
@@ -216,6 +254,18 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
   ua: {
     appTitle: 'AtelierForm 3D',
     appSubtitle: 'Аніме CAS Студія та Параметричне Кравецьке Ательє',
+    common: {
+      close: 'Закрити',
+      loading: 'Завантаження манекена…',
+    },
+    bodyPanel: {
+      title: 'Форма тіла',
+      subtitle: 'Тип манекена, колір шкіри та форма тіла',
+      groupMuscle: 'М’язи',
+      groupBreast: 'Груди',
+      groupGlutes: 'Сідниці та стегна',
+      groupSkin: 'Шкіра',
+    },
     gender: {
       female: 'Жіночий',
       male: 'Чоловічий',
@@ -231,19 +281,40 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       'male-m': 'Чоловічий M (EU 48-50)',
       'male-l': 'Чоловічий L (EU 52-54)',
     },
+    myPresets: {
+      group: 'Мої пресети',
+      save: 'Зберегти як…',
+      update: 'Оновити',
+      rename: 'Перейменувати',
+      remove: 'Видалити',
+      ok: 'Ок',
+      cancel: 'Скасувати',
+      namePlaceholder: 'Назва пресета',
+      confirmDelete: 'Видалити цей пресет?',
+      confirmYes: 'Так, видалити',
+      modified: 'змінено:',
+    },
     units: {
       cm: 'см',
       in: 'дюйм',
     },
     header: {
-      exportJson: 'Експорт JSON',
-      importJson: 'Імпорт JSON',
+      exportJson: 'Зберегти у файл (JSON)',
+      importJson: 'Завантажити з файлу (JSON)',
       casStudio: 'Аніме CAS',
       fitCheck: 'Перевірка Одягу',
-      glassStyle: 'Фон та Стиль',
+      glassStyle: 'Вигляд сцени',
       resetPreset: 'Скинути',
       bgColorTooltip: 'Кастомний колір фону позаду манекена',
       headModeTooltip: 'Режим голови (Макет / Без голови / Аніме з волоссям)',
+      resetLabel: 'Скинути',
+      exportLabel: 'У файл',
+      importLabel: 'З файлу',
+      moreLabel: 'Ще',
+      moreTooltip: 'Одиниці, мова, файли та колір фону',
+      viewLabel: 'Вигляд',
+      bodyShapeLabel: 'Форма тіла',
+      bodyShapeTooltip: 'Тип манекена, колір шкіри та форма тіла (м’язи, груди, сідниці)',
     },
     cas: {
       title: 'Редактор Персонажа (Anime CAS)',
@@ -312,11 +383,15 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     },
     inspector: {
       title: 'Антропометрія Тіла',
-      subtitle: '50 кравецьких параметрів у реальному часі',
+      subtitle: '50 кравецьких мірок тіла в реальному часі',
+      linkedTag: 'пов’язана',
+      linkedMoves: 'Змінює:',
+      linkedNote:
+        'Мітка «пов’язана» означає, що мірка залежить від інших: коли ви її міняєте, рухаються пов’язані мірки тіла, і навпаки.',
       notOnModel: 'ще не діє',
       notOnModelHint:
         'Цей манекен поки не реагує на цю мірку. Вона зберігається і працює в перевірці одягу та на класичному манекені.',
-      searchPlaceholder: 'Пошук мірки (напр. талія, рукав, кроковий)...',
+      searchPlaceholder: 'Пошук мірки (напр. талія, плече, коліно)...',
       displayModeLabel: 'Відображення 3D ліній',
       modes: {
         all: 'Усі мірки',
@@ -329,12 +404,13 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       noResults: 'Мірок за запитом не знайдено',
       collapsePanel: 'Згорнути панель',
       expandPanel: 'Розгорнути панель мірок',
+      stubLabel: 'Мірки',
     },
     categories: {
       circumferences: 'Обхвати',
       torso: 'Торс та Плечі',
-      sleeves: 'Рукави',
-      legs: 'Штани та Посадка',
+      sleeves: 'Руки',
+      legs: 'Ноги та таз',
       heights: 'Висоти',
       extremities: 'Кисті та Стопи',
     },
@@ -374,7 +450,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
     },
     customizer: {
-      title: 'Фон, Світло та Liquid Glass',
+      title: 'Вигляд сцени',
       themeMode: 'Режим інтерфейсу',
       darkGlass: 'Темне Скло',
       lightGlass: 'Світле Скло',
@@ -436,17 +512,18 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         animeCel: 'Чіткі двотонові аніме-тіні + тушовий контур (ACON / Clip Studio стиль)',
         clay: 'Архітектурна скульптурна поверхня без відблисків',
         satin: 'Делікатний студійний шейдер шкіри з м’яким Френелем',
-        translucent: 'Просвічує внутрішні шви рукава та кроковий шов',
+        translucent: 'Просвічує внутрішні контури тіла',
       },
     },
     camera: {
       full: 'Повний зріст',
       torso: 'Обличчя / Торс',
-      sleeves: 'Рукави',
-      legs: 'Штани та Крок',
+      sleeves: 'Руки',
+      legs: 'Ноги',
       back: 'Спина',
       reset: 'Скинути ракурс',
       autoFocus: 'Автофокус на мірці',
+      ariaLabel: 'Керування ракурсом камери',
     },
     measurements: {
       totalHeight: {
@@ -482,7 +559,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         tooltip: 'Від підлоги до найбільш виступаючих точок сідниць',
       },
       crotchHeight: {
-        name: 'Висота паху (кроку)',
+        name: 'Висота промежини',
         tooltip: 'Вертикальна висота від підлоги до промежини',
       },
       kneeHeight: {
@@ -559,11 +636,11 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
       shoulderWidth: {
         name: 'Ширина плечей (біакроміальна)',
-        tooltip: 'Поверхнева дуга між лівою та правою плечовими точками',
+        tooltip: 'По спині між лівою та правою плечовими точками (де плече переходить у руку)',
       },
       singleShoulderLength: {
-        name: 'Довжина плечового ската',
-        tooltip: 'Від бічної точки основи шиї до кінчика плеча (акроміона)',
+        name: 'Довжина плеча від шиї',
+        tooltip: 'Від бічної точки основи шиї до плечової точки (акроміона)',
       },
       acrossFrontWidth: {
         name: 'Ширина грудей спереду',
@@ -574,31 +651,31 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         tooltip: 'Горизонтально по лопатках між задніми кутами пахв',
       },
       frontWaistLength: {
-        name: 'Довжина переду до талії',
+        name: 'Довжина спереду: шия–талія',
         tooltip: 'Від основи шиї через вищу точку грудей вертикально до талії',
       },
       backWaistLength: {
-        name: 'Довжина спинки до талії',
+        name: 'Довжина ззаду: C7–талія',
         tooltip: 'Від сьомого шийного хребця C7 вздовж хребта до лінії талії',
       },
       sideTorsoLength: {
-        name: 'Довжина бокового шва торсу',
-        tooltip: 'Від нижнього краю пахвової западини вертикально до талії',
+        name: 'Бокова довжина торсу',
+        tooltip: 'Збоку від пахвової западини вертикально вниз до талії',
       },
       torsoLoop: {
         name: 'Вертикальна дуга торсу',
         tooltip: 'Повна петля від плеча через пах і по спині назад до плеча',
       },
       sleeveFromShoulder: {
-        name: 'Довжина рукава від плеча',
-        tooltip: 'Від кінчика плеча (акроміона) через лікоть до зап’ястя',
+        name: 'Довжина руки від плеча',
+        tooltip: 'Від плечової точки (акроміона) по зовнішній стороні руки через лікоть до зап’ястя',
       },
       sleeveFromNeck: {
-        name: 'Довжина рукава від шиї (реглан)',
-        tooltip: 'Від центру шиї ззаду (C7) через плече вздовж руки до зап’ястя',
+        name: 'Довжина руки від шиї',
+        tooltip: 'Від сьомого шийного хребця C7 ззаду через плечову точку по зовнішній стороні руки до зап’ястя',
       },
       sleeveFromArmpit: {
-        name: 'Внутрішній шов рукава (від пахви)',
+        name: 'Довжина руки від пахви',
         tooltip: 'Від пахвової западини по внутрішній стороні руки до зап’ястя',
       },
       shoulderToElbow: {
@@ -606,32 +683,32 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         tooltip: 'Від плечової точки акроміона до середини ліктьового суглоба',
       },
       outseamFromWaist: {
-        name: 'Боковий шов штанів від талії',
-        tooltip: 'Від лінії талії по зовнішньому контуру стегна до щиколотки',
+        name: 'Довжина ноги від талії',
+        tooltip: 'Від бічної точки талії по зовнішній стороні стегна й ноги до щиколотки',
       },
       outseamFromHighHip: {
-        name: 'Боковий шов від верхніх стегон',
-        tooltip: 'Від пояса на рівні верхніх стегон по зовнішньому шву до щиколотки',
+        name: 'Довжина ноги від верху таза',
+        tooltip: 'Від бічної точки на рівні верхніх стегон по зовнішній стороні ноги до щиколотки',
       },
       inseamLength: {
-        name: 'Кроковий шов (внутрішній шов штанів)',
-        tooltip: 'Від точки паху по внутрішній поверхні ноги до щиколотки',
+        name: 'Внутрішня довжина ноги',
+        tooltip: 'Від промежини по внутрішній поверхні ноги до щиколотки',
       },
       waistToKneeLength: {
         name: 'Довжина від талії до коліна',
         tooltip: 'Від бічної точки талії по зовнішньому контуру стегна до рівня коліна',
       },
       crotchCurveTotal: {
-        name: 'Загальна дуга сидіння (паху)',
-        tooltip: 'Від талії спереду через пах до талії ззаду (передня + задня посадка)',
+        name: 'Дуга талія–промежина–талія',
+        tooltip: 'Від талії спереду через промежину до талії ззаду вздовж поверхні тіла',
       },
       frontRise: {
-        name: 'Висота посадки спереду (Front Rise)',
-        tooltip: 'Поверхнева крива від центру талії спереду до нижньої точки паху',
+        name: 'Дуга талія–промежина спереду',
+        tooltip: 'Вздовж поверхні тіла від центру талії спереду до промежини',
       },
       backRise: {
-        name: 'Висота посадки ззаду (Back Rise)',
-        tooltip: 'Поверхнева крива від центру талії ззаду через сідниці до точки паху',
+        name: 'Дуга талія–промежина ззаду',
+        tooltip: 'Вздовж поверхні тіла від центру талії ззаду через сідниці до промежини',
       },
       handLength: {
         name: 'Довжина кисті руки',
@@ -654,6 +731,18 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
   en: {
     appTitle: 'AtelierForm 3D',
     appSubtitle: 'Anime CAS Studio & Parametric Tailoring Fit Verifier',
+    common: {
+      close: 'Close',
+      loading: 'Loading mannequin…',
+    },
+    bodyPanel: {
+      title: 'Body shape',
+      subtitle: 'Mannequin type, skin colour and body shape',
+      groupMuscle: 'Muscle',
+      groupBreast: 'Breasts',
+      groupGlutes: 'Glutes & hips',
+      groupSkin: 'Skin',
+    },
     gender: {
       female: 'Female',
       male: 'Male',
@@ -669,19 +758,40 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       'male-m': 'Male M (EU 48-50)',
       'male-l': 'Male L (EU 52-54)',
     },
+    myPresets: {
+      group: 'My presets',
+      save: 'Save as…',
+      update: 'Update',
+      rename: 'Rename',
+      remove: 'Delete',
+      ok: 'OK',
+      cancel: 'Cancel',
+      namePlaceholder: 'Preset name',
+      confirmDelete: 'Delete this preset?',
+      confirmYes: 'Yes, delete',
+      modified: 'modified:',
+    },
     units: {
       cm: 'cm',
       in: 'in',
     },
     header: {
-      exportJson: 'Export JSON',
-      importJson: 'Import JSON',
+      exportJson: 'Save to file (JSON)',
+      importJson: 'Load from file (JSON)',
       casStudio: 'Anime CAS',
       fitCheck: 'Garment Fit Check',
-      glassStyle: 'Backdrop & Style',
+      glassStyle: 'Scene look',
       resetPreset: 'Reset',
       bgColorTooltip: 'Custom background color behind the mannequin',
       headModeTooltip: 'Head Mode (Bald Mannequin / Headless / Full Anime)',
+      resetLabel: 'Reset',
+      exportLabel: 'To file',
+      importLabel: 'From file',
+      moreLabel: 'More',
+      moreTooltip: 'Units, language, files and background colour',
+      viewLabel: 'Look',
+      bodyShapeLabel: 'Body shape',
+      bodyShapeTooltip: 'Mannequin type, skin colour and body shape (muscle, breasts, glutes)',
     },
     cas: {
       title: 'Character Studio (Anime CAS)',
@@ -750,11 +860,15 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
     },
     inspector: {
       title: 'Body Anthropometry',
-      subtitle: '50 real-time tailoring parameters',
+      subtitle: '50 real-time body measurements',
+      linkedTag: 'linked',
+      linkedMoves: 'Changes:',
+      linkedNote:
+        'A "linked" tag means the measure depends on others: editing it moves the related body measures, and the other way round.',
       notOnModel: 'not yet',
       notOnModelHint:
         'This mannequin does not follow this measure yet. It is saved and still used by the fit check and the classic mannequin.',
-      searchPlaceholder: 'Search parameter (e.g. waist, sleeve, inseam)...',
+      searchPlaceholder: 'Search parameter (e.g. waist, shoulder, knee)...',
       displayModeLabel: '3D Overlay Mode',
       modes: {
         all: 'All Measurements',
@@ -767,12 +881,13 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       noResults: 'No matching measurements found',
       collapsePanel: 'Collapse inspector',
       expandPanel: 'Expand measurements inspector',
+      stubLabel: 'Measures',
     },
     categories: {
       circumferences: 'Circumferences',
       torso: 'Torso & Shoulders',
-      sleeves: 'Sleeves',
-      legs: 'Legs & Rise',
+      sleeves: 'Arms',
+      legs: 'Legs & pelvis',
       heights: 'Heights',
       extremities: 'Extremities',
     },
@@ -812,7 +927,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
     },
     customizer: {
-      title: 'Backdrop, Shading & Glass',
+      title: 'Scene look',
       themeMode: 'Interface Appearance',
       darkGlass: 'Dark Liquid Glass',
       lightGlass: 'Light Liquid Glass',
@@ -874,17 +989,18 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         animeCel: 'Crisp 2-tone cel shadows + charcoal ink outline (ACON / CSP style)',
         clay: 'Architectural diffuse sculpture with soft studio shadows',
         satin: 'Smooth anime skin shader with subtle Fresnel sheen',
-        translucent: 'Semi-transparent shell revealing inseam & underarm seams',
+        translucent: 'Semi-transparent shell revealing the inner body contours',
       },
     },
     camera: {
       full: 'Full Body',
       torso: 'Face & Torso',
-      sleeves: 'Sleeves',
-      legs: 'Legs & Rise',
+      sleeves: 'Arms',
+      legs: 'Legs',
       back: 'Back View',
       reset: 'Reset Orbit',
       autoFocus: 'Auto-Focus Selected',
+      ariaLabel: '3D camera view controls',
     },
     measurements: {
       totalHeight: {
@@ -920,7 +1036,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         tooltip: 'Vertical height from floor to fullest gluteal prominence',
       },
       crotchHeight: {
-        name: 'Crotch / Inseam Height',
+        name: 'Crotch Height',
         tooltip: 'Vertical distance from floor plane to perineal crotch apex',
       },
       kneeHeight: {
@@ -933,7 +1049,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
       neck: {
         name: 'Neck Base Circumference',
-        tooltip: 'Collar girth passing over C7 vertebra and suprasternal notch',
+        tooltip: 'Girth around the base of the neck over the C7 vertebra and suprasternal notch',
       },
       upperChest: {
         name: 'Upper Chest Circumference',
@@ -956,7 +1072,7 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         tooltip: 'Upper pelvic circumference 8-10 cm below natural waist',
       },
       hip: {
-        name: 'Full Hip / Seat Circumference',
+        name: 'Full Hip Circumference',
         tooltip: 'Maximum horizontal perimeter across hip bones and glutes',
       },
       thigh: {
@@ -997,19 +1113,19 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       },
       shoulderWidth: {
         name: 'Bi-Acromial Shoulder Width',
-        tooltip: 'Posterior contour span from left shoulder tip to right shoulder tip',
+        tooltip: 'Across the back from the left shoulder point to the right one (where the shoulder turns into the arm)',
       },
       singleShoulderLength: {
-        name: 'Single Shoulder Seam Length',
+        name: 'Neck-to-Shoulder-Point Length',
         tooltip: 'Distance from lateral neck base to acromion shoulder tip',
       },
       acrossFrontWidth: {
         name: 'Across Chest Front Width',
-        tooltip: 'Anterior width from left to right front armhole crease',
+        tooltip: 'Anterior width from left to right front armpit crease',
       },
       acrossBackWidth: {
         name: 'Across Back Width',
-        tooltip: 'Posterior width across shoulder blades between back armhole creases',
+        tooltip: 'Posterior width across shoulder blades between the back armpit creases',
       },
       frontWaistLength: {
         name: 'Front Neck-to-Waist Length',
@@ -1020,56 +1136,56 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         tooltip: 'Cervicale C7 vertebra along spine contour to back waist line',
       },
       sideTorsoLength: {
-        name: 'Side Seam (Armpit to Waist)',
-        tooltip: 'Vertical torso side seam from axillary fold down to waist',
+        name: 'Side Torso (Armpit to Waist)',
+        tooltip: 'Vertical distance along the side of the torso from armpit fold down to waist',
       },
       torsoLoop: {
         name: 'Vertical Torso Trunk Loop',
         tooltip: 'Complete vertical trunk loop from shoulder through crotch and up back',
       },
       sleeveFromShoulder: {
-        name: 'Outer Sleeve (Shoulder to Wrist)',
+        name: 'Arm Length (Shoulder to Wrist)',
         tooltip: 'Shoulder tip over slightly bent outer elbow down to wrist bone',
       },
       sleeveFromNeck: {
-        name: 'Raglan Sleeve (C7 Neck to Wrist)',
+        name: 'Arm Length (C7 Neck to Wrist)',
         tooltip: 'Center-back C7 neck over shoulder tip down outer arm to wrist',
       },
       sleeveFromArmpit: {
-        name: 'Inner Sleeve Seam (Armpit to Wrist)',
-        tooltip: 'Underarm axillary crease along inner sleeve seam to wrist',
+        name: 'Inner Arm (Armpit to Wrist)',
+        tooltip: 'Underarm axillary crease along inner arm to wrist',
       },
       shoulderToElbow: {
         name: 'Shoulder to Elbow Length',
         tooltip: 'Acromion shoulder point to lateral elbow joint',
       },
       outseamFromWaist: {
-        name: 'Trouser Outseam (from Waist)',
+        name: 'Outer Leg Length (from Waist)',
         tooltip: 'Lateral waist over outer hip curve down to ankle malleolus',
       },
       outseamFromHighHip: {
-        name: 'Low-Waist Outseam (from High Hip)',
-        tooltip: 'Lateral high-hip waistband level down outer leg to ankle',
+        name: 'Outer Leg (from High Hip)',
+        tooltip: 'Lateral point at high-hip level down outer leg to ankle',
       },
       inseamLength: {
-        name: 'Trouser Inseam (Crotch to Ankle)',
-        tooltip: 'Inner leg seam from perineal crotch apex down to inner ankle',
+        name: 'Inner Leg (Crotch to Ankle)',
+        tooltip: 'Inner leg surface from perineal crotch apex down to inner ankle',
       },
       waistToKneeLength: {
         name: 'Waist to Knee Length',
         tooltip: 'Lateral natural waist down outer thigh to mid-knee level',
       },
       crotchCurveTotal: {
-        name: 'Total Crotch Saddle Rise',
-        tooltip: 'Full U-curve from center-front waist through crotch to center-back waist',
+        name: 'Total Waist-Crotch-Waist Arc',
+        tooltip: 'Full arc from center-front waist through the crotch to center-back waist, along the body surface',
       },
       frontRise: {
-        name: 'Front Rise (Waist to Crotch)',
-        tooltip: 'Anterior rise from center-front waist curve to perineal crotch seam',
+        name: 'Front Arc (Waist to Crotch)',
+        tooltip: 'Surface arc from center-front waist to the crotch point',
       },
       backRise: {
-        name: 'Back Rise (Back Waist to Crotch)',
-        tooltip: 'Posterior rise from center-back waist over gluteal curve to crotch seam',
+        name: 'Back Arc (Waist to Crotch)',
+        tooltip: 'Surface arc from center-back waist over the buttocks to the crotch point',
       },
       handLength: {
         name: 'Hand Length',

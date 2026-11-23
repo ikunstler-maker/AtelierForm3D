@@ -158,4 +158,41 @@
 - Verify: script prints its report; exit code 0/1.
 - Seen: 2026-11-23
 
+## Shoulder width off on tall, short or large profiles — Blender
+- Symptom: `shoulderWidth` 1–2 cm off while every girth passes.
+- Root cause (three, fixed one by one): the arm girth key inflated the top of the shoulder; with level keys
+  the arm rode at the armpit level while the torso at the shoulder moved differently; the top torso frame
+  moves the shoulder points in a curve, not a straight line.
+- Fix: the upper-arm key fades in below the shoulder top; arms ride with `shoulder_z`; `residualCurves` in
+  the calibration, applied in three solver passes. Debug with one key at a time (measured vs predicted).
+- Seen: 2026-11-23
+
+## Bust stops growing after adding a tape near the breasts — Blender
+- Symptom: full bust 6–15 cm short on big cups after the upper chest measure was added.
+- Root cause: the upper chest tape passes through the top of the breasts, so its key pulled the rib cage in
+  to keep that tape constant; as a second torso frame it also broke the bust curve.
+- Fix: female upper chest key moves only the back and sides (`upper_back_profile`), it is a delta measure,
+  and it does not take the bust's cross-talk back.
+- Seen: 2026-11-23
+
+## Calf measured at the knee — Blender
+- Symptom: calf landmark at 29.5 % of height.
+- Root cause: "largest leg girth between 14 and 30 %" always picked the top of the range.
+- Fix: search up to 25 %.
+- Seen: 2026-11-23
+
+## Generator became 3x slower — Blender
+- Symptom: one style takes 15–20 min.
+- Root cause: every calibration measurement measured all tapes; the shoulder tape alone is 30 slices.
+- Fix: `measure_with(..., only=[...])` for bust-only calibration loops; run long jobs detached and wait on a
+  marker file (the tool's limit is 10 min).
+- Seen: 2026-11-23
+
 ## Build / Deploy
+
+## Pages deploy fails with "No artifacts named github-pages" — Deploy
+- Symptom: build and upload succeed, the deploy step fails; a re-run fails the same way.
+- Root cause: deploy ran in the same job as the upload and could not see the artifact yet.
+- Fix: separate `build` and `deploy` jobs (`needs: build`) in `.github/workflows/deploy.yml`.
+- Verify: run is green; published file sizes match `public/models`.
+- Seen: 2026-11-23

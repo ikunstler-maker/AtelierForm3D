@@ -216,6 +216,67 @@ def measure(bm, bounds, spec):
             return {"value_cm": None, "error": "no body loop found at this height"}
         return {"value_cm": g["width_m"] * 100.0}
 
+    if kind == "shoulder_arc":
+        # Tailor's shoulder width: from shoulder point to shoulder point across the back.
+        # Shoulder point: going up the outer outline of the arm, the place where the outline
+        # turns from the arm into the shoulder slope (dx/dz passes spec["slope"]).
+        from mathutils.geometry import convex_hull_2d
+
+        lo, hi = spec["range_m"]
+        step, win = 0.004, 3
+        rows = []
+        h = lo
+        while h <= hi:
+            comps = slice_components(bm, floor + h)
+            if comps:
+                rows.append((h, max(max(c["max_x"], -c["min_x"]) for c in comps)))
+            h += step
+        threshold = spec.get("slope", -1.667)
+        point = None
+        prev = None
+        for i in range(win, len(rows) - win):
+            s = (rows[i + win][1] - rows[i - win][1]) / (rows[i + win][0] - rows[i - win][0])
+            if prev is not None and prev[1] > threshold >= s:
+                t = (threshold - prev[1]) / (s - prev[1])
+                point = (prev[2] + t * (rows[i][1] - prev[2]), prev[0] + t * (rows[i][0] - prev[0]))
+                break
+            prev = (rows[i][0], s, rows[i][1])
+        if point is None:
+            return {"value_cm": None, "error": "no shoulder point found"}
+        x_sp, z_sp = point
+        if "ratio" in spec:
+            # Arc = straight distance x the arc / straight ratio of the base body. The true arc
+            # also depends on how deep the back is, which no single key controls in a straight line.
+            return {"value_cm": 2.0 * x_sp * 100.0 * spec["ratio"], "height_m": round(z_sp, 4)}
+        comps = slice_components(bm, floor + z_sp - spec.get("drop_m", 0.02))
+        pts = [p for c in comps for p in c["points"]]
+        if len(pts) < 3:
+            return {"value_cm": None, "error": "no section below the shoulder points"}
+        hull = [pts[i] for i in convex_hull_2d(pts)]
+        left = min(hull, key=lambda p: p[0])
+        right = max(hull, key=lambda p: p[0])
+        # Back half of the hull (the body faces -y): points on the +y side of the left-right line.
+        back = [left] + sorted(
+            (p for p in hull if p is not left and p is not right
+             and (right[0] - left[0]) * (p[1] - left[1]) - (right[1] - left[1]) * (p[0] - left[0]) > 0.0),
+            key=lambda p: p[0],
+        ) + [right]
+
+        def at(x):
+            for a, b in zip(back, back[1:]):
+                if a[0] <= x <= b[0]:
+                    t = (x - a[0]) / max(b[0] - a[0], 1e-9)
+                    return (x, a[1] + t * (b[1] - a[1]))
+            return (x, back[0][1] if x < back[0][0] else back[-1][1])
+
+        x_lim = min(x_sp, -left[0], right[0])
+        chain = [at(-x_lim)] + [p for p in back if -x_lim < p[0] < x_lim] + [at(x_lim)]
+        return {
+            "value_cm": polyline_length(chain, closed=False) * 100.0,
+            "straight_cm": 2.0 * x_sp * 100.0,
+            "height_m": round(z_sp, 4),
+        }
+
     if kind == "plane_girth":
         # Section across a slanted limb (upper arm): the loop closest to the given point.
         px, py, pz = spec["point_m"]

@@ -11,10 +11,33 @@ import {
   LightingSettings,
   useAtelierStore,
 } from '../../store/useAtelierStore';
+import { TRANSLATIONS } from '../../data/translations';
 import { CM_TO_M } from '../../utils/geometryMath';
 import { BlenderBody } from './BlenderBody';
 import { MeasurementOverlays } from './MeasurementOverlays';
 import { ParametricBody } from './ParametricBody';
+
+const REFERENCE_HEIGHT_M = 1.68;
+const FULL_HEADROOM = 1.06;
+const CAMERA_FOV_DEG = 36;
+/** Gap under the header, bar at the bottom and body margin used by the 'full' framing. */
+const FRAME_MARGIN_TOP_PX = 8;
+const FRAME_BOTTOM_BAR_PX = 60;
+const BODY_FIT_FACTOR = 1.03;
+
+interface FrameInfo {
+  /** Bottom edge of the header bar, px. */
+  headerPx: number;
+  /** Height of the 3D viewport, px. */
+  viewportPx: number;
+}
+
+function currentFrame(): FrameInfo {
+  return {
+    headerPx: useAtelierStore.getState().headerBottomPx,
+    viewportPx: typeof window !== 'undefined' ? window.innerHeight : 800,
+  };
+}
 
 interface CameraRigTarget {
   position: THREE.Vector3;
@@ -23,7 +46,8 @@ interface CameraRigTarget {
 
 function getCameraPresetTarget(
   preset: CameraFocusZone,
-  totalHeightCm: number
+  totalHeightCm: number,
+  frame: FrameInfo = currentFrame()
 ): CameraRigTarget {
   const h = totalHeightCm * CM_TO_M;
   switch (preset) {
@@ -48,11 +72,31 @@ function getCameraPresetTarget(
         target: new THREE.Vector3(0.0, h * 0.55, 0.0),
       };
     case 'full':
-    default:
+    default: {
+      // Fit the whole body into the free screen area: below the header bar and
+      // above the camera bar. The distance never drops below the old tuning
+      // (2.32 m at 1.68 m height, scaled with the height).
+      const vh = Math.max(frame.viewportPx, 300);
+      const top = frame.headerPx + FRAME_MARGIN_TOP_PX;
+      const usable = Math.max(vh - top - FRAME_BOTTOM_BAR_PX, vh * 0.4);
+      const visibleM = (BODY_FIT_FACTOR * h * vh) / usable;
+      const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV_DEG / 2));
+      const fitDistance = visibleM / (2 * tanHalfFov);
+      const s = THREE.MathUtils.clamp(h / REFERENCE_HEIGHT_M, 0.85, 1.5);
+      const distance = Math.max(fitDistance, 2.32 * s * FULL_HEADROOM);
+      // Centre the body in the free area: look slightly above its centre.
+      const visibleAtDistance = 2 * distance * tanHalfFov;
+      const shiftPx = (top + (vh - FRAME_BOTTOM_BAR_PX)) / 2 - vh / 2;
+      const targetY = h * 0.5 + (shiftPx * visibleAtDistance) / vh;
       return {
-        position: new THREE.Vector3(0.24, h * 0.56, 2.32),
-        target: new THREE.Vector3(0.0, h * 0.52, 0.0),
+        position: new THREE.Vector3(
+          0.24 * (distance / 2.32),
+          targetY + h * 0.03,
+          distance
+        ),
+        target: new THREE.Vector3(0.0, targetY, 0.0),
       };
+    }
   }
 }
 
@@ -136,6 +180,16 @@ function buildLightRig(lighting: LightingSettings) {
   };
 }
 
+/** Suspense fallback: raises a store flag while the body is loading. */
+const LoadingSignal: React.FC = () => {
+  const setMannequinLoading = useAtelierStore((s) => s.setMannequinLoading);
+  useEffect(() => {
+    setMannequinLoading(true);
+    return () => setMannequinLoading(false);
+  }, [setMannequinLoading]);
+  return null;
+};
+
 const StudioPedestal: React.FC = () => {
   const theme = useAtelierStore((s) => s.glassSettings.theme);
   const accentHex = useAtelierStore((s) => s.glassSettings.accentHex);
@@ -194,6 +248,17 @@ export const MannequinScene: React.FC = () => {
   const isLight = theme === 'light';
   const rig = useMemo(() => buildLightRig(lighting), [lighting]);
   const useBlenderBody = bodyModel !== 'classic';
+  const language = useAtelierStore((s) => s.language);
+  const mannequinLoading = useAtelierStore((s) => s.mannequinLoading);
+  // Initial pose follows the (persisted) body height; later moves are animated.
+  const initialRig = useMemo(
+    () =>
+      getCameraPresetTarget(
+        'full',
+        useAtelierStore.getState().measurements.totalHeight
+      ),
+    []
+  );
 
   return (
     <div
@@ -203,7 +268,12 @@ export const MannequinScene: React.FC = () => {
       <Canvas
         shadows
         dpr={[1, 2]}
-        camera={{ position: [0.24, 0.96, 2.32], fov: 36, near: 0.05, far: 25 }}
+        camera={{
+          position: initialRig.position.toArray(),
+          fov: CAMERA_FOV_DEG,
+          near: 0.05,
+          far: 25,
+        }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       >
         {/* Solid Custom Background Color Behind Mannequin */}
@@ -244,7 +314,7 @@ export const MannequinScene: React.FC = () => {
         {/* Parametric 3D Mannequin + 3D Interactive Measurement Overlays */}
         <group position={[0, 0, 0]}>
           {useBlenderBody ? (
-            <Suspense fallback={null}>
+            <Suspense fallback={<LoadingSignal />}>
               <BlenderBody
                 variant={bodyModel === 'anime' ? 'anime' : 'realistic'}
               />
@@ -277,11 +347,28 @@ export const MannequinScene: React.FC = () => {
           maxDistance={4.8}
           maxPolarAngle={Math.PI * 0.94}
           minPolarAngle={0.05}
-          target={[0, 0.88, 0]}
+          target={initialRig.target.toArray()}
         />
 
         <CameraTransitionController controlsRef={controlsRef} />
       </Canvas>
+
+      {/* Shown while the Blender body file downloads and parses */}
+      {mannequinLoading && useBlenderBody && (
+        <div
+          id="mannequin-loading-indicator"
+          role="status"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <div className="liquid-glass rounded-2xl px-4 py-2.5 flex items-center gap-2.5 text-xs font-medium shadow-xl">
+            <span
+              className="w-3.5 h-3.5 rounded-full border-2 border-white/25 animate-spin"
+              style={{ borderTopColor: 'var(--accent-primary)' }}
+            />
+            {TRANSLATIONS[language].common.loading}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -29,6 +29,12 @@
 | Вихідні моделі / Source models | uncompressed GLBs for Blender checks | `models_src/` |
 | Стиснення / Compression | meshopt + quantization for the site copies | `scripts/compress_models.mjs` |
 | Орієнтири / Landmarks | anatomical points and measure definitions with sources | `docs/LANDMARKS.md` |
+| Рівень висоти / Level key | key `L_<measure>`: raises one height level, stretches the body between its neighbours | `LEVELS`, `levelKeys` in calibration |
+| Мірка-різниця / Delta measure | followed as (value − standard value), not as an absolute number | `deltaMeasures`, `deltaKeys` in calibration |
+| Пов'язана мірка / Linked measure | one of 16 measures that move the body through primary measures | `src/utils/linkedMeasures.ts` |
+| Плечова точка / Shoulder point | where the outline of the arm turns into the shoulder slope | `shoulder_arc` in `measure_glb.py` |
+| Поправкова крива / Residual curve | what is left of a measure after the straight-line part, by one key's weight | `residualCurves` in calibration |
+| Пресет користувача / User preset | named body saved in the browser | `userPresets` in the store, `PresetManager.tsx` |
 | Контрольна сітка / Contact sheet | one image per body area: same bodies and views every time; owner approves it | `scripts/contact_sheet.py`, `renders/contact/<tag>/` (not in git) |
 | Плечовий суглоб / Shoulder joint | point the arm rides on as one rigid piece | `joint_x`, `armShiftMPerUnit` in calibration |
 | Класичний манекен / Classic | previous procedural mannequin | `glassSettings.bodyModel = 'classic'`, `ParametricBody.tsx` |

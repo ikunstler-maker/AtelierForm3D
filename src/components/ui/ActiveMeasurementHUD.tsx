@@ -41,7 +41,7 @@ export const ActiveMeasurementHUD: React.FC = () => {
   return (
     <div
       id="active-measurement-docked-hud"
-      className="fixed top-[68px] left-1/2 -translate-x-1/2 z-20 liquid-glass rounded-2xl px-3.5 py-1.5 flex items-center gap-3 shadow-xl max-w-[calc(100vw-24px)]"
+      className="hidden lg:flex fixed top-[calc(var(--header-bottom,60px)+8px)] left-1/2 -translate-x-1/2 z-20 liquid-glass rounded-2xl px-3.5 py-1.5 flex items-center gap-3 shadow-xl max-w-[calc(100vw-24px)]"
     >
       {/* Code & Category */}
       <div className="flex items-center gap-1.5">
@@ -91,7 +91,8 @@ export const ActiveMeasurementHUD: React.FC = () => {
           type="button"
           onClick={() => toggleMeasurementVisibility(activeKey)}
           className="p-1 rounded-lg opacity-75 hover:opacity-100"
-          title={t.inspector.hideAll}
+          title={isHidden ? t.inspector.showAll : t.inspector.hideAll}
+          aria-label={isHidden ? t.inspector.showAll : t.inspector.hideAll}
         >
           {isHidden ? <IconEyeClosed size={13} /> : <IconEyeOpen size={13} />}
         </button>
@@ -99,7 +100,8 @@ export const ActiveMeasurementHUD: React.FC = () => {
           type="button"
           onClick={() => setSelectedMeasurement(null)}
           className="p-1 rounded-lg opacity-65 hover:opacity-100"
-          title="Close"
+          title={t.common.close}
+          aria-label={t.common.close}
         >
           <IconClose size={13} />
         </button>

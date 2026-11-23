@@ -2,15 +2,10 @@ import React from 'react';
 import { TRANSLATIONS } from '../../data/translations';
 import {
   ACCENT_SWATCHES,
-  BODY_SHAPE_SLIDERS,
-  BodyModel,
   CANVAS_BG_SWATCHES,
-  DEFAULT_BODY_MODEL,
   DEFAULT_LIGHTING,
-  DEFAULT_SKIN_TEXTURE,
   LIGHTING_PRESETS,
   LightingPresetId,
-  SKIN_TONE_SWATCHES,
   SurfaceFinish,
   useAtelierStore,
 } from '../../store/useAtelierStore';
@@ -26,21 +21,11 @@ export const GlassCustomizer: React.FC = () => {
   const glassSettings = useAtelierStore((s) => s.glassSettings);
   const updateGlassSettings = useAtelierStore((s) => s.updateGlassSettings);
   const language = useAtelierStore((s) => s.language);
-  const skinToneHex = useAtelierStore((s) => s.appearance.skinToneHex);
-  const gender = useAtelierStore((s) => s.gender);
-  const updateAppearance = useAtelierStore((s) => s.updateAppearance);
 
   if (!customizerOpen) return null;
 
   const t = TRANSLATIONS[language];
-  const bodyModel = glassSettings.bodyModel ?? DEFAULT_BODY_MODEL;
-  const skinTexture = glassSettings.skinTexture ?? DEFAULT_SKIN_TEXTURE;
   const lighting = glassSettings.lighting ?? DEFAULT_LIGHTING;
-  const bodyShape = glassSettings.bodyShape ?? {};
-  const shapeSliders = BODY_SHAPE_SLIDERS.filter(
-    (s) => !s.femaleOnly || gender === 'female'
-  );
-  const bodyModels: BodyModel[] = ['realistic', 'anime', 'classic'];
   const lightingPresets: LightingPresetId[] = [
     'studio',
     'soft',
@@ -90,7 +75,7 @@ export const GlassCustomizer: React.FC = () => {
   return (
     <div
       id="glass-customizer-popover"
-      className="fixed top-[68px] right-3 z-40 w-[335px] max-w-[calc(100vw-24px)] max-h-[calc(100vh-140px)] overflow-y-auto glass-scroll liquid-glass rounded-2xl p-4 space-y-4 shadow-2xl"
+      className="fixed top-[calc(var(--header-bottom,60px)+8px)] right-3 z-40 w-[335px] max-w-[calc(100vw-24px)] max-h-[calc(100vh_-_var(--header-bottom,60px)_-_24px)] overflow-y-auto glass-scroll liquid-glass rounded-2xl p-4 space-y-4 shadow-2xl"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
@@ -101,6 +86,8 @@ export const GlassCustomizer: React.FC = () => {
           id="close-glass-customizer-btn"
           type="button"
           onClick={() => setCustomizerOpen(false)}
+          title={t.common.close}
+          aria-label={t.common.close}
           className="liquid-glass-pill p-1 rounded-lg opacity-75 hover:opacity-100"
         >
           <IconClose size={14} />
@@ -165,148 +152,6 @@ export const GlassCustomizer: React.FC = () => {
             className="rounded accent-sky-400 w-4 h-4 cursor-pointer"
           />
         </label>
-      </div>
-
-      {/* Mannequin model: stylized Blender body (anime) or the classic procedural one */}
-      <div className="space-y-1.5 pt-2 border-t border-white/10">
-        <div className="text-[11px] font-medium opacity-80">
-          {t.customizer.bodyModel}
-        </div>
-        <div
-          className="grid grid-cols-3 gap-1.5 p-1 rounded-xl border border-white/10"
-          style={{ background: 'var(--glass-bg-elevated)' }}
-        >
-          {bodyModels.map((model) => (
-            <button
-              key={model}
-              id={`body-model-${model}-btn`}
-              type="button"
-              onClick={() => updateGlassSettings({ bodyModel: model })}
-              className={`py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
-                bodyModel === model
-                  ? 'liquid-glass-pill-active'
-                  : 'opacity-70 hover:opacity-100'
-              }`}
-            >
-              {t.customizer.bodyModels[model]}
-            </button>
-          ))}
-        </div>
-        <div className="text-[10px] opacity-70 leading-tight">
-          {t.customizer.bodyModelHints[bodyModel]}
-        </div>
-
-        {/* Skin colour (shared with the character studio) */}
-        <div className="flex items-center justify-between gap-2 pt-1">
-          <span className="text-[11px] font-medium opacity-80">
-            {t.customizer.skinColor}
-          </span>
-          <input
-            id="skin-color-input"
-            type="color"
-            aria-label={t.customizer.skinColor}
-            value={skinToneHex}
-            onChange={(e) => updateAppearance({ skinToneHex: e.target.value })}
-            className="w-16 h-7 rounded-lg cursor-pointer bg-transparent border border-white/20"
-          />
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {SKIN_TONE_SWATCHES.map((sw) => (
-            <button
-              key={sw.id}
-              type="button"
-              title={sw.label}
-              aria-label={sw.label}
-              onClick={() => updateAppearance({ skinToneHex: sw.hex })}
-              className={`w-7 h-7 rounded-full border border-white/25 transition-transform ${
-                skinToneHex.toLowerCase() === sw.hex.toLowerCase()
-                  ? 'scale-110 ring-2 ring-white'
-                  : 'hover:scale-105'
-              }`}
-              style={{ backgroundColor: sw.hex }}
-            />
-          ))}
-        </div>
-
-        {/* Skin micro-texture strength (Blender body only) */}
-        {bodyModel !== 'classic' && (
-          <div className="space-y-1 pt-1">
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="opacity-75 font-medium">
-                {t.customizer.skinTexture}
-              </span>
-              <span className="font-mono font-semibold tabular-nums">
-                {Math.round(skinTexture * 100)}%
-              </span>
-            </div>
-            <input
-              id="skin-texture-slider"
-              type="range"
-              min={0}
-              max={1}
-              step={0.05}
-              value={skinTexture}
-              onChange={(e) =>
-                updateGlassSettings({ skinTexture: parseFloat(e.target.value) })
-              }
-              className="glass-slider"
-            />
-          </div>
-        )}
-
-        {/* Body shape: muscle mass and breast form (they keep the tape measures) */}
-        {bodyModel !== 'classic' && (
-          <div className="space-y-1 pt-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium opacity-80">
-                {t.customizer.bodyShape}
-              </span>
-              <button
-                id="body-shape-reset-btn"
-                type="button"
-                onClick={() => updateGlassSettings({ bodyShape: {} })}
-                className="text-[10px] opacity-70 hover:opacity-100 underline"
-              >
-                {t.customizer.bodyShapeReset}
-              </button>
-            </div>
-            <div className="text-[10px] opacity-70 leading-tight">
-              {t.customizer.bodyShapeHint}
-            </div>
-            {shapeSliders.map((slider) => {
-              const value = bodyShape[slider.id] ?? 0;
-              return (
-                <div key={slider.id} className="space-y-0.5">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="opacity-75 font-medium">
-                      {t.customizer.bodyShapes[slider.id]}
-                    </span>
-                    <span className="font-mono font-semibold tabular-nums">
-                      {Math.round(value * 100)}
-                    </span>
-                  </div>
-                  <input
-                    id={`body-shape-${slider.id}-slider`}
-                    type="range"
-                    min={slider.min}
-                    max={slider.max}
-                    step={0.05}
-                    value={value}
-                    onChange={(e) =>
-                      updateGlassSettings({
-                        bodyShape: {
-                          ...bodyShape,
-                          [slider.id]: parseFloat(e.target.value),
-                        },
-                      })
-                    }
-                    className="glass-slider"
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
 
       {/* Lighting: presets + brightness, direction and warmth */}

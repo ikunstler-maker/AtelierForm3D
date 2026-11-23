@@ -285,6 +285,13 @@ export const BlenderBody: React.FC<{ variant: BlenderBodyVariant }> = ({
     calibration.girthOrder.forEach((name) => {
       targets[name] = measurements[name as MeasurementKey];
     });
+    // Height levels, limb lengths, hands and feet (followed as a change from their reference).
+    [
+      ...(calibration.levelKeys ?? []).map((lk) => lk.measure),
+      ...(calibration.deltaKeys ?? []).map((row) => row.measure),
+    ].forEach((name) => {
+      targets[name] = measurements[name as MeasurementKey];
+    });
     const weights = solveBlenderBodyWeights(calibration, targets, bodyShape);
     parts.forEach(({ mesh }) => {
       const dict = mesh.morphTargetDictionary;
