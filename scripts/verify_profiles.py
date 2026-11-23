@@ -41,27 +41,122 @@ def effective_targets(calibration, targets_cm):
     if not st:
         return {n: targets_cm[n] for n in names}
     base = calibration["base"]
+    reference = st.get("reference", base)
     out = {
         "totalHeight": base["totalHeight"]
         + (targets_cm["totalHeight"] - base["totalHeight"]) * st["response"]["totalHeight"]
     }
     for g in calibration["girthOrder"]:
-        limit = base[g] * st["maxGirthChange"]
-        delta = (targets_cm[g] - base[g]) * st["response"]["girths"]
-        out[g] = base[g] + min(limit, max(-limit, delta))
+        # Relative difference from the real default profile, softened and capped.
+        change = (targets_cm[g] / reference[g] - 1.0) * st["response"]["girths"]
+        change = min(st["maxGirthChange"], max(-st["maxGirthChange"], change))
+        out[g] = base[g] * (1.0 + change)
     return out
 
 
-def solve_weights(calibration, targets_cm):
+def shape_values(calibration, shape):
+    """Slider values clamped to their ranges; missing sliders are 0."""
+    values = {}
+    for spec in calibration.get("shapeKeys", []):
+        v = float((shape or {}).get(spec["id"], 0.0))
+        values[spec["key"]] = min(spec["max"], max(spec["min"], v))
+    return values
+
+
+def curve_value(points, w):
+    """Value on a piecewise-linear [[x, y], ...] curve; clamped to the curve ends."""
+    if w <= points[0][0]:
+        return points[0][1]
+    for (w0, v0), (w1, v1) in zip(points, points[1:]):
+        if w <= w1:
+            return v0 + (v1 - v0) * (w - w0) / max(1e-9, w1 - w0)
+    return points[-1][1]
+
+
+def curve_value_open(points, x):
+    """Like curve_value, but continues the end segments in a straight line."""
+    if x <= points[0][0]:
+        (x0, y0), (x1, y1) = points[0], points[1]
+    elif x >= points[-1][0]:
+        (x0, y0), (x1, y1) = points[-2], points[-1]
+    else:
+        return curve_value(points, x)
+    return y0 + (y1 - y0) * (x - x0) / max(1e-9, x1 - x0)
+
+
+def shape_effect(curve, shapes, w):
+    """How much the shape sliders change a curved measure at key weight w (cm)."""
+    levels = curve["shapeLevels"]
+    total = 0.0
+    for key, value in shapes.items():
+        effect = curve["shapeEffects"].get(key)
+        if not effect or not value:
+            continue
+        side = effect["plus"] if value >= 0 else effect["minus"]
+        total += abs(value) * curve_value(list(zip(levels, side)), w)
+    return total
+
+
+def solve_weights(calibration, targets_cm, shape=None):
     """Mirror of solveBlenderBodyWeights() in src/utils/blenderBodySolver.ts."""
     from measure_glb import solve_linear
 
     targets_cm = effective_targets(calibration, targets_cm)
     order = calibration["girthOrder"]
     base = calibration["base"]
-    rhs = [targets_cm[g] - base[g] for g in order]
-    girth_weights = solve_linear(calibration["matrixCmPerUnit"], rhs)
-    weights = dict(zip(calibration["girthKeys"], girth_weights))
+    shapes = shape_values(calibration, shape)
+    shape_cols = [spec["key"] for spec in calibration.get("shapeKeys", [])]
+    matrix = calibration["matrixCmPerUnit"]
+    curves = calibration.get("curveKeys") or {}
+
+    def from_shape(r):
+        # The sliders change the measures a little; the measurement keys take that back.
+        return sum(calibration["shapeMatrixCmPerUnit"][r][c] * shapes[key] for c, key in enumerate(shape_cols))
+
+    # 1. Straight-line part: every measure except the curved ones (their keys touch nothing else).
+    lin = [r for r, g in enumerate(order) if g not in curves]
+    sub = [[matrix[r][c] for c in lin] for r in lin]
+    rhs = [targets_cm[order[r]] - base[order[r]] - from_shape(r) for r in lin]
+    solved = solve_linear(sub, rhs)
+    weights = {calibration["girthKeys"][r]: w for r, w in zip(lin, solved)}
+
+    # 2. Curved part (female full bust): the other keys scale the section, then the curve is inverted.
+    for g, curve in curves.items():
+        r = order.index(g)
+        # measure(w) = curve(w) blended towards the big-rib-cage curve by L, plus shape(w);
+        # L = what the straight-line keys add to this measure (cm).
+        keys = calibration["girthKeys"]
+        frame_key = curve.get("frameKey")
+        # Straight-line keys other than the rib cage key (their effect here is small).
+        frame = sum(matrix[r][c] * weights[keys[c]] for c in lin if keys[c] != frame_key)
+        points = curve["points"]
+
+        def measure_at(w, r=r, curve=curve, frame=frame, points=points, frame_key=frame_key):
+            f = curve_value(points, w)
+            if frame_key:
+                # Rib cage size u: its own curve at breast weight 0, plus the breast part,
+                # blended between the normal and the big rib cage.
+                u = weights[frame_key]
+                grow0 = f - curve_value(points, 0.0)
+                grow_a = curve_value(curve["framePoints"], w) - curve_value(curve["framePoints"], 0.0)
+                f = curve_value_open(curve["frameCurve"], u) + grow0 + u / curve["frameWeight"] * (grow_a - grow0)
+            f += frame
+            if "shapeEffects" in curve:
+                shape_part = shape_effect(curve, shapes, w)
+            else:
+                shape_part = from_shape(r)
+            return f + shape_part
+
+        # The measure rises with the weight: find the weight by halving the interval.
+        lo, hi = points[0][0], points[-1][0]
+        for _ in range(40):
+            mid = (lo + hi) * 0.5
+            if measure_at(mid) < targets_cm[g]:
+                lo = mid
+            else:
+                hi = mid
+        weights[curve["key"]] = (lo + hi) * 0.5
+    weights.update(shapes)
     hk = calibration["heightKey"]
     weights[hk["name"]] = (targets_cm["totalHeight"] - base["totalHeight"]) / hk["cmPerUnit"]
     return weights
@@ -85,6 +180,8 @@ def ruler_specs(calibration, weights):
         spec = dict(spec)
         if "height_m" in spec:
             spec["height_m"] = stretched_height(calibration, spec["height_m"], height_weight)
+        elif "range_m" in spec:
+            spec["range_m"] = [stretched_height(calibration, z, height_weight) for z in spec["range_m"]]
         else:
             point = list(spec["point_m"])
             for key, weight in weights.items():
@@ -106,7 +203,7 @@ def verify_profile(profile, calibration):
     objects = [o for o in bpy.context.scene.objects if o.type == "MESH"]
 
     targets = profile["targets_cm"]
-    weights = solve_weights(calibration, targets)
+    weights = solve_weights(calibration, targets, profile.get("shape"))
     for obj in objects:
         for kb in obj.data.shape_keys.key_blocks[1:]:
             value = weights.get(kb.name, 0.0)

@@ -227,7 +227,8 @@ def measure(bm, bounds, spec):
 
     if "range_m" in spec:
         lo, hi = spec["range_m"]
-        heights = [lo + (hi - lo) * i / (RANGE_STEPS - 1) for i in range(RANGE_STEPS)]
+        steps = int(spec.get("steps", RANGE_STEPS))
+        heights = [lo + (hi - lo) * i / (steps - 1) for i in range(steps)]
     else:
         heights = [spec["height_m"]]
 
