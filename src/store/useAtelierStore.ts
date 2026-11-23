@@ -230,7 +230,11 @@ export type BodyShapeId =
   | 'breastSpacing'
   | 'breastFullness'
   | 'breastWidth'
-  | 'breastSag';
+  | 'breastSag'
+  | 'gluteProjection'
+  | 'gluteLift'
+  | 'hipRoundness'
+  | 'hipWidePoint';
 
 export const BODY_SHAPE_SLIDERS: {
   id: BodyShapeId;
@@ -244,6 +248,10 @@ export const BODY_SHAPE_SLIDERS: {
   { id: 'breastFullness', min: -1, max: 1, femaleOnly: true },
   { id: 'breastWidth', min: -1, max: 1, femaleOnly: true },
   { id: 'breastSag', min: 0, max: 1, femaleOnly: true },
+  { id: 'gluteProjection', min: -1, max: 1, femaleOnly: false },
+  { id: 'gluteLift', min: -1, max: 1, femaleOnly: false },
+  { id: 'hipRoundness', min: -1, max: 1, femaleOnly: false },
+  { id: 'hipWidePoint', min: -1, max: 1, femaleOnly: false },
 ];
 
 /**

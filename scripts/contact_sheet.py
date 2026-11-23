@@ -26,7 +26,8 @@ from verify_profiles import MODELS_DIR, SOURCE_DIR, solve_weights  # noqa: E402
 PROFILES_DIR = os.path.join(SCRIPT_DIR, "profiles", "verify")
 SUFFIX = {"realistic": "_realistic", "stylized": ""}
 
-# Rows: verify profile names; "default" = the calibration's own targets.
+# Rows: verify profile names; "default" = the calibration's own targets;
+# "<profile>+<slider>=<value>" adds a shape slider.
 ROWS = {
     "female": {
         "sizes": ["female-xs", "default", "female-l", "female-plus"],
@@ -34,12 +35,18 @@ ROWS = {
                   "female-plus"],
         "lower": ["female-xs", "default", "female-l", "female-plus"],
         "limbs": ["female-xs", "default", "female-l", "female-plus"],
+        "glutes": ["default", "default+gluteProjection=1", "default+gluteProjection=-1", "default+gluteLift=1",
+                   "default+gluteLift=-1", "default+hipRoundness=1", "default+hipRoundness=-1",
+                   "default+hipWidePoint=1", "default+hipWidePoint=-1"],
     },
     "male": {
         "sizes": ["male-s", "default", "male-athlete", "male-xl"],
         "torso": ["male-s", "default", "male-athlete", "male-xl"],
         "lower": ["male-s", "default", "male-athlete", "male-xl"],
         "limbs": ["male-s", "default", "male-athlete", "male-xl"],
+        "glutes": ["default", "default+gluteProjection=1", "default+gluteProjection=-1", "default+gluteLift=1",
+                   "default+gluteLift=-1", "default+hipRoundness=1", "default+hipRoundness=-1",
+                   "default+hipWidePoint=1", "default+hipWidePoint=-1"],
     },
 }
 
@@ -64,6 +71,11 @@ SHEETS = {
         ("back three-quarter", 140, 0.50, 0.72, 440, 440),
         ("back", 180, 0.50, 0.72, 440, 440),
     ],
+    "glutes": [
+        ("side", 90, 0.50, 0.72, 440, 440),
+        ("back three-quarter", 140, 0.50, 0.72, 440, 440),
+        ("back", 180, 0.50, 0.72, 440, 440),
+    ],
     "limbs": [
         ("legs front", 0, 0.27, 1.0, 400, 520),
         ("legs side", 90, 0.27, 1.0, 400, 520),
@@ -81,6 +93,12 @@ def arg(cli, name, default=None):
 
 
 def load_profile(name, calibration):
+    if "+" in name:
+        name, extra = name.split("+", 1)
+        profile = dict(load_profile(name, calibration))
+        slider, value = extra.split("=")
+        profile["shape"] = {**(profile.get("shape") or {}), slider: float(value)}
+        return profile
     if name == "default":
         return {"name": "default", "targets_cm": dict(calibration["targets"]), "shape": {}}
     with open(os.path.join(PROFILES_DIR, name + ".json"), "r", encoding="utf-8") as fh:
@@ -210,7 +228,8 @@ def main():
                     height_m = profile["targets_cm"]["totalHeight"] / 100.0
                     row = []
                     for view in SHEETS[sheet]:
-                        tile = os.path.join(tiles_dir, f"{style}_{gender}_{sheet}_{row_name}_{view[1]}.png")
+                        safe = row_name.replace("+", "_").replace("=", "")
+                        tile = os.path.join(tiles_dir, f"{style}_{gender}_{sheet}_{safe}_{view[1]}.png")
                         render_tile(scene, cam, text, f"{row_name} | {view[0]}", view, height_m, tile)
                         row.append(read_pixels(tile))
                     grid.append(row)

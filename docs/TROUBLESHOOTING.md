@@ -69,6 +69,15 @@
 - Verify: render three-quarter and side close-ups for a small and a large cup before a full regeneration.
 - Seen: 2026-11-23
 
+## Angular "saddlebags", belly grows on the back too — Blender
+- Symptom: large sizes get a bump on the outer thigh that ends abruptly; the waist key thickens the back
+  as much as the belly.
+- Root cause: the hip key ended in a short Gaussian below the hip line; girth keys scaled depth evenly.
+- Fix: hip key fades to just above the knee (`hip_low_z`), thigh key hands over to the hips above its
+  tape, `DEPTH_BIAS` puts depth to the front (waist, rib cage) or to the back (hips).
+- Verify: `contact_sheet.py --sheet lower` and `--sheet sizes`, `female-plus` row.
+- Seen: 2026-11-23
+
 ## Pointed breasts, dents on small cups — Blender
 - Symptom: large bust looks like a cone; a bust below the base size leaves dents and wrinkles.
 - Root cause: a bump added along one direction keeps its peak; running the same key backwards digs into

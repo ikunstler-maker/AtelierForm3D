@@ -1,7 +1,7 @@
 {
  "summary": {
-  "ok": 95,
-  "limit": 7,
+  "ok": 125,
+  "limit": 9,
   "not_implemented": 160
  },
  "rows": [
@@ -60,9 +60,9 @@
    "at": "min",
    "value": 72.0,
    "asked_cm": 83.7,
-   "measured_cm": 83.31,
-   "max_move_mm": 43.9,
-   "moved_vertices": 136,
+   "measured_cm": 83.59,
+   "max_move_mm": 39.4,
+   "moved_vertices": 138,
    "status": "ok"
   },
   {
@@ -72,11 +72,11 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 104.4,
-   "measured_cm": 98.97,
-   "max_move_mm": 77.1,
+   "measured_cm": 98.12,
+   "max_move_mm": 74.4,
    "moved_vertices": 257,
    "status": "limit",
-   "cause": "stops 5.4 cm short of the asked value"
+   "cause": "stops 6.3 cm short of the asked value"
   },
   {
    "model": "body_female.glb",
@@ -86,8 +86,8 @@
    "value": 62.0,
    "asked_cm": 70.45,
    "measured_cm": 70.46,
-   "max_move_mm": 38.4,
-   "moved_vertices": 3544,
+   "max_move_mm": 41.1,
+   "moved_vertices": 3539,
    "status": "ok"
   },
   {
@@ -98,8 +98,8 @@
    "value": 130.0,
    "asked_cm": 87.0,
    "measured_cm": 86.99,
-   "max_move_mm": 46.1,
-   "moved_vertices": 3580,
+   "max_move_mm": 46.7,
+   "moved_vertices": 3596,
    "status": "ok"
   },
   {
@@ -109,9 +109,9 @@
    "at": "min",
    "value": 54.0,
    "asked_cm": 63.1,
-   "measured_cm": 63.1,
-   "max_move_mm": 9.7,
-   "moved_vertices": 446,
+   "measured_cm": 63.12,
+   "max_move_mm": 10.5,
+   "moved_vertices": 437,
    "status": "ok"
   },
   {
@@ -121,9 +121,9 @@
    "at": "max",
    "value": 135.0,
    "asked_cm": 78.88,
-   "measured_cm": 78.88,
-   "max_move_mm": 21.6,
-   "moved_vertices": 463,
+   "measured_cm": 78.89,
+   "max_move_mm": 23.3,
+   "moved_vertices": 485,
    "status": "ok"
   },
   {
@@ -134,8 +134,8 @@
    "value": 78.0,
    "asked_cm": 89.7,
    "measured_cm": 89.7,
-   "max_move_mm": 12.6,
-   "moved_vertices": 1177,
+   "max_move_mm": 13.0,
+   "moved_vertices": 1141,
    "status": "ok"
   },
   {
@@ -145,9 +145,9 @@
    "at": "max",
    "value": 150.0,
    "asked_cm": 111.36,
-   "measured_cm": 111.37,
-   "max_move_mm": 30.7,
-   "moved_vertices": 1317,
+   "measured_cm": 111.36,
+   "max_move_mm": 31.7,
+   "moved_vertices": 1301,
    "status": "ok"
   },
   {
@@ -159,7 +159,7 @@
    "asked_cm": 23.92,
    "measured_cm": 23.92,
    "max_move_mm": 8.4,
-   "moved_vertices": 4265,
+   "moved_vertices": 4267,
    "status": "ok"
   },
   {
@@ -171,7 +171,7 @@
    "asked_cm": 29.09,
    "measured_cm": 29.09,
    "max_move_mm": 21.2,
-   "moved_vertices": 4984,
+   "moved_vertices": 4986,
    "status": "ok"
   },
   {
@@ -204,10 +204,10 @@
    "kind": "measure",
    "at": "min",
    "value": 42.0,
-   "asked_cm": 48.42,
-   "measured_cm": 48.42,
-   "max_move_mm": 8.4,
-   "moved_vertices": 1238,
+   "asked_cm": 50.23,
+   "measured_cm": 50.23,
+   "max_move_mm": 8.0,
+   "moved_vertices": 776,
    "status": "ok"
   },
   {
@@ -216,12 +216,12 @@
    "kind": "measure",
    "at": "max",
    "value": 85.0,
-   "asked_cm": 61.55,
+   "asked_cm": 63.86,
    "measured_cm": 5.58,
-   "max_move_mm": 15.4,
-   "moved_vertices": 1327,
+   "max_move_mm": 14.6,
+   "moved_vertices": 855,
    "status": "limit",
-   "cause": "stops 56.0 cm short of the asked value"
+   "cause": "stops 58.3 cm short of the asked value"
   },
   {
    "model": "body_female.glb",
@@ -254,7 +254,7 @@
    "at": "max",
    "value": 1.0,
    "max_move_mm": 6.1,
-   "moved_vertices": 5040,
+   "moved_vertices": 5016,
    "status": "ok"
   },
   {
@@ -263,8 +263,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 19.9,
-   "moved_vertices": 182,
+   "max_move_mm": 21.4,
+   "moved_vertices": 189,
    "status": "ok"
   },
   {
@@ -274,7 +274,7 @@
    "at": "max",
    "value": 1.0,
    "max_move_mm": 15.3,
-   "moved_vertices": 112,
+   "moved_vertices": 114,
    "status": "ok"
   },
   {
@@ -283,8 +283,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 13.6,
-   "moved_vertices": 182,
+   "max_move_mm": 14.7,
+   "moved_vertices": 189,
    "status": "ok"
   },
   {
@@ -294,7 +294,7 @@
    "at": "max",
    "value": 1.0,
    "max_move_mm": 13.2,
-   "moved_vertices": 124,
+   "moved_vertices": 126,
    "status": "ok"
   },
   {
@@ -303,8 +303,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 13.0,
-   "moved_vertices": 124,
+   "max_move_mm": 13.6,
+   "moved_vertices": 106,
    "status": "ok"
   },
   {
@@ -313,7 +313,7 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 11.7,
+   "max_move_mm": 12.2,
    "moved_vertices": 106,
    "status": "ok"
   },
@@ -323,8 +323,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 4.4,
-   "moved_vertices": 100,
+   "max_move_mm": 4.3,
+   "moved_vertices": 102,
    "status": "ok"
   },
   {
@@ -333,8 +333,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 5.0,
-   "moved_vertices": 138,
+   "max_move_mm": 5.1,
+   "moved_vertices": 142,
    "status": "ok"
   },
   {
@@ -343,8 +343,88 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 30.7,
-   "moved_vertices": 197,
+   "max_move_mm": 32.2,
+   "moved_vertices": 205,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 11.0,
+   "moved_vertices": 959,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 11.0,
+   "moved_vertices": 959,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 14.3,
+   "moved_vertices": 308,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 14.3,
+   "moved_vertices": 308,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 9.3,
+   "moved_vertices": 1130,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 9.3,
+   "moved_vertices": 1152,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 10.7,
+   "moved_vertices": 1225,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.7,
+   "moved_vertices": 1268,
    "status": "ok"
   },
   {
@@ -682,8 +762,8 @@
    "at": "min",
    "value": 72.0,
    "asked_cm": 72.0,
-   "measured_cm": 85.74,
-   "max_move_mm": 39.6,
+   "measured_cm": 85.72,
+   "max_move_mm": 39.7,
    "moved_vertices": 136,
    "status": "limit",
    "cause": "stops 13.7 cm short of the asked value"
@@ -695,8 +775,8 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 145.0,
-   "measured_cm": 104.18,
-   "max_move_mm": 96.1,
+   "measured_cm": 104.15,
+   "max_move_mm": 96.0,
    "moved_vertices": 244,
    "status": "limit",
    "cause": "stops 40.8 cm short of the asked value"
@@ -708,9 +788,9 @@
    "at": "min",
    "value": 62.0,
    "asked_cm": 62.0,
-   "measured_cm": 62.13,
-   "max_move_mm": 67.0,
-   "moved_vertices": 1781,
+   "measured_cm": 62.15,
+   "max_move_mm": 65.0,
+   "moved_vertices": 1809,
    "status": "ok"
   },
   {
@@ -720,9 +800,9 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 130.0,
-   "measured_cm": 130.02,
-   "max_move_mm": 108.2,
-   "moved_vertices": 2943,
+   "measured_cm": 130.13,
+   "max_move_mm": 105.9,
+   "moved_vertices": 2948,
    "status": "ok"
   },
   {
@@ -732,9 +812,9 @@
    "at": "min",
    "value": 54.0,
    "asked_cm": 54.0,
-   "measured_cm": 54.01,
-   "max_move_mm": 27.6,
-   "moved_vertices": 358,
+   "measured_cm": 54.11,
+   "max_move_mm": 27.3,
+   "moved_vertices": 356,
    "status": "ok"
   },
   {
@@ -744,9 +824,9 @@
    "at": "max",
    "value": 135.0,
    "asked_cm": 135.0,
-   "measured_cm": 134.51,
-   "max_move_mm": 131.0,
-   "moved_vertices": 723,
+   "measured_cm": 135.0,
+   "max_move_mm": 129.5,
+   "moved_vertices": 707,
    "status": "ok"
   },
   {
@@ -756,9 +836,9 @@
    "at": "min",
    "value": 78.0,
    "asked_cm": 78.0,
-   "measured_cm": 78.02,
-   "max_move_mm": 36.9,
-   "moved_vertices": 553,
+   "measured_cm": 78.05,
+   "max_move_mm": 39.8,
+   "moved_vertices": 552,
    "status": "ok"
   },
   {
@@ -768,9 +848,9 @@
    "at": "max",
    "value": 150.0,
    "asked_cm": 150.0,
-   "measured_cm": 150.09,
-   "max_move_mm": 110.6,
-   "moved_vertices": 602,
+   "measured_cm": 150.14,
+   "max_move_mm": 119.3,
+   "moved_vertices": 601,
    "status": "ok"
   },
   {
@@ -829,8 +909,8 @@
    "value": 42.0,
    "asked_cm": 42.0,
    "measured_cm": 42.01,
-   "max_move_mm": 25.7,
-   "moved_vertices": 558,
+   "max_move_mm": 24.4,
+   "moved_vertices": 294,
    "status": "ok"
   },
   {
@@ -841,8 +921,8 @@
    "value": 85.0,
    "asked_cm": 85.0,
    "measured_cm": 2.25,
-   "max_move_mm": 53.3,
-   "moved_vertices": 632,
+   "max_move_mm": 50.6,
+   "moved_vertices": 322,
    "status": "limit",
    "cause": "stops 82.8 cm short of the asked value"
   },
@@ -855,7 +935,7 @@
    "asked_cm": 28.0,
    "measured_cm": 28.0,
    "max_move_mm": 12.5,
-   "moved_vertices": 563,
+   "moved_vertices": 550,
    "status": "ok"
   },
   {
@@ -867,7 +947,7 @@
    "asked_cm": 52.0,
    "measured_cm": 52.01,
    "max_move_mm": 30.3,
-   "moved_vertices": 775,
+   "moved_vertices": 638,
    "status": "ok"
   },
   {
@@ -876,8 +956,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 6.1,
-   "moved_vertices": 3605,
+   "max_move_mm": 6.0,
+   "moved_vertices": 3594,
    "status": "ok"
   },
   {
@@ -887,7 +967,7 @@
    "at": "min",
    "value": -1.0,
    "max_move_mm": 16.2,
-   "moved_vertices": 132,
+   "moved_vertices": 136,
    "status": "ok"
   },
   {
@@ -926,8 +1006,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 11.5,
-   "moved_vertices": 162,
+   "max_move_mm": 11.3,
+   "moved_vertices": 165,
    "status": "ok"
   },
   {
@@ -966,8 +1046,88 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 24.0,
-   "moved_vertices": 155,
+   "max_move_mm": 24.1,
+   "moved_vertices": 161,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 10.6,
+   "moved_vertices": 431,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.6,
+   "moved_vertices": 431,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 14.4,
+   "moved_vertices": 93,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 14.4,
+   "moved_vertices": 93,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 10.4,
+   "moved_vertices": 478,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.4,
+   "moved_vertices": 478,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 11.2,
+   "moved_vertices": 488,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 11.2,
+   "moved_vertices": 488,
    "status": "ok"
   },
   {
@@ -1305,9 +1465,9 @@
    "at": "min",
    "value": 72.0,
    "asked_cm": 90.2,
-   "measured_cm": 90.23,
-   "max_move_mm": 19.2,
-   "moved_vertices": 1525,
+   "measured_cm": 90.24,
+   "max_move_mm": 19.0,
+   "moved_vertices": 1530,
    "status": "ok"
   },
   {
@@ -1318,8 +1478,8 @@
    "value": 145.0,
    "asked_cm": 115.75,
    "measured_cm": 115.78,
-   "max_move_mm": 30.9,
-   "moved_vertices": 1827,
+   "max_move_mm": 30.6,
+   "moved_vertices": 1829,
    "status": "ok"
   },
   {
@@ -1329,9 +1489,9 @@
    "at": "min",
    "value": 62.0,
    "asked_cm": 80.85,
-   "measured_cm": 80.89,
-   "max_move_mm": 19.3,
-   "moved_vertices": 294,
+   "measured_cm": 80.91,
+   "max_move_mm": 19.2,
+   "moved_vertices": 292,
    "status": "ok"
   },
   {
@@ -1341,9 +1501,9 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 104.65,
-   "measured_cm": 104.71,
-   "max_move_mm": 26.0,
-   "moved_vertices": 302,
+   "measured_cm": 104.72,
+   "max_move_mm": 25.8,
+   "moved_vertices": 300,
    "status": "ok"
   },
   {
@@ -1353,9 +1513,9 @@
    "at": "min",
    "value": 54.0,
    "asked_cm": 73.5,
-   "measured_cm": 73.5,
-   "max_move_mm": 19.6,
-   "moved_vertices": 455,
+   "measured_cm": 73.55,
+   "max_move_mm": 22.1,
+   "moved_vertices": 453,
    "status": "ok"
   },
   {
@@ -1365,9 +1525,9 @@
    "at": "max",
    "value": 135.0,
    "asked_cm": 97.44,
-   "measured_cm": 97.44,
-   "max_move_mm": 25.0,
-   "moved_vertices": 458,
+   "measured_cm": 97.45,
+   "max_move_mm": 28.3,
+   "moved_vertices": 457,
    "status": "ok"
   },
   {
@@ -1377,9 +1537,9 @@
    "at": "min",
    "value": 78.0,
    "asked_cm": 91.0,
-   "measured_cm": 91.0,
-   "max_move_mm": 14.1,
-   "moved_vertices": 1068,
+   "measured_cm": 91.01,
+   "max_move_mm": 15.7,
+   "moved_vertices": 1078,
    "status": "ok"
   },
   {
@@ -1389,9 +1549,9 @@
    "at": "max",
    "value": 150.0,
    "asked_cm": 113.68,
-   "measured_cm": 113.7,
-   "max_move_mm": 31.6,
-   "moved_vertices": 1167,
+   "measured_cm": 113.69,
+   "max_move_mm": 35.2,
+   "moved_vertices": 1163,
    "status": "ok"
   },
   {
@@ -1400,8 +1560,8 @@
    "kind": "measure",
    "at": "min",
    "value": 33.0,
-   "asked_cm": 41.23,
-   "measured_cm": 41.23,
+   "asked_cm": 41.25,
+   "measured_cm": 41.25,
    "max_move_mm": 23.3,
    "moved_vertices": 4321,
    "status": "ok"
@@ -1412,10 +1572,10 @@
    "kind": "measure",
    "at": "max",
    "value": 56.0,
-   "asked_cm": 49.24,
-   "measured_cm": 49.24,
+   "asked_cm": 49.26,
+   "measured_cm": 49.26,
    "max_move_mm": 17.9,
-   "moved_vertices": 4171,
+   "moved_vertices": 4173,
    "status": "ok"
   },
   {
@@ -1448,10 +1608,10 @@
    "kind": "measure",
    "at": "min",
    "value": 42.0,
-   "asked_cm": 48.99,
-   "measured_cm": 49.0,
-   "max_move_mm": 9.4,
-   "moved_vertices": 1126,
+   "asked_cm": 51.57,
+   "measured_cm": 51.57,
+   "max_move_mm": 9.6,
+   "moved_vertices": 752,
    "status": "ok"
   },
   {
@@ -1460,12 +1620,11 @@
    "kind": "measure",
    "at": "max",
    "value": 85.0,
-   "asked_cm": 62.91,
-   "measured_cm": 8.68,
-   "max_move_mm": 15.5,
-   "moved_vertices": 1174,
-   "status": "limit",
-   "cause": "stops 54.2 cm short of the asked value"
+   "asked_cm": 66.21,
+   "measured_cm": 66.22,
+   "max_move_mm": 16.0,
+   "moved_vertices": 772,
+   "status": "ok"
   },
   {
    "model": "body_male.glb",
@@ -1497,8 +1656,88 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.3,
-   "moved_vertices": 3172,
+   "max_move_mm": 10.0,
+   "moved_vertices": 3181,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 10.2,
+   "moved_vertices": 882,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.2,
+   "moved_vertices": 882,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 14.3,
+   "moved_vertices": 259,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 14.3,
+   "moved_vertices": 259,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 9.1,
+   "moved_vertices": 1068,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 9.1,
+   "moved_vertices": 1068,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 10.9,
+   "moved_vertices": 1184,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.9,
+   "moved_vertices": 1184,
    "status": "ok"
   },
   {
@@ -1836,9 +2075,9 @@
    "at": "min",
    "value": 72.0,
    "asked_cm": 72.0,
-   "measured_cm": 72.05,
-   "max_move_mm": 57.0,
-   "moved_vertices": 4280,
+   "measured_cm": 72.1,
+   "max_move_mm": 56.4,
+   "moved_vertices": 4285,
    "status": "ok"
   },
   {
@@ -1848,9 +2087,9 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 145.0,
-   "measured_cm": 145.06,
-   "max_move_mm": 91.7,
-   "moved_vertices": 4563,
+   "measured_cm": 145.1,
+   "max_move_mm": 90.6,
+   "moved_vertices": 4564,
    "status": "ok"
   },
   {
@@ -1860,10 +2099,11 @@
    "at": "min",
    "value": 62.0,
    "asked_cm": 62.0,
-   "measured_cm": 62.47,
-   "max_move_mm": 56.0,
-   "moved_vertices": 336,
-   "status": "ok"
+   "measured_cm": 62.59,
+   "max_move_mm": 55.1,
+   "moved_vertices": 331,
+   "status": "limit",
+   "cause": "stops 0.6 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -1872,9 +2112,9 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 130.0,
-   "measured_cm": 130.16,
-   "max_move_mm": 75.2,
-   "moved_vertices": 351,
+   "measured_cm": 130.22,
+   "max_move_mm": 74.2,
+   "moved_vertices": 346,
    "status": "ok"
   },
   {
@@ -1884,10 +2124,11 @@
    "at": "min",
    "value": 54.0,
    "asked_cm": 54.0,
-   "measured_cm": 54.45,
-   "max_move_mm": 58.8,
+   "measured_cm": 54.95,
+   "max_move_mm": 58.7,
    "moved_vertices": 361,
-   "status": "ok"
+   "status": "limit",
+   "cause": "stops 1.0 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -1896,10 +2137,11 @@
    "at": "max",
    "value": 135.0,
    "asked_cm": 135.0,
-   "measured_cm": 135.23,
-   "max_move_mm": 99.9,
+   "measured_cm": 135.59,
+   "max_move_mm": 99.8,
    "moved_vertices": 377,
-   "status": "ok"
+   "status": "limit",
+   "cause": "stops 0.6 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -1908,9 +2150,9 @@
    "at": "min",
    "value": 78.0,
    "asked_cm": 78.0,
-   "measured_cm": 78.02,
+   "measured_cm": 78.06,
    "max_move_mm": 39.7,
-   "moved_vertices": 535,
+   "moved_vertices": 534,
    "status": "ok"
   },
   {
@@ -1920,9 +2162,9 @@
    "at": "max",
    "value": 150.0,
    "asked_cm": 150.0,
-   "measured_cm": 150.06,
+   "measured_cm": 150.12,
    "max_move_mm": 103.3,
-   "moved_vertices": 551,
+   "moved_vertices": 549,
    "status": "ok"
   },
   {
@@ -1980,9 +2222,9 @@
    "at": "min",
    "value": 42.0,
    "asked_cm": 42.0,
-   "measured_cm": 42.0,
-   "max_move_mm": 28.8,
-   "moved_vertices": 501,
+   "measured_cm": 42.01,
+   "max_move_mm": 28.4,
+   "moved_vertices": 277,
    "status": "ok"
   },
   {
@@ -1993,8 +2235,8 @@
    "value": 85.0,
    "asked_cm": 85.0,
    "measured_cm": null,
-   "max_move_mm": 48.6,
-   "moved_vertices": 612,
+   "max_move_mm": 47.9,
+   "moved_vertices": 291,
    "status": "limit",
    "cause": "ruler finds no section at this extreme"
   },
@@ -2006,8 +2248,8 @@
    "value": 28.0,
    "asked_cm": 28.0,
    "measured_cm": 28.01,
-   "max_move_mm": 17.6,
-   "moved_vertices": 610,
+   "max_move_mm": 17.7,
+   "moved_vertices": 581,
    "status": "ok"
   },
   {
@@ -2018,8 +2260,8 @@
    "value": 52.0,
    "asked_cm": 52.0,
    "measured_cm": 52.01,
-   "max_move_mm": 24.7,
-   "moved_vertices": 651,
+   "max_move_mm": 24.8,
+   "moved_vertices": 618,
    "status": "ok"
   },
   {
@@ -2029,7 +2271,87 @@
    "at": "max",
    "value": 1.0,
    "max_move_mm": 10.3,
-   "moved_vertices": 3805,
+   "moved_vertices": 3791,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 11.2,
+   "moved_vertices": 399,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "gluteProjection",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 11.2,
+   "moved_vertices": 399,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 14.3,
+   "moved_vertices": 84,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "gluteLift",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 14.3,
+   "moved_vertices": 84,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 8.1,
+   "moved_vertices": 428,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipRoundness",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 8.1,
+   "moved_vertices": 428,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "min",
+   "value": -1.0,
+   "max_move_mm": 10.3,
+   "moved_vertices": 483,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipWidePoint",
+   "kind": "shape",
+   "at": "max",
+   "value": 1.0,
+   "max_move_mm": 10.3,
+   "moved_vertices": 483,
    "status": "ok"
   },
   {

@@ -8,6 +8,9 @@
    - Part 1.2 (built, waits for the owner's OK on `renders/contact/after12/`): new breast build, flat key,
      "breast sag" slider, rib cage carried up the back. Left over: anime body with strong breast sliders
      still droops to a point; male chest unchanged; denser mesh not needed so far.
+   - Part 1.3 (built, waits for the owner's OK on `renders/contact/after13/`): depth bias per girth key
+     (belly forward, hips back), hip fat fades to the knee, four glute / hip sliders. Left over: slider
+     effects are subtle; no explicit gluteal fold control; male pelvis unchanged.
    - Part 1.4 also: `shoulderWidth` moves to the tailoring definition (between shoulder points).
    - Math: smooth (C2) falloffs everywhere; smoothing pass in transition zones. Line on the back: the female
      back has no key above the underbust level (the bust key skips the back), so on large sizes the back

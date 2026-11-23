@@ -62,14 +62,27 @@ SHAPE_KEYS = {
         {"id": "breastFullness", "min": -1.0, "max": 1.0},
         {"id": "breastWidth", "min": -1.0, "max": 1.0},
         {"id": "breastSag", "min": 0.0, "max": 1.0},
+        {"id": "gluteProjection", "min": -1.0, "max": 1.0},
+        {"id": "gluteLift", "min": -1.0, "max": 1.0},
+        {"id": "hipRoundness", "min": -1.0, "max": 1.0},
+        {"id": "hipWidePoint", "min": -1.0, "max": 1.0},
     ],
-    "male": [{"id": "muscle", "min": 0.0, "max": 1.0}],
+    "male": [
+        {"id": "muscle", "min": 0.0, "max": 1.0},
+        {"id": "gluteProjection", "min": -1.0, "max": 1.0},
+        {"id": "gluteLift", "min": -1.0, "max": 1.0},
+        {"id": "hipRoundness", "min": -1.0, "max": 1.0},
+        {"id": "hipWidePoint", "min": -1.0, "max": 1.0},
+    ],
 }
 # Vertical reach (sigma) of every key, as a fraction of body height (bicep: of arm length).
 KEY_SIGMA = {
     "neck": 0.013, "upperChest": 0.045, "chest": 0.045, "underbust": 0.045, "waist": 0.045, "hip": 0.05,
     "shoulderWidth": 0.035, "bicep": 0.08, "thigh": 0.04, "calf": 0.055,
 }
+# Where a girth key puts its depth: > 0 more to the front (belly), < 0 more to the back (glutes).
+# The tape measure is the same either way; the solver reads it from the calibration.
+DEPTH_BIAS = {"chest": 0.2, "underbust": 0.25, "waist": 0.45, "hip": -0.3}
 KEY_KIND = {
     "neck": "girth", "upperChest": "girth", "chest": "girth", "underbust": "girth",
     "waist": "girth", "hip": "girth",
@@ -97,7 +110,7 @@ BREAST_SHAPE = {
 }
 FRAME_CAL_WEIGHT = 4.0    # underbust key weight of the second bust curve (a much bigger rib cage)
 FRAME_CURVE_WEIGHTS = [-1.5, -0.75, 0.0, 1.0, 2.0, 3.0, 4.0, 5.5]
-SHAPE_CAL_SHARES = [-0.5, 0.0, 0.2, 0.5, 0.9]  # breast weights (shares, see above) for slider calibration
+SHAPE_CAL_SHARES = [-0.5, 0.0, 0.1, 0.2, 0.35, 0.5, 0.9]  # breast weights (shares, see above) for slider calibration
 BUST_RANGE_M = (-0.03, 0.045)  # the full-bust tape is taken at the fullest level in this range
 MUSCLE_FEMALE = 0.6       # how much of the muscle shape a female body takes
 
@@ -364,6 +377,8 @@ def run():
 
         knee_z = 0.285 * height_m
 
+        hip_low_z = knee_z + 0.02 * height_m
+
         def torso_profile(name, z):
             """Vertical reach of a girth key. Hip, waist and chest hand over to each other
             smoothly and always add up to 1 between hip and chest, so an even change of all
@@ -375,7 +390,8 @@ def run():
             here = centers[name]
             if z <= here:
                 if idx == 0:
-                    return gaussian(z, here, sigma)
+                    # Hip fat continues onto the upper thigh (a short bump left angular "saddlebags").
+                    return 1.0 - smoother01((here - z) / (here - hip_low_z))
                 below = centers[frames[idx - 1]]
                 return smoother01((z - below) / (here - below))
             if idx == len(frames) - 1:
@@ -570,8 +586,11 @@ def run():
             """Thigh key fades out towards the knee; calf key is a bump around the calf."""
             center = centers[name]
             sigma = KEY_SIGMA[name] * height_m
-            if name == "thigh" and z <= center:
-                return 1.0 - smooth01((center - z) / (center - knee_z))
+            if name == "thigh":
+                if z <= center:
+                    return 1.0 - smoother01((center - z) / (center - knee_z))
+                # Above its tape the thigh key hands over to the hips.
+                return 1.0 - smoother01((z - center) / (centers["hip"] - center))
             return gaussian(z, center, sigma)
 
         def height_shift(z):
@@ -713,9 +732,13 @@ def run():
             if kind == "girth":
                 g = torso_profile(name, co.z) * KEY_SCALE
                 g_joint = torso_profile(name, armpit_z) * KEY_SCALE
+                dy = co.y - axis_y
+                r = math.hypot(co.x, dy)
+                # Belly grows forward, hips grow backward (see DEPTH_BIAS).
+                gain = 1.0 + DEPTH_BIAS.get(name, 0.0) * (-dy / r if r > 1e-6 else 0.0)
                 return Vector((
                     (1.0 - arm) * co.x * g + arm * side * an["joint_x"] * g_joint,
-                    (1.0 - an["arm_depth"][i]) * (co.y - axis_y) * g,
+                    (1.0 - an["arm_depth"][i]) * dy * g * gain,
                     0.0,
                 ))
 
@@ -797,6 +820,40 @@ def run():
                         rr = rr - d * rr.dot(d)
                         total += Vector((side * rr.x * g, rr.y * g, rr.z * g))
                 return total * muscle_gain
+
+            if shape_id in ("gluteProjection", "gluteLift", "hipRoundness", "hipWidePoint"):
+                if arm >= 1.0:
+                    return None
+                dy = co.y - axis_y
+                r = math.hypot(co.x, dy)
+                if r < 1e-6:
+                    return None
+                keep = 1.0 - arm
+                fold_low = crotch_z - 0.03 * height_m
+                if shape_id in ("gluteProjection", "gluteLift"):
+                    # Cheek: back of the hips, between the fold and the top of the pelvis.
+                    back = smoother01((dy / r - 0.15) / 0.6)
+                    cheek = gaussian(abs(co.x), 0.05 * height_m, 0.035 * height_m)
+                    rise = smoother01((co.z - fold_low) / (glute_z - fold_low))
+                    fall = 1.0 - smoother01((co.z - glute_z) / (0.08 * height_m))
+                    m = back * cheek * rise * fall * keep
+                    if m <= 1e-5:
+                        return None
+                    if shape_id == "gluteProjection":
+                        return Vector((0.0, 0.015 * m, 0.0))
+                    # Lift: the fullest part moves up (and a little out); down for a negative value.
+                    return Vector((0.0, 0.004 * m, 0.014 * m))
+                # Side of the hips.
+                flank = smoother01((abs(co.x) / r - 0.45) / 0.45) * keep
+                if flank <= 1e-5:
+                    return None
+                if shape_id == "hipRoundness":
+                    m = flank * gaussian(co.z, glute_z + 0.01 * height_m, 0.05 * height_m)
+                    return Vector((side * 0.012 * m, 0.0, 0.0))
+                # Widest point: fuller above the hip line, slimmer below (or the reverse).
+                t = (co.z - glute_z) / (0.055 * height_m)
+                m = flank * t * math.exp(-0.5 * t * t)
+                return Vector((side * 0.016 * m, 0.0, 0.0))
 
             m = breast_dome(an, i, soft=True)
             if m <= 0.0:
@@ -967,6 +1024,8 @@ def run():
                 # large breast, and differently in its two directions: measure both.
                 effects = {}
                 for shape in shapes:
+                    if shape["id"].startswith(("glute", "hip")):
+                        continue  # far from the bust tape
                     key = f"S_{shape['id']}"
                     plus, minus = [], []
                     for level in shape_levels:

@@ -162,6 +162,10 @@ export interface TranslationDictionary {
       breastFullness: string;
       breastWidth: string;
       breastSag: string;
+      gluteProjection: string;
+      gluteLift: string;
+      hipRoundness: string;
+      hipWidePoint: string;
     };
     lighting: string;
     lightingPresets: {
@@ -403,6 +407,10 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         breastFullness: 'Груди: крапля ↔ круглі',
         breastWidth: 'Груди: вузькі ↔ широкі',
         breastSag: 'Груди: опущеність',
+        gluteProjection: 'Сідниці: пласкі ↔ випуклі',
+        gluteLift: 'Сідниці: низькі ↔ високі',
+        hipRoundness: 'Боки стегон: прямі ↔ округлі',
+        hipWidePoint: 'Найширше місце стегон: нижче ↔ вище',
       },
       lighting: 'Освітлення',
       lightingPresets: {
@@ -837,6 +845,10 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
         breastFullness: 'Breasts: teardrop ↔ round',
         breastWidth: 'Breasts: narrow ↔ wide',
         breastSag: 'Breasts: sag',
+        gluteProjection: 'Glutes: flat ↔ projected',
+        gluteLift: 'Glutes: low ↔ high',
+        hipRoundness: 'Hip sides: straight ↔ rounded',
+        hipWidePoint: 'Widest hip point: lower ↔ higher',
       },
       lighting: 'Lighting',
       lightingPresets: {
