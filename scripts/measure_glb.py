@@ -64,9 +64,36 @@ def polyline_length(points, closed=True):
     return total
 
 
-def slice_components(bm_source, height):
-    """Cut a copy of the mesh with a horizontal plane; return slice loops as components."""
+def hull_length(points):
+    """Perimeter of the convex hull of 2D points (how a tape wraps a section)."""
+    from mathutils.geometry import convex_hull_2d
+
+    hull = [points[i] for i in convex_hull_2d(points)]
+    return polyline_length(hull)
+
+
+def slice_components(bm_source, height, plane_co=None, plane_no=None):
+    """Cut a copy of the mesh with a plane; return slice loops as components.
+
+    Default: horizontal plane at `height`, points are (x, y). With `plane_co` and
+    `plane_no` the plane is arbitrary and points are 2D coordinates inside it,
+    measured from `plane_co`.
+    """
     import bmesh
+    from mathutils import Vector
+
+    oblique = plane_co is not None
+    if oblique:
+        origin = Vector(plane_co)
+        normal = Vector(plane_no).normalized()
+        axis_u = normal.cross(Vector((0.0, 0.0, 1.0)))
+        if axis_u.length < 1e-6:
+            axis_u = Vector((1.0, 0.0, 0.0))
+        axis_u.normalize()
+        axis_v = normal.cross(axis_u)
+    else:
+        origin = Vector((0.0, 0.0, height + PLANE_NUDGE_M))
+        normal = Vector((0.0, 0.0, 1.0))
 
     bm = bm_source.copy()
     geom = bm.verts[:] + bm.edges[:] + bm.faces[:]
@@ -74,12 +101,18 @@ def slice_components(bm_source, height):
         bm,
         geom=geom,
         dist=1e-7,
-        plane_co=(0.0, 0.0, height + PLANE_NUDGE_M),
-        plane_no=(0.0, 0.0, 1.0),
+        plane_co=origin,
+        plane_no=normal,
         clear_inner=False,
         clear_outer=False,
     )
     cut_edges = [g for g in res["geom_cut"] if isinstance(g, bmesh.types.BMEdge)]
+
+    def to_2d(co):
+        if oblique:
+            d = co - origin
+            return (d.dot(axis_u), d.dot(axis_v))
+        return (co.x, co.y)
 
     adjacency = {}
     for e in cut_edges:
@@ -89,7 +122,7 @@ def slice_components(bm_source, height):
     coords = {}
     for e in cut_edges:
         for v in e.verts:
-            coords[v.index] = (v.co.x, v.co.y)
+            coords[v.index] = to_2d(v.co)
     edge_len = {}
     for e in cut_edges:
         a, b = e.verts
@@ -164,6 +197,34 @@ def measure(bm, bounds, spec):
         return {"value_cm": (bounds["max_z"] - bounds["min_z"]) * 100.0}
 
     floor = bounds["min_z"]
+
+    if kind == "limb_girth":
+        # One leg: the biggest loop that lies fully on the +x side (hands are smaller).
+        comps = [c for c in slice_components(bm, floor + spec["height_m"]) if c["min_x"] > 0.0]
+        if not comps:
+            return {"value_cm": None, "error": "no limb loop found at this height"}
+        limb = max(comps, key=lambda c: (c["max_x"] - c["min_x"]) * (c["max_y"] - c["min_y"]))
+        return {
+            "value_cm": hull_length(limb["points"]) * 100.0,
+            "center_x_m": (limb["min_x"] + limb["max_x"]) * 0.5,
+            "center_y_m": (limb["min_y"] + limb["max_y"]) * 0.5,
+        }
+
+    if kind == "width":
+        g = tape_girth(slice_components(bm, floor + spec["height_m"]))
+        if g is None:
+            return {"value_cm": None, "error": "no body loop found at this height"}
+        return {"value_cm": g["width_m"] * 100.0}
+
+    if kind == "plane_girth":
+        # Section across a slanted limb (upper arm): the loop closest to the given point.
+        px, py, pz = spec["point_m"]
+        comps = slice_components(bm, 0.0, plane_co=(px, py, pz + floor), plane_no=spec["normal"])
+        if not comps:
+            return {"value_cm": None, "error": "plane does not cut the mesh"}
+        limb = min(comps, key=lambda c: c["cx"] ** 2 + c["cy"] ** 2)
+        return {"value_cm": hull_length(limb["points"]) * 100.0}
+
     if "range_m" in spec:
         lo, hi = spec["range_m"]
         heights = [lo + (hi - lo) * i / (RANGE_STEPS - 1) for i in range(RANGE_STEPS)]

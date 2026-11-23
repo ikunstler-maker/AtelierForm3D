@@ -1,16 +1,17 @@
 {
   "tolerance_cm": 0.5,
   "all_ok": true,
-  "profiles": [
+  "checks": [
     {
       "profile": "female-l",
       "gender": "female",
+      "model": "body_female.glb",
       "mode": "anime",
       "weights": {
-        "M_neck": 0.1405,
-        "M_chest": 0.1907,
-        "M_waist": 0.2697,
-        "M_hip": 0.2136,
+        "M_neck": 0.1371,
+        "M_chest": 0.2334,
+        "M_waist": 0.3092,
+        "M_hip": 0.219,
         "M_height": 0.2
       },
       "all_ok": true,
@@ -53,14 +54,98 @@
       }
     },
     {
+      "profile": "female-l",
+      "gender": "female",
+      "model": "body_female_realistic.glb",
+      "mode": "exact",
+      "weights": {
+        "M_neck": 0.4866,
+        "M_chest": 0.6704,
+        "M_waist": 0.8857,
+        "M_hip": 0.5446,
+        "M_shoulderWidth": -0.142,
+        "M_bicep": 0.9171,
+        "M_thigh": 0.4223,
+        "M_calf": 0.5667,
+        "M_height": 0.2
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "real_cm": 170,
+          "target_cm": 170,
+          "value_cm": 170.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "real_cm": 35.5,
+          "target_cm": 35.5,
+          "value_cm": 35.53,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "chest": {
+          "real_cm": 96,
+          "target_cm": 96,
+          "value_cm": 96.02,
+          "delta_cm": 0.02,
+          "ok": true
+        },
+        "waist": {
+          "real_cm": 74,
+          "target_cm": 74,
+          "value_cm": 74.01,
+          "delta_cm": 0.01,
+          "ok": true
+        },
+        "hip": {
+          "real_cm": 102,
+          "target_cm": 102,
+          "value_cm": 102.04,
+          "delta_cm": 0.04,
+          "ok": true
+        },
+        "shoulderWidth": {
+          "real_cm": 41,
+          "target_cm": 41,
+          "value_cm": 41.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "bicep": {
+          "real_cm": 30,
+          "target_cm": 30,
+          "value_cm": 30.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "thigh": {
+          "real_cm": 60,
+          "target_cm": 60,
+          "value_cm": 60.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "calf": {
+          "real_cm": 37,
+          "target_cm": 37,
+          "value_cm": 37.01,
+          "delta_cm": 0.01,
+          "ok": true
+        }
+      }
+    },
+    {
       "profile": "female-plus",
       "gender": "female",
+      "model": "body_female.glb",
       "mode": "anime",
       "weights": {
-        "M_neck": 0.729,
-        "M_chest": 1.2664,
-        "M_waist": 1.3443,
-        "M_hip": 1.2876,
+        "M_neck": 0.7121,
+        "M_chest": 1.4793,
+        "M_waist": 1.6008,
+        "M_hip": 1.3145,
         "M_height": 0.8
       },
       "all_ok": true,
@@ -103,14 +188,98 @@
       }
     },
     {
+      "profile": "female-plus",
+      "gender": "female",
+      "model": "body_female_realistic.glb",
+      "mode": "exact",
+      "weights": {
+        "M_neck": 3.0984,
+        "M_chest": 4.2666,
+        "M_waist": 6.5042,
+        "M_hip": 3.4082,
+        "M_shoulderWidth": -2.6053,
+        "M_bicep": 4.2203,
+        "M_thigh": 1.774,
+        "M_calf": 2.8399,
+        "M_height": 0.8
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "real_cm": 176,
+          "target_cm": 176,
+          "value_cm": 176.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "real_cm": 42,
+          "target_cm": 42,
+          "value_cm": 42.09,
+          "delta_cm": 0.09,
+          "ok": true
+        },
+        "chest": {
+          "real_cm": 128,
+          "target_cm": 128,
+          "value_cm": 128.03,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "waist": {
+          "real_cm": 112,
+          "target_cm": 112,
+          "value_cm": 112.02,
+          "delta_cm": 0.02,
+          "ok": true
+        },
+        "hip": {
+          "real_cm": 132,
+          "target_cm": 132,
+          "value_cm": 132.05,
+          "delta_cm": 0.05,
+          "ok": true
+        },
+        "shoulderWidth": {
+          "real_cm": 44,
+          "target_cm": 44,
+          "value_cm": 44.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "bicep": {
+          "real_cm": 39,
+          "target_cm": 39,
+          "value_cm": 39.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "thigh": {
+          "real_cm": 76,
+          "target_cm": 76,
+          "value_cm": 76.01,
+          "delta_cm": 0.01,
+          "ok": true
+        },
+        "calf": {
+          "real_cm": 45,
+          "target_cm": 45,
+          "value_cm": 45.01,
+          "delta_cm": 0.01,
+          "ok": true
+        }
+      }
+    },
+    {
       "profile": "female-xs",
       "gender": "female",
+      "model": "body_female.glb",
       "mode": "anime",
       "weights": {
-        "M_neck": -0.1873,
-        "M_chest": -0.2543,
-        "M_waist": -0.3596,
-        "M_hip": -0.2848,
+        "M_neck": -0.1828,
+        "M_chest": -0.3112,
+        "M_waist": -0.4123,
+        "M_hip": -0.292,
         "M_height": -0.5
       },
       "all_ok": true,
@@ -153,14 +322,98 @@
       }
     },
     {
+      "profile": "female-xs",
+      "gender": "female",
+      "model": "body_female_realistic.glb",
+      "mode": "exact",
+      "weights": {
+        "M_neck": -0.6487,
+        "M_chest": -0.8939,
+        "M_waist": -1.1809,
+        "M_hip": -0.7383,
+        "M_shoulderWidth": 0.189,
+        "M_bicep": -0.9174,
+        "M_thigh": -0.4995,
+        "M_calf": -0.7089,
+        "M_height": -0.5
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "real_cm": 163,
+          "target_cm": 163,
+          "value_cm": 163.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "real_cm": 32,
+          "target_cm": 32,
+          "value_cm": 32.04,
+          "delta_cm": 0.04,
+          "ok": true
+        },
+        "chest": {
+          "real_cm": 82,
+          "target_cm": 82,
+          "value_cm": 82.02,
+          "delta_cm": 0.02,
+          "ok": true
+        },
+        "waist": {
+          "real_cm": 60,
+          "target_cm": 60,
+          "value_cm": 60.01,
+          "delta_cm": 0.01,
+          "ok": true
+        },
+        "hip": {
+          "real_cm": 88,
+          "target_cm": 88,
+          "value_cm": 88.03,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "shoulderWidth": {
+          "real_cm": 37.5,
+          "target_cm": 37.5,
+          "value_cm": 37.5,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "bicep": {
+          "real_cm": 25,
+          "target_cm": 25,
+          "value_cm": 25.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "thigh": {
+          "real_cm": 51,
+          "target_cm": 51,
+          "value_cm": 51.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "calf": {
+          "real_cm": 32.5,
+          "target_cm": 32.5,
+          "value_cm": 32.51,
+          "delta_cm": 0.01,
+          "ok": true
+        }
+      }
+    },
+    {
       "profile": "male-s",
       "gender": "male",
+      "model": "body_male.glb",
       "mode": "anime",
       "weights": {
-        "M_neck": -0.1259,
-        "M_chest": -0.2068,
-        "M_waist": -0.2294,
-        "M_hip": -0.1642,
+        "M_neck": -0.1257,
+        "M_chest": -0.2105,
+        "M_waist": -0.2502,
+        "M_hip": -0.1786,
         "M_height": -0.5
       },
       "all_ok": true,
@@ -203,14 +456,98 @@
       }
     },
     {
+      "profile": "male-s",
+      "gender": "male",
+      "model": "body_male_realistic.glb",
+      "mode": "exact",
+      "weights": {
+        "M_neck": -0.3973,
+        "M_chest": -0.601,
+        "M_waist": -0.7161,
+        "M_hip": -0.5313,
+        "M_shoulderWidth": 0.034,
+        "M_bicep": -0.6049,
+        "M_thigh": -0.2327,
+        "M_calf": -0.391,
+        "M_height": -0.5
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "real_cm": 175,
+          "target_cm": 175,
+          "value_cm": 175.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "neck": {
+          "real_cm": 38,
+          "target_cm": 38,
+          "value_cm": 38.03,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "chest": {
+          "real_cm": 94,
+          "target_cm": 94,
+          "value_cm": 94.1,
+          "delta_cm": 0.1,
+          "ok": true
+        },
+        "waist": {
+          "real_cm": 78,
+          "target_cm": 78,
+          "value_cm": 78.03,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "hip": {
+          "real_cm": 93,
+          "target_cm": 93,
+          "value_cm": 93.02,
+          "delta_cm": 0.02,
+          "ok": true
+        },
+        "shoulderWidth": {
+          "real_cm": 44,
+          "target_cm": 44,
+          "value_cm": 44.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "bicep": {
+          "real_cm": 31,
+          "target_cm": 31,
+          "value_cm": 31.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "thigh": {
+          "real_cm": 55,
+          "target_cm": 55,
+          "value_cm": 55.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "calf": {
+          "real_cm": 36.5,
+          "target_cm": 36.5,
+          "value_cm": 36.51,
+          "delta_cm": 0.01,
+          "ok": true
+        }
+      }
+    },
+    {
       "profile": "male-xl",
       "gender": "male",
+      "model": "body_male.glb",
       "mode": "anime",
       "weights": {
-        "M_neck": 0.4617,
-        "M_chest": 0.7536,
-        "M_waist": 1.0954,
-        "M_hip": 0.5734,
+        "M_neck": 0.4609,
+        "M_chest": 0.7713,
+        "M_waist": 1.1684,
+        "M_hip": 0.6424,
         "M_height": 1.0
       },
       "all_ok": true,
@@ -232,8 +569,8 @@
         "chest": {
           "real_cm": 122,
           "target_cm": 107.7,
-          "value_cm": 107.7,
-          "delta_cm": 0.0,
+          "value_cm": 107.71,
+          "delta_cm": 0.01,
           "ok": true
         },
         "waist": {
@@ -246,8 +583,91 @@
         "hip": {
           "real_cm": 116,
           "target_cm": 104.3,
-          "value_cm": 104.3,
+          "value_cm": 104.31,
+          "delta_cm": 0.01,
+          "ok": true
+        }
+      }
+    },
+    {
+      "profile": "male-xl",
+      "gender": "male",
+      "model": "body_male_realistic.glb",
+      "mode": "exact",
+      "weights": {
+        "M_neck": 1.6872,
+        "M_chest": 2.2067,
+        "M_waist": 3.3493,
+        "M_hip": 1.8969,
+        "M_shoulderWidth": -1.0427,
+        "M_bicep": 2.4196,
+        "M_thigh": 0.6872,
+        "M_calf": 1.571,
+        "M_height": 1.0
+      },
+      "all_ok": true,
+      "measurements": {
+        "totalHeight": {
+          "real_cm": 190,
+          "target_cm": 190,
+          "value_cm": 190.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "neck": {
+          "real_cm": 45,
+          "target_cm": 45,
+          "value_cm": 45.03,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "chest": {
+          "real_cm": 122,
+          "target_cm": 122,
+          "value_cm": 122.1,
+          "delta_cm": 0.1,
+          "ok": true
+        },
+        "waist": {
+          "real_cm": 112,
+          "target_cm": 112,
+          "value_cm": 112.04,
+          "delta_cm": 0.04,
+          "ok": true
+        },
+        "hip": {
+          "real_cm": 116,
+          "target_cm": 116,
+          "value_cm": 116.03,
+          "delta_cm": 0.03,
+          "ok": true
+        },
+        "shoulderWidth": {
+          "real_cm": 50,
+          "target_cm": 50,
+          "value_cm": 50.0,
+          "delta_cm": -0.0,
+          "ok": true
+        },
+        "bicep": {
+          "real_cm": 41,
+          "target_cm": 41,
+          "value_cm": 41.0,
           "delta_cm": 0.0,
+          "ok": true
+        },
+        "thigh": {
+          "real_cm": 68,
+          "target_cm": 68,
+          "value_cm": 68.0,
+          "delta_cm": 0.0,
+          "ok": true
+        },
+        "calf": {
+          "real_cm": 44,
+          "target_cm": 44,
+          "value_cm": 44.01,
+          "delta_cm": 0.01,
           "ok": true
         }
       }

@@ -1,0 +1,267 @@
+{
+  "version": 2,
+  "gender": "female",
+  "style": "realistic",
+  "model": "body_female_realistic.glb",
+  "source": "Blender Studio Human Base Meshes v1.4.1 (CC0)",
+  "generatedWith": "Blender 5.3.0",
+  "units": {
+    "measures": "cm",
+    "landmarks": "m"
+  },
+  "base": {
+    "totalHeight": 168.0,
+    "neck": 34.0,
+    "chest": 90.0,
+    "waist": 68.0,
+    "hip": 96.0,
+    "shoulderWidth": 39.5,
+    "bicep": 27.5,
+    "thigh": 56.0,
+    "calf": 35.0
+  },
+  "targets": {
+    "totalHeight": 168.0,
+    "neck": 34.0,
+    "chest": 90.0,
+    "waist": 68.0,
+    "hip": 96.0,
+    "shoulderWidth": 39.5,
+    "bicep": 27.5,
+    "thigh": 56.0,
+    "calf": 35.0
+  },
+  "sourceMeasuresCm": {
+    "neck": 35.53,
+    "chest": 91.23,
+    "waist": 66.45,
+    "hip": 97.95,
+    "shoulderWidth": 36.08,
+    "bicep": 25.59,
+    "thigh": 50.92,
+    "calf": 35.25
+  },
+  "girthOrder": [
+    "neck",
+    "chest",
+    "waist",
+    "hip",
+    "shoulderWidth",
+    "bicep",
+    "thigh",
+    "calf"
+  ],
+  "girthKeys": [
+    "M_neck",
+    "M_chest",
+    "M_waist",
+    "M_hip",
+    "M_shoulderWidth",
+    "M_bicep",
+    "M_thigh",
+    "M_calf"
+  ],
+  "matrixCmPerUnit": [
+    [
+      3.2913,
+      0.0417,
+      0.0,
+      0.0,
+      0.9119,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      8.9139,
+      0.0488,
+      0.0,
+      0.134,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0775,
+      6.7045,
+      0.0181,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0443,
+      9.517,
+      0.0,
+      0.0,
+      1.8217,
+      0.0156
+    ],
+    [
+      0.0,
+      2.8607,
+      0.0,
+      0.0,
+      2.9626,
+      0.0031,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      -0.0035,
+      -0.0002,
+      0.0,
+      -0.0,
+      2.7288,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      2.7017,
+      0.0,
+      0.0,
+      5.494,
+      0.3683
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      0.0028,
+      0.0,
+      0.0,
+      0.0692,
+      3.4747
+    ]
+  ],
+  "heightKey": {
+    "name": "M_height",
+    "cmPerUnit": 10.0,
+    "stretchFromM": 0.0756,
+    "stretchToM": 1.245
+  },
+  "landmarksM": {
+    "neck": 1.45,
+    "chest": 1.225,
+    "waist": 1.07,
+    "hip": 0.815,
+    "shoulderWidth": 1.385,
+    "thigh": 0.7128,
+    "calf": 0.4952
+  },
+  "measureSpecs": {
+    "neck": {
+      "type": "girth",
+      "height_m": 1.449999999999991
+    },
+    "chest": {
+      "type": "girth",
+      "height_m": 1.2249999999999959
+    },
+    "waist": {
+      "type": "girth",
+      "height_m": 1.0699999999999992
+    },
+    "hip": {
+      "type": "girth",
+      "height_m": 0.8150000000000006
+    },
+    "shoulderWidth": {
+      "type": "width",
+      "height_m": 1.3849999999999925
+    },
+    "bicep": {
+      "type": "plane_girth",
+      "point_m": [
+        0.2260296642780304,
+        0.020556200295686722,
+        1.1855652332305908
+      ],
+      "normal": [
+        0.391110897064209,
+        -0.2053336501121521,
+        -0.8971456289291382
+      ]
+    },
+    "thigh": {
+      "type": "limb_girth",
+      "height_m": 0.7128000000000005
+    },
+    "calf": {
+      "type": "limb_girth",
+      "height_m": 0.49520000000000025
+    }
+  },
+  "armShiftMPerUnit": {
+    "M_height": [
+      0.0,
+      0.0,
+      0.1
+    ],
+    "M_neck": [
+      1.0934540876532246e-21,
+      0.0,
+      0.0
+    ],
+    "M_chest": [
+      0.014303568542583637,
+      0.0,
+      0.0
+    ],
+    "M_waist": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "M_hip": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "M_shoulderWidth": [
+      0.014812960037589074,
+      0.0,
+      0.0
+    ],
+    "M_bicep": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "M_thigh": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "M_calf": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "stylization": null,
+  "checks": {
+    "heightCrossTalkCm": {
+      "neck": 0.0,
+      "chest": 0.001,
+      "waist": -0.0,
+      "hip": 0.0,
+      "shoulderWidth": 0.0,
+      "bicep": -0.0,
+      "thigh": -0.0,
+      "calf": -0.0
+    },
+    "crotchM": 0.78,
+    "armpitM": 1.245,
+    "vertices": 11674
+  }
+}
