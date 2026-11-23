@@ -8,3 +8,4 @@ dist-ssr
 .env.*
 __pycache__/
 assets/human-base-meshes/
+renders/

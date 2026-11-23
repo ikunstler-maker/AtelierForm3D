@@ -1,10 +1,17 @@
 # Backlog
 
 ## Next by plan
-1. **Stage 1 — anatomy rework, both sexes** (owner: bodies must look naturally anthropometric). Before coding:
-   check the "Еталон" column of `docs/LANDMARKS.md` against the ANSUR II Measurer's Handbook.
-   - Math: smooth (C2) falloffs everywhere; find the cause of the horizontal line on the back at underbust
-     level (not diagnosed yet); smoothing pass in transition zones.
+1. **Stage 1 — anatomy rework, both sexes** (owner: bodies must look naturally anthropometric). Plan approved
+   2026-11-23, four PRs: 1.1 preparation (done: landmarks checked, contact sheets, back line diagnosed),
+   1.2 torso, 1.3 pelvis / glutes / thighs / belly, 1.4 limbs / neck / hands. Each part: contact sheet
+   (`scripts/contact_sheet.py`, "before" set in `renders/contact/before/`) → owner OK → wire → checks → merge.
+   - Part 1.2 also: new shape slider "breast sag"; try a denser mesh (measure load time, show the owner).
+   - Part 1.4 also: `shoulderWidth` moves to the tailoring definition (between shoulder points).
+   - Math: smooth (C2) falloffs everywhere; smoothing pass in transition zones. Line on the back: the female
+     back has no key above the underbust level (the bust key skips the back), so on large sizes the back
+     growth (about 5 cm on `female-plus`) ends in a short shoulder right above that level; the waist to
+     underbust handover is also squeezed into 8 cm. Fix in 1.2: carry the rib cage growth up the back to the
+     armpit with a long smooth falloff.
    - Breasts: rounded apex (no cone), natural sag with size, small cups flatten instead of denting,
      separate parts: volume, attachment height, sag, upper fullness, root width, separation.
    - Glutes / hips / thighs: no angular "saddlebags", wider gluteal cheeks, gluteal fold on every size,

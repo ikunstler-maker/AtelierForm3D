@@ -27,6 +27,7 @@
 | Вихідні моделі / Source models | uncompressed GLBs for Blender checks | `models_src/` |
 | Стиснення / Compression | meshopt + quantization for the site copies | `scripts/compress_models.mjs` |
 | Орієнтири / Landmarks | anatomical points and measure definitions with sources | `docs/LANDMARKS.md` |
+| Контрольна сітка / Contact sheet | one image per body area: same bodies and views every time; owner approves it | `scripts/contact_sheet.py`, `renders/contact/<tag>/` (not in git) |
 | Плечовий суглоб / Shoulder joint | point the arm rides on as one rigid piece | `joint_x`, `armShiftMPerUnit` in calibration |
 | Класичний манекен / Classic | previous procedural mannequin | `glassSettings.bodyModel = 'classic'`, `ParametricBody.tsx` |
 | М'який перерахунок / Stylization | share of the difference from base size the anime body follows | `stylization` in calibration, `effectiveBodyTargets()` |

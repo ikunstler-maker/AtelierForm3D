@@ -33,7 +33,7 @@ Source of truth: `docs/SPEC.md`, amended by `docs/decisions.md`. Conflict with a
 - Landmark definitions and sources: `docs/LANDMARKS.md` (ANSUR II; ISO 8559-1 text is not available).
 - Ruler: `scripts/measure_glb.py`; import GLBs with `merge_vertices=True` (UV seams split the mesh).
 - After any generator change: regenerate, then `blender -b --factory-startup -P scripts/verify_profiles.py -- --out docs/reports/verify_latest.json` must exit 0.
-- Show the owner renders (base + extreme sizes) before wiring a new or changed body into the site.
+- Show the owner renders (base + extreme sizes) before wiring a new or changed body into the site: `blender -b --factory-startup -P scripts/contact_sheet.py -- --tag <name>` → `renders/contact/<name>/` (compare with `before/`).
 - Site solver `src/utils/blenderBodySolver.ts` and `scripts/verify_profiles.py` hold the same math; change both together.
 - Run Blender headless for builds and checks (`C:\Program Files\Blender Foundation\Blender 5.3\blender.exe`); use MCP only for the owner's open scene.
 - Units: meters in Blender, centimeters in the app schema (`src/data/measurementsSchema.ts`).

@@ -78,6 +78,21 @@
 - Verify: `female-plus`, `female-cup-a`, `female-cup-f` pass on both styles.
 - Seen: 2026-11-23
 
+## Horizontal line across the back on large sizes — Blender
+- Symptom: shelf / line on the back at underbust level (`female-plus`, back view).
+- Root cause: on the female body the bust key skips the back and the rib cage key is the top torso frame,
+  so back growth (about 5 cm on `female-plus`) fades out in a short Gaussian right above the underbust
+  level; the waist to underbust handover is only 5 % of height (8 cm). Found with a per-key displacement
+  profile along the back strip.
+- Fix: planned for stage 1.2 (carry the rib cage growth up the back to the armpit, long smooth falloff).
+- Seen: 2026-11-23
+
+## DTIC PDF links return 403 — Env
+- Symptom: `apps.dtic.mil/sti/pdfs/...` cannot be fetched.
+- Fix: ANSUR II documents are also at `tools.openlab.psu.edu/publicData/` (links in `docs/LANDMARKS.md`);
+  extract text with `pdftotext -layout`.
+- Seen: 2026-11-23
+
 ## Compression check reports errors of 1.5 m — Build
 - Symptom: `compress_models.mjs` prints `max error 1593 mm ... TOO LARGE` right after writing the files.
 - Root cause: meshopt reorders vertices, so comparing source and result by vertex index is meaningless.
