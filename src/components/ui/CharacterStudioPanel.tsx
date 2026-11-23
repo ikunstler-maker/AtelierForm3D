@@ -92,7 +92,7 @@ export const CharacterStudioPanel: React.FC = () => {
   return (
     <aside
       id="anime-cas-studio-panel"
-      className="fixed right-3 top-[68px] bottom-16 z-20 w-[355px] sm:w-[385px] max-w-[calc(100vw-24px)] liquid-glass rounded-2xl flex flex-col overflow-hidden mobile-drawer-panel"
+      className="fixed right-3 top-[calc(var(--header-bottom,60px)+8px)] bottom-16 z-20 w-[355px] sm:w-[385px] max-w-[calc(100vw-24px)] liquid-glass rounded-2xl flex flex-col overflow-hidden mobile-drawer-panel"
     >
       {/* Header */}
       <div className="px-3.5 pt-3 pb-2.5 border-b border-white/10 flex items-center justify-between gap-2">
@@ -118,6 +118,8 @@ export const CharacterStudioPanel: React.FC = () => {
           id="close-cas-panel-btn"
           type="button"
           onClick={() => setCasPanelOpen(false)}
+          title={t.common.close}
+          aria-label={t.common.close}
           className="liquid-glass-pill p-1.5 rounded-xl opacity-75 hover:opacity-100"
         >
           <IconClose size={15} />

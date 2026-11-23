@@ -59,6 +59,10 @@ def main():
         defaults = dict(calibration["targets"])
         driven = ["totalHeight"] + calibration["girthOrder"]
 
+        def tolerance_of(measure):
+            # Delta measures (upper chest) are approximate by design.
+            return vp.DELTA_TOLERANCE_CM if measure in (calibration.get("deltaMeasures") or {}) else vp.TOLERANCE_CM
+
         def apply(targets, shape):
             weights = vp.solve_weights(calibration, targets, shape)
             for obj in objects:
@@ -79,7 +83,8 @@ def main():
         _, base_coords = apply(defaults, None)
 
         # Keys the solver drives must exist in the exported file.
-        expected_keys = set(calibration["girthKeys"]) | {calibration["heightKey"]["name"]}
+        expected_keys = set(calibration["girthKeys"]) | {lk["key"] for lk in calibration["levelKeys"]}
+        expected_keys |= {k for row in calibration.get("deltaKeys", []) for k in row["keys"]}
         expected_keys |= {s["key"] for s in calibration.get("shapeKeys", [])}
         for missing in sorted(expected_keys - key_names):
             rows.append({"model": model, "slider": missing, "kind": "key", "status": "dead",
@@ -105,12 +110,32 @@ def main():
                     row["status"], row["cause"] = "dead", "no vertex moves"
                 elif measured is None:
                     row["status"], row["cause"] = "limit", "ruler finds no section at this extreme"
-                elif abs(measured - asked) > vp.TOLERANCE_CM:
+                elif abs(measured - asked) > tolerance_of(name):
                     row["status"] = "limit"
                     row["cause"] = "stops %.1f cm short of the asked value" % abs(measured - asked)
                 else:
                     row["status"] = "ok"
                 rows.append(row)
+
+        # Height levels, limb lengths, hands and feet: followed as a change from their reference
+        # value, so the check here is only that the body moves (no ruler reading for them).
+        extra = [(lk["measure"], lk["reference"], 3.0) for lk in calibration["levelKeys"][:-1]]
+        extra += [(row["measure"], row["reference"], None) for row in calibration.get("deltaKeys", [])]
+        for name, reference, step in extra:
+            lo, hi = limits[name]
+            ends = (("minus", reference - step), ("plus", reference + step)) if step else (("min", lo), ("max", hi))
+            for label, value in ends:
+                targets = dict(defaults)
+                targets[name] = value
+                _, coords = apply(targets, None)
+                max_move, moved = movement(coords)
+                rows.append({
+                    "model": model, "slider": name, "kind": "delta measure", "at": label, "value": value,
+                    "asked_cm": None, "measured_cm": None,
+                    "max_move_mm": round(max_move * 1000, 1), "moved_vertices": moved,
+                    "status": "ok" if moved else "dead",
+                    **({} if moved else {"cause": "no vertex moves"}),
+                })
 
         for spec in calibration.get("shapeKeys", []):
             for label, value in (("min", spec["min"]), ("max", spec["max"])):
@@ -124,7 +149,8 @@ def main():
                 drift = {
                     m: round(measured[m]["value_cm"] - asked[m], 2)
                     for m in driven
-                    if measured[m]["value_cm"] is not None and abs(measured[m]["value_cm"] - asked[m]) > vp.TOLERANCE_CM
+                    if measured[m]["value_cm"] is not None and abs(measured[m]["value_cm"] - asked[m]) > max(
+                        tolerance_of(m), vp.TOLERANCE_CM if exact else vp.ANIME_SHAPED_TOLERANCE_CM)
                 }
                 row = {
                     "model": model, "slider": spec["id"], "kind": "shape", "at": label, "value": value,
@@ -138,14 +164,17 @@ def main():
                     row["status"] = "ok"
                 rows.append(row)
 
+        # The 16 remaining measures are linked on the site (src/utils/linkedMeasures.ts): an edit
+        # moves the driven measures above, so they need no key of their own.
+        followed = set(driven) | {name for name, _, _ in extra}
         for name in sorted(limits):
-            if name not in driven:
-                rows.append({"model": model, "slider": name, "kind": "measure", "status": "not_implemented",
-                             "cause": "the body has no key for this measure yet"})
+            if name not in followed:
+                rows.append({"model": model, "slider": name, "kind": "measure", "status": "linked",
+                             "cause": "moves the body through other measures (site linking)"})
 
     print("=== AUDIT_BEGIN ===")
     for row in rows:
-        if row["status"] == "not_implemented":
+        if row["status"] in ("not_implemented", "linked"):
             continue
         print("%-28s %-15s %-4s %-6s move %6.1f mm  verts %5d  asked %s  measured %s  %s" % (
             row["model"], row["slider"], row.get("at", ""), row["status"],

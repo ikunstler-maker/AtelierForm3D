@@ -11,6 +11,7 @@ import {
 } from '../data/measurementsSchema';
 import { NEUTRAL_PRESETS, PresetId } from '../data/neutralPresets';
 import { Language } from '../data/translations';
+import { applyMeasurementEdit } from '../utils/linkedMeasures';
 import {
   GarmentTemplateId,
   UnitSystem,
@@ -277,6 +278,30 @@ export const BLENDER_BODY_MEASURES: MeasurementKey[] = [
   'bicep',
   'thigh',
   'calf',
+  'head',
+  'upperChest',
+  'highHip',
+  'midThigh',
+  'knee',
+  'ankle',
+  'elbow',
+  'forearm',
+  'wrist',
+  'cervicaleHeight',
+  'shoulderHeight',
+  'chestHeight',
+  'underbustHeight',
+  'waistHeight',
+  'highHipHeight',
+  'hipHeight',
+  'crotchHeight',
+  'kneeHeight',
+  'shoulderToElbow',
+  'sleeveFromShoulder',
+  'handLength',
+  'handWidth',
+  'footLength',
+  'footWidth',
 ];
 export const DEFAULT_SKIN_TEXTURE = 0.5;
 
@@ -342,9 +367,26 @@ export const DEFAULT_LIGHTING: LightingSettings = {
   ...LIGHTING_PRESETS.studio.defaults,
 };
 
+/** A body profile saved by the user inside the app. */
+export interface UserPreset {
+  id: UserPresetId;
+  name: string;
+  gender: Gender;
+  measurements: MeasurementsRecord;
+  bodyShape?: Partial<Record<BodyShapeId, number>>;
+  bodyModel?: BodyModel;
+}
+
+export type UserPresetId = `user:${string}`;
+
+export function isUserPresetId(id: string): id is UserPresetId {
+  return id.startsWith('user:');
+}
+
 export interface AtelierState {
   gender: Gender;
-  activePresetId: PresetId | 'custom';
+  activePresetId: PresetId | 'custom' | UserPresetId;
+  userPresets: UserPreset[];
   measurements: MeasurementsRecord;
   appearance: CharacterAppearance;
   casPanelOpen: boolean;
@@ -359,6 +401,13 @@ export interface AtelierState {
   leftPanelOpen: boolean;
   fitPanelOpen: boolean;
   customizerOpen: boolean;
+  bodyPanelOpen: boolean;
+  /** True while the Blender body file is loading (not persisted). */
+  mannequinLoading: boolean;
+  /** Bottom edge of the header bar in px (measured, not persisted). */
+  headerBottomPx: number;
+  /** Last own preset that was selected or saved; survives edits (state 'custom'). */
+  lastUserPresetId: UserPresetId | null;
   garmentTemplate: GarmentTemplateId;
   isFlatMode: boolean;
   garmentInputsCm: Partial<Record<MeasurementKey, number>>;
@@ -371,6 +420,11 @@ export interface AtelierState {
   setGender: (gender: Gender) => void;
   selectPreset: (presetId: PresetId) => void;
   resetCurrentPreset: () => void;
+  saveUserPreset: (name: string) => void;
+  updateUserPreset: (id: UserPresetId) => void;
+  renameUserPreset: (id: UserPresetId, name: string) => void;
+  deleteUserPreset: (id: UserPresetId) => void;
+  selectUserPreset: (id: UserPresetId) => void;
   setMeasurement: (key: MeasurementKey, valueCm: number) => void;
   updateAppearance: (partial: Partial<CharacterAppearance>) => void;
   resetAppearance: () => void;
@@ -388,6 +442,9 @@ export interface AtelierState {
   setLeftPanelOpen: (open: boolean) => void;
   setFitPanelOpen: (open: boolean) => void;
   setCustomizerOpen: (open: boolean) => void;
+  setBodyPanelOpen: (open: boolean) => void;
+  setMannequinLoading: (loading: boolean) => void;
+  setHeaderBottomPx: (px: number) => void;
   setGarmentTemplate: (template: GarmentTemplateId) => void;
   setIsFlatMode: (isFlat: boolean) => void;
   setGarmentInput: (key: MeasurementKey, rawCmValue: number | null) => void;
@@ -402,16 +459,81 @@ export interface AtelierState {
     appearance?: Partial<CharacterAppearance>;
     garmentInputsCm?: Partial<Record<MeasurementKey, number>>;
     isFlatMode?: boolean;
+    bodyShape?: Partial<Record<BodyShapeId, number>>;
+    bodyModel?: BodyModel;
   }) => void;
 }
 
 const DEFAULT_FEMALE_PRESET = NEUTRAL_PRESETS.find((p) => p.id === 'female-m')!;
+
+/** Below this window width the side panels would bury the mannequin. */
+export const NARROW_LAYOUT_PX = 1100;
+
+function isNarrowWindow(): boolean {
+  return typeof window !== 'undefined' && window.innerWidth < NARROW_LAYOUT_PX;
+}
+
+/**
+ * Only one right-side panel may be open at a time. Returns the patch that opens
+ * `panel` (or closes everything when `open` is false). On narrow windows it also
+ * collapses the left measurements panel.
+ */
+type RightPanel = 'cas' | 'fit' | 'body' | 'customizer';
+function rightPanelPatch(
+  panel: RightPanel,
+  open: boolean
+): Partial<AtelierState> {
+  const patch: Partial<AtelierState> = {
+    casPanelOpen: false,
+    fitPanelOpen: false,
+    bodyPanelOpen: false,
+    customizerOpen: false,
+  };
+  if (open) {
+    if (panel === 'cas') patch.casPanelOpen = true;
+    if (panel === 'fit') patch.fitPanelOpen = true;
+    if (panel === 'body') patch.bodyPanelOpen = true;
+    if (panel === 'customizer') patch.customizerOpen = true;
+    if (isNarrowWindow()) patch.leftPanelOpen = false;
+  }
+  return patch;
+}
+
+/** Copy of the current body that a user preset stores. */
+function bodySnapshot(
+  state: AtelierState
+): Pick<UserPreset, 'gender' | 'measurements' | 'bodyShape' | 'bodyModel'> {
+  return {
+    gender: state.gender,
+    measurements: { ...state.measurements },
+    bodyShape: { ...(state.glassSettings.bodyShape ?? {}) },
+    bodyModel: state.glassSettings.bodyModel ?? DEFAULT_BODY_MODEL,
+  };
+}
+
+/** State patch that applies a user preset to the live body. */
+function snapshotToBody(
+  preset: UserPreset,
+  state: AtelierState
+): Pick<AtelierState, 'gender' | 'activePresetId' | 'measurements' | 'glassSettings'> {
+  return {
+    gender: preset.gender,
+    activePresetId: preset.id,
+    measurements: { ...preset.measurements },
+    glassSettings: {
+      ...state.glassSettings,
+      bodyShape: { ...(preset.bodyShape ?? {}) },
+      bodyModel: preset.bodyModel ?? state.glassSettings.bodyModel,
+    },
+  };
+}
 
 export const useAtelierStore = create<AtelierState>()(
   persist(
     (set, get) => ({
       gender: 'female',
       activePresetId: 'female-m',
+      userPresets: [],
       measurements: { ...DEFAULT_FEMALE_PRESET.measurements },
       appearance: { ...DEFAULT_FEMALE_APPEARANCE },
       casPanelOpen: false,
@@ -423,9 +545,14 @@ export const useAtelierStore = create<AtelierState>()(
       selectedMeasurement: 'waist',
       hoveredMeasurement: null,
       searchQuery: '',
-      leftPanelOpen: true,
+      // Start collapsed on narrow windows so the mannequin is visible.
+      leftPanelOpen: !isNarrowWindow(),
       fitPanelOpen: false,
       customizerOpen: false,
+      bodyPanelOpen: false,
+      mannequinLoading: false,
+      headerBottomPx: 60,
+      lastUserPresetId: null,
       garmentTemplate: 'top',
       isFlatMode: false,
       garmentInputsCm: {},
@@ -451,6 +578,7 @@ export const useAtelierStore = create<AtelierState>()(
         set((state) => ({
           gender,
           activePresetId: defaultId,
+          lastUserPresetId: null,
           measurements: { ...preset.measurements },
           appearance: {
             ...defaultApp,
@@ -468,22 +596,99 @@ export const useAtelierStore = create<AtelierState>()(
         set((state) => ({
           gender: preset.gender,
           activePresetId: preset.id,
+          lastUserPresetId: null,
           measurements: { ...preset.measurements },
           cameraTriggerCount: state.cameraTriggerCount + 1,
         }));
       },
 
       resetCurrentPreset: () => {
-        const { activePresetId, gender } = get();
+        const { activePresetId, gender, userPresets, lastUserPresetId } = get();
+        const userId = isUserPresetId(activePresetId)
+          ? activePresetId
+          : activePresetId === 'custom'
+            ? lastUserPresetId
+            : null;
+        if (userId) {
+          const user = userPresets.find((p) => p.id === userId);
+          if (user) {
+            set((state) => ({
+              ...snapshotToBody(user, state),
+              lastUserPresetId: user.id,
+              hiddenMeasurements: {},
+              cameraPreset: 'full',
+              cameraTriggerCount: state.cameraTriggerCount + 1,
+            }));
+            return;
+          }
+        }
         const fallbackId: PresetId = gender === 'female' ? 'female-m' : 'male-m';
-        const targetId = activePresetId === 'custom' ? fallbackId : activePresetId;
+        const targetId =
+          activePresetId === 'custom' || isUserPresetId(activePresetId)
+            ? fallbackId
+            : activePresetId;
         const preset =
           NEUTRAL_PRESETS.find((p) => p.id === targetId) || DEFAULT_FEMALE_PRESET;
         set((state) => ({
           activePresetId: preset.id,
+          lastUserPresetId: null,
           measurements: { ...preset.measurements },
           hiddenMeasurements: {},
           cameraPreset: 'full',
+          cameraTriggerCount: state.cameraTriggerCount + 1,
+        }));
+      },
+
+      saveUserPreset: (name) => {
+        const trimmed = name.trim();
+        if (!trimmed) return;
+        const state = get();
+        const id: UserPresetId = `user:${Date.now()}`;
+        const preset: UserPreset = { id, name: trimmed, ...bodySnapshot(state) };
+        set({
+          userPresets: [...state.userPresets, preset],
+          activePresetId: id,
+          lastUserPresetId: id,
+        });
+      },
+
+      updateUserPreset: (id) => {
+        const state = get();
+        if (!state.userPresets.some((p) => p.id === id)) return;
+        set({
+          userPresets: state.userPresets.map((p) =>
+            p.id === id ? { ...p, ...bodySnapshot(state) } : p
+          ),
+          activePresetId: id,
+          lastUserPresetId: id,
+        });
+      },
+
+      renameUserPreset: (id, name) => {
+        const trimmed = name.trim();
+        if (!trimmed) return;
+        set((state) => ({
+          userPresets: state.userPresets.map((p) =>
+            p.id === id ? { ...p, name: trimmed } : p
+          ),
+        }));
+      },
+
+      deleteUserPreset: (id) =>
+        set((state) => ({
+          userPresets: state.userPresets.filter((p) => p.id !== id),
+          activePresetId:
+            state.activePresetId === id ? 'custom' : state.activePresetId,
+          lastUserPresetId:
+            state.lastUserPresetId === id ? null : state.lastUserPresetId,
+        })),
+
+      selectUserPreset: (id) => {
+        const preset = get().userPresets.find((p) => p.id === id);
+        if (!preset) return;
+        set((state) => ({
+          ...snapshotToBody(preset, state),
+          lastUserPresetId: preset.id,
           cameraTriggerCount: state.cameraTriggerCount + 1,
         }));
       },
@@ -496,29 +701,10 @@ export const useAtelierStore = create<AtelierState>()(
           Math.max(meta.min, Number(valueCm.toFixed(2)))
         );
 
-        set((state) => {
-          const next = { ...state.measurements, [key]: clamped };
-
-          if (key === 'frontRise' || key === 'backRise') {
-            next.crotchCurveTotal = Number(
-              (next.frontRise + next.backRise).toFixed(1)
-            );
-          } else if (key === 'crotchCurveTotal') {
-            const currentSum =
-              state.measurements.frontRise + state.measurements.backRise;
-            const ratio =
-              currentSum > 0
-                ? state.measurements.frontRise / currentSum
-                : 0.42;
-            next.frontRise = Number((clamped * ratio).toFixed(1));
-            next.backRise = Number((clamped - next.frontRise).toFixed(1));
-          }
-
-          return {
-            measurements: next,
-            activePresetId: 'custom',
-          };
-        });
+        set((state) => ({
+          measurements: applyMeasurementEdit(state.measurements, key, clamped),
+          activePresetId: 'custom',
+        }));
       },
 
       updateAppearance: (partial) =>
@@ -593,11 +779,7 @@ export const useAtelierStore = create<AtelierState>()(
           };
         }),
 
-      setCasPanelOpen: (casPanelOpen) =>
-        set((state) => ({
-          casPanelOpen,
-          fitPanelOpen: casPanelOpen ? false : state.fitPanelOpen,
-        })),
+      setCasPanelOpen: (open) => set(rightPanelPatch('cas', open)),
 
       setUnit: (unit) => set({ unit }),
 
@@ -654,15 +836,28 @@ export const useAtelierStore = create<AtelierState>()(
 
       setSearchQuery: (searchQuery) => set({ searchQuery }),
 
-      setLeftPanelOpen: (leftPanelOpen) => set({ leftPanelOpen }),
+      setLeftPanelOpen: (leftPanelOpen) =>
+        set(
+          leftPanelOpen && isNarrowWindow()
+            ? {
+                leftPanelOpen,
+                casPanelOpen: false,
+                fitPanelOpen: false,
+                bodyPanelOpen: false,
+                customizerOpen: false,
+              }
+            : { leftPanelOpen }
+        ),
 
-      setFitPanelOpen: (fitPanelOpen) =>
-        set((state) => ({
-          fitPanelOpen,
-          casPanelOpen: fitPanelOpen ? false : state.casPanelOpen,
-        })),
+      setFitPanelOpen: (open) => set(rightPanelPatch('fit', open)),
 
-      setCustomizerOpen: (customizerOpen) => set({ customizerOpen }),
+      setCustomizerOpen: (open) => set(rightPanelPatch('customizer', open)),
+
+      setBodyPanelOpen: (open) => set(rightPanelPatch('body', open)),
+
+      setMannequinLoading: (mannequinLoading) => set({ mannequinLoading }),
+
+      setHeaderBottomPx: (headerBottomPx) => set({ headerBottomPx }),
 
       setGarmentTemplate: (garmentTemplate) => set({ garmentTemplate }),
 
@@ -752,14 +947,33 @@ export const useAtelierStore = create<AtelierState>()(
               }
             }
           }
+          let nextGlass = state.glassSettings;
+          if (payload.bodyShape && typeof payload.bodyShape === 'object') {
+            const shape: Partial<Record<BodyShapeId, number>> = {};
+            for (const [k, v] of Object.entries(payload.bodyShape)) {
+              if (typeof v === 'number' && Number.isFinite(v)) {
+                shape[k as BodyShapeId] = v;
+              }
+            }
+            nextGlass = { ...nextGlass, bodyShape: shape };
+          }
+          if (
+            payload.bodyModel === 'realistic' ||
+            payload.bodyModel === 'anime' ||
+            payload.bodyModel === 'classic'
+          ) {
+            nextGlass = { ...nextGlass, bodyModel: payload.bodyModel };
+          }
           return {
             gender: nextGender,
             activePresetId: 'custom',
+            lastUserPresetId: null,
             measurements: nextMeasurements,
             appearance: payload.appearance
               ? { ...state.appearance, ...payload.appearance }
               : state.appearance,
             isFlatMode: payload.isFlatMode ?? state.isFlatMode,
+            glassSettings: nextGlass,
             garmentInputsCm:
               payload.garmentInputsCm ?? state.garmentInputsCm,
             cameraTriggerCount: state.cameraTriggerCount + 1,
@@ -771,6 +985,8 @@ export const useAtelierStore = create<AtelierState>()(
       partialize: (state) => ({
         gender: state.gender,
         activePresetId: state.activePresetId,
+        userPresets: state.userPresets,
+        lastUserPresetId: state.lastUserPresetId,
         measurements: state.measurements,
         appearance: state.appearance,
         casPanelOpen: state.casPanelOpen,

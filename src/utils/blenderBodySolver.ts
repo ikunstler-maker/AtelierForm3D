@@ -27,6 +27,8 @@ export interface BlenderBodyCurve {
   frameWeight?: number;
   /** Same as `points`, on a much bigger rib cage. */
   framePoints?: CurvePoints;
+  /** Other measures this key moves: measure -> [weight, cm change] points. */
+  crossTalk?: Record<string, CurvePoints>;
   /** Key that carries negative weights: its value = -weight * negScale, at most negMax. */
   negKey?: string;
   negScale?: number;
@@ -54,13 +56,25 @@ export interface BlenderBodyCalibration {
   shapeKeys?: BlenderBodyShapeKey[];
   /** Row = measure, column = shape key: change in cm when the slider is 1. */
   shapeMatrixCmPerUnit?: number[][];
+  /** Row = measure, column = shape key: change in cm when the slider is -1. */
+  shapeMatrixMinusCm?: number[][];
   curveKeys?: Record<string, BlenderBodyCurve>;
-  heightKey: {
-    name: string;
+  /** Left-over (cm) of a measure after the straight-line part, by the weight of one key. */
+  residualCurves?: { key: string; measure: string; points: CurvePoints }[];
+  /** Measures followed as a difference from this standard value (cm). */
+  deltaMeasures?: Record<string, number>;
+  /** Height levels, bottom to top (one key each). */
+  levelKeys?: {
+    measure: string;
+    key: string;
+    fromM: number;
+    levelM: number;
+    toM: number | null;
     cmPerUnit: number;
-    stretchFromM: number;
-    stretchToM: number;
-  };
+    reference: number;
+  }[];
+  /** Lengths, hands, feet: measure change (cm) = sum of key weight x cm per unit. */
+  deltaKeys?: { measure: string; reference: number; keys: Record<string, number> }[];
   landmarksM: Record<string, number>;
   /**
    * Present on the anime body: it follows only a share of the relative
@@ -132,7 +146,14 @@ export function effectiveBodyTargets(
   targets: Record<string, number>
 ): Record<string, number> {
   const st = calibration.stylization;
-  if (!st) return { ...targets };
+  if (!st) {
+    const out = { ...targets };
+    // Delta measures follow the difference from their standard value.
+    Object.entries(calibration.deltaMeasures ?? {}).forEach(([name, reference]) => {
+      out[name] = calibration.base[name] + (targets[name] - reference);
+    });
+    return out;
+  }
   const base = calibration.base;
   const reference = st.reference ?? base;
   const out: Record<string, number> = {
@@ -184,76 +205,174 @@ export function solveBlenderBodyWeights(
   const weights: Record<string, number> = {};
 
   // The sliders change the measures a little; the measurement keys take that back.
+  const shapeMinus = calibration.shapeMatrixMinusCm;
   const fromShape = (r: number) =>
-    shapeCols.reduce(
-      (sum, key, c) => sum + (shapeMatrix[r]?.[c] ?? 0) * shapes[key],
-      0
-    );
+    shapeCols.reduce((sum, key, c) => {
+      const v = shapes[key];
+      // A slider does not always change a tape by the same amount in its two directions.
+      if (v < 0 && shapeMinus) return sum + (shapeMinus[r]?.[c] ?? 0) * -v;
+      return sum + (shapeMatrix[r]?.[c] ?? 0) * v;
+    }, 0);
 
-  // 1. Straight-line part: every measure except the curved ones.
   const lin = order.map((_, r) => r).filter((r) => !(order[r] in curves));
-  const solved = solveLinearSystem(
-    lin.map((r) => lin.map((c) => matrix[r][c])),
-    lin.map((r) => targets[order[r]] - base[order[r]] - fromShape(r))
-  );
-  lin.forEach((r, i) => {
-    weights[keys[r]] = solved ? solved[i] : 0;
+  const curveW: Record<string, number> = {};
+  Object.keys(curves).forEach((name) => {
+    curveW[name] = 0;
   });
-
-  // 2. Curved part (female full bust): find the weight by halving the interval.
-  Object.entries(curves).forEach(([name, curve]) => {
-    const r = order.indexOf(name);
-    const frameKey = curve.frameKey;
-    const others = lin.reduce(
-      (sum, c) =>
-        keys[c] === frameKey ? sum : sum + matrix[r][c] * weights[keys[c]],
+  // What the curved keys (bust) add to a straight-line measure, from the calibration.
+  const crossPart = (r: number) =>
+    Object.entries(curves).reduce((sum, [name, curve]) => {
+      // Delta measures (upper chest) do not push back when the bust grows through their tape.
+      if (calibration.deltaMeasures && order[r] in calibration.deltaMeasures) return sum;
+      const pts = curve.crossTalk?.[order[r]];
+      return pts ? sum + curveValue(pts, curveW[name]) : sum;
+    }, 0);
+  // Left-over of a measure that does not follow one key in a straight line (shoulder width).
+  const residualCurves = calibration.residualCurves ?? [];
+  const residualPart = (r: number) =>
+    residualCurves.reduce(
+      (sum, rc) =>
+        rc.measure === order[r] ? sum + curveValueOpen(rc.points, weights[rc.key] ?? 0) : sum,
       0
     );
-    const measureAt = (w: number) => {
-      let f = curveValue(curve.points, w);
-      if (frameKey && curve.framePoints && curve.frameCurve) {
-        const u = weights[frameKey];
-        const grow0 = f - curveValue(curve.points, 0);
-        const growA =
-          curveValue(curve.framePoints, w) - curveValue(curve.framePoints, 0);
-        f =
-          curveValueOpen(curve.frameCurve, u) +
-          grow0 +
-          (u / (curve.frameWeight ?? 1)) * (growA - grow0);
+  const passes =
+    residualCurves.length ||
+    Object.values(curves).some((c) => c.crossTalk && Object.keys(c.crossTalk).length)
+      ? 3
+      : 1;
+  for (let pass = 0; pass < passes; pass++) {
+    // 1. Straight-line part: every measure except the curved ones.
+    const solved = solveLinearSystem(
+      lin.map((r) => lin.map((c) => matrix[r][c])),
+      lin.map((r) => targets[order[r]] - base[order[r]] - fromShape(r) - crossPart(r) - residualPart(r))
+    );
+    lin.forEach((r, i) => {
+      weights[keys[r]] = solved ? solved[i] : 0;
+    });
+
+    // 2. Curved part (female full bust): find the weight by halving the interval.
+    Object.entries(curves).forEach(([name, curve]) => {
+      const r = order.indexOf(name);
+      const frameKey = curve.frameKey;
+      const others = lin.reduce(
+        (sum, c) =>
+          keys[c] === frameKey ? sum : sum + matrix[r][c] * weights[keys[c]],
+        0
+      );
+      const measureAt = (w: number) => {
+        let f = curveValue(curve.points, w);
+        if (frameKey && curve.framePoints && curve.frameCurve) {
+          const u = weights[frameKey];
+          const grow0 = f - curveValue(curve.points, 0);
+          const growA =
+            curveValue(curve.framePoints, w) - curveValue(curve.framePoints, 0);
+          f =
+            curveValueOpen(curve.frameCurve, u) +
+            grow0 +
+            (u / (curve.frameWeight ?? 1)) * (growA - grow0);
+        }
+        let shapePart = fromShape(r);
+        if (curve.shapeEffects && curve.shapeLevels) {
+          const levels = curve.shapeLevels;
+          shapePart = 0;
+          Object.entries(shapes).forEach(([key, value]) => {
+            const effect = curve.shapeEffects?.[key];
+            if (!effect || !value) return;
+            const side = value >= 0 ? effect.plus : effect.minus;
+            const pts = levels.map((l, i) => [l, side[i]] as [number, number]);
+            shapePart += Math.abs(value) * curveValue(pts, w);
+          });
+        }
+        return f + others + shapePart;
+      };
+      let lo = curve.points[0][0];
+      let hi = curve.points[curve.points.length - 1][0];
+      for (let i = 0; i < 40; i++) {
+        const mid = (lo + hi) / 2;
+        if (measureAt(mid) < targets[name]) lo = mid;
+        else hi = mid;
       }
-      let shapePart = fromShape(r);
-      if (curve.shapeEffects && curve.shapeLevels) {
-        const levels = curve.shapeLevels;
-        shapePart = 0;
-        Object.entries(shapes).forEach(([key, value]) => {
-          const effect = curve.shapeEffects?.[key];
-          if (!effect || !value) return;
-          const side = value >= 0 ? effect.plus : effect.minus;
-          const pts = levels.map((l, i) => [l, side[i]] as [number, number]);
-          shapePart += Math.abs(value) * curveValue(pts, w);
-        });
+      const w = (lo + hi) / 2;
+      curveW[name] = w;
+      if (curve.negKey) {
+        // Negative weights are carried by a second key (female: back to the chest wall).
+        weights[curve.key] = Math.max(w, 0);
+        weights[curve.negKey] = Math.min(curve.negMax ?? 1, Math.max(-w, 0) * (curve.negScale ?? 0));
+      } else {
+        weights[curve.key] = w;
       }
-      return f + others + shapePart;
-    };
-    let lo = curve.points[0][0];
-    let hi = curve.points[curve.points.length - 1][0];
-    for (let i = 0; i < 40; i++) {
-      const mid = (lo + hi) / 2;
-      if (measureAt(mid) < targets[name]) lo = mid;
-      else hi = mid;
-    }
-    const w = (lo + hi) / 2;
-    if (curve.negKey) {
-      // Negative weights are carried by a second key (female: back to the chest wall).
-      weights[curve.key] = Math.max(w, 0);
-      weights[curve.negKey] = Math.min(curve.negMax ?? 1, Math.max(-w, 0) * (curve.negScale ?? 0));
-    } else {
-      weights[curve.key] = w;
-    }
-  });
+    });
+
+  }
 
   Object.assign(weights, shapes);
-  weights[calibration.heightKey.name] =
-    (targets.totalHeight - base.totalHeight) / calibration.heightKey.cmPerUnit;
+  // Heights and lengths use the measures as entered (the anime softening is for girths only).
+  Object.assign(weights, levelWeights(calibration, realTargets));
+  Object.assign(weights, deltaWeights(calibration, realTargets));
   return weights;
+}
+
+/** A body segment between two height levels keeps at least this share of its length. */
+const MIN_SEGMENT_SHARE = 0.4;
+
+/**
+ * One key per height level, driven by the change from its reference value.
+ * Total height is absolute. A level missing from the targets follows the total
+ * height: the body stretches evenly up to the base of the neck.
+ */
+export function levelWeights(
+  calibration: BlenderBodyCalibration,
+  targets: Record<string, number>
+): Record<string, number> {
+  const levels = calibration.levelKeys ?? [];
+  const out: Record<string, number> = {};
+  if (levels.length < 2) return out;
+  const total = levels[levels.length - 1];
+  const cerv = levels[levels.length - 2];
+  const floorM = levels[0].fromM;
+  const dTotal = targets.totalHeight - calibration.base.totalHeight;
+  const has = (name: string) => Number.isFinite(targets[name]);
+  const dCerv = has(cerv.measure) ? targets[cerv.measure] - cerv.reference : dTotal;
+  const deltas = levels.slice(0, -1).map((lk) =>
+    has(lk.measure)
+      ? targets[lk.measure] - lk.reference
+      : (dCerv * (lk.levelM - floorM)) / (cerv.levelM - floorM)
+  );
+  deltas.push(dTotal);
+  // No part of the body may be squeezed below MIN_SEGMENT_SHARE of its own length (the levels of
+  // the mesh sit closer together than the tailor's ones): a level that comes too close to the
+  // one below is pushed up.
+  let belowBase = floorM;
+  let belowNew = floorM;
+  levels.forEach((lk, i) => {
+    const next = Math.max(
+      lk.levelM + deltas[i] / 100,
+      belowNew + MIN_SEGMENT_SHARE * (lk.levelM - belowBase)
+    );
+    out[lk.key] = ((next - lk.levelM) * 100) / lk.cmPerUnit;
+    belowBase = lk.levelM;
+    belowNew = next;
+  });
+  return out;
+}
+
+/** Lengths, hands and feet: change (cm) = sum of key weight x cm per unit. */
+export function deltaWeights(
+  calibration: BlenderBodyCalibration,
+  targets: Record<string, number>
+): Record<string, number> {
+  const rows = calibration.deltaKeys ?? [];
+  const keys = Array.from(new Set(rows.flatMap((row) => Object.keys(row.keys)))).sort();
+  const out: Record<string, number> = {};
+  if (!keys.length) return out;
+  const solved = solveLinearSystem(
+    rows.map((row) => keys.map((k) => row.keys[k] ?? 0)),
+    rows.map((row) =>
+      (Number.isFinite(targets[row.measure]) ? targets[row.measure] : row.reference) - row.reference
+    )
+  );
+  keys.forEach((k, i) => {
+    out[k] = solved ? solved[i] : 0;
+  });
+  return out;
 }

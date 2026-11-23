@@ -1,8 +1,8 @@
 {
  "summary": {
-  "ok": 125,
-  "limit": 9,
-  "not_implemented": 160
+  "ok": 309,
+  "limit": 17,
+  "linked": 64
  },
  "rows": [
   {
@@ -14,7 +14,7 @@
    "asked_cm": 145.0,
    "measured_cm": 145.0,
    "max_move_mm": 230.0,
-   "moved_vertices": 12790,
+   "moved_vertices": 12788,
    "status": "ok"
   },
   {
@@ -26,7 +26,7 @@
    "asked_cm": 205.0,
    "measured_cm": 205.0,
    "max_move_mm": 370.0,
-   "moved_vertices": 12794,
+   "moved_vertices": 12792,
    "status": "ok"
   },
   {
@@ -37,8 +37,8 @@
    "value": 28.0,
    "asked_cm": 31.9,
    "measured_cm": 31.9,
-   "max_move_mm": 6.1,
-   "moved_vertices": 3739,
+   "max_move_mm": 5.9,
+   "moved_vertices": 903,
    "status": "ok"
   },
   {
@@ -49,8 +49,8 @@
    "value": 50.0,
    "asked_cm": 39.44,
    "measured_cm": 39.44,
-   "max_move_mm": 15.8,
-   "moved_vertices": 4239,
+   "max_move_mm": 15.2,
+   "moved_vertices": 4084,
    "status": "ok"
   },
   {
@@ -61,7 +61,7 @@
    "value": 72.0,
    "asked_cm": 83.7,
    "measured_cm": 83.59,
-   "max_move_mm": 39.4,
+   "max_move_mm": 39.2,
    "moved_vertices": 138,
    "status": "ok"
   },
@@ -72,8 +72,8 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 104.4,
-   "measured_cm": 98.12,
-   "max_move_mm": 74.4,
+   "measured_cm": 98.15,
+   "max_move_mm": 74.5,
    "moved_vertices": 257,
    "status": "limit",
    "cause": "stops 6.3 cm short of the asked value"
@@ -86,8 +86,8 @@
    "value": 62.0,
    "asked_cm": 70.45,
    "measured_cm": 70.46,
-   "max_move_mm": 41.1,
-   "moved_vertices": 3539,
+   "max_move_mm": 18.8,
+   "moved_vertices": 1692,
    "status": "ok"
   },
   {
@@ -97,9 +97,9 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 87.0,
-   "measured_cm": 86.99,
-   "max_move_mm": 46.7,
-   "moved_vertices": 3596,
+   "measured_cm": 87.0,
+   "max_move_mm": 21.5,
+   "moved_vertices": 4413,
    "status": "ok"
   },
   {
@@ -110,8 +110,8 @@
    "value": 54.0,
    "asked_cm": 63.1,
    "measured_cm": 63.12,
-   "max_move_mm": 10.5,
-   "moved_vertices": 437,
+   "max_move_mm": 10.4,
+   "moved_vertices": 253,
    "status": "ok"
   },
   {
@@ -122,8 +122,8 @@
    "value": 135.0,
    "asked_cm": 78.88,
    "measured_cm": 78.89,
-   "max_move_mm": 23.3,
-   "moved_vertices": 485,
+   "max_move_mm": 23.0,
+   "moved_vertices": 260,
    "status": "ok"
   },
   {
@@ -133,9 +133,9 @@
    "at": "min",
    "value": 78.0,
    "asked_cm": 89.7,
-   "measured_cm": 89.7,
+   "measured_cm": 89.71,
    "max_move_mm": 13.0,
-   "moved_vertices": 1141,
+   "moved_vertices": 981,
    "status": "ok"
   },
   {
@@ -146,8 +146,8 @@
    "value": 150.0,
    "asked_cm": 111.36,
    "measured_cm": 111.36,
-   "max_move_mm": 31.7,
-   "moved_vertices": 1301,
+   "max_move_mm": 31.8,
+   "moved_vertices": 1107,
    "status": "ok"
   },
   {
@@ -156,10 +156,10 @@
    "kind": "measure",
    "at": "min",
    "value": 33.0,
-   "asked_cm": 23.92,
-   "measured_cm": 23.92,
-   "max_move_mm": 8.4,
-   "moved_vertices": 4267,
+   "asked_cm": 31.73,
+   "measured_cm": 31.73,
+   "max_move_mm": 9.7,
+   "moved_vertices": 4434,
    "status": "ok"
   },
   {
@@ -168,10 +168,10 @@
    "kind": "measure",
    "at": "max",
    "value": 56.0,
-   "asked_cm": 29.09,
-   "measured_cm": 29.09,
-   "max_move_mm": 21.2,
-   "moved_vertices": 4986,
+   "asked_cm": 38.59,
+   "measured_cm": 38.58,
+   "max_move_mm": 24.5,
+   "moved_vertices": 5120,
    "status": "ok"
   },
   {
@@ -183,7 +183,7 @@
    "asked_cm": 22.3,
    "measured_cm": 22.3,
    "max_move_mm": 4.0,
-   "moved_vertices": 586,
+   "moved_vertices": 464,
    "status": "ok"
   },
   {
@@ -195,7 +195,7 @@
    "asked_cm": 28.2,
    "measured_cm": 28.2,
    "max_move_mm": 7.8,
-   "moved_vertices": 678,
+   "moved_vertices": 512,
    "status": "ok"
   },
   {
@@ -204,10 +204,10 @@
    "kind": "measure",
    "at": "min",
    "value": 42.0,
-   "asked_cm": 50.23,
-   "measured_cm": 50.23,
+   "asked_cm": 50.24,
+   "measured_cm": 50.24,
    "max_move_mm": 8.0,
-   "moved_vertices": 776,
+   "moved_vertices": 504,
    "status": "ok"
   },
   {
@@ -216,10 +216,10 @@
    "kind": "measure",
    "at": "max",
    "value": 85.0,
-   "asked_cm": 63.86,
+   "asked_cm": 63.87,
    "measured_cm": 5.58,
    "max_move_mm": 14.6,
-   "moved_vertices": 855,
+   "moved_vertices": 551,
    "status": "limit",
    "cause": "stops 58.3 cm short of the asked value"
   },
@@ -232,7 +232,7 @@
    "asked_cm": 31.25,
    "measured_cm": 31.25,
    "max_move_mm": 4.0,
-   "moved_vertices": 1288,
+   "moved_vertices": 910,
    "status": "ok"
   },
   {
@@ -244,7 +244,585 @@
    "asked_cm": 38.97,
    "measured_cm": 38.98,
    "max_move_mm": 9.1,
+   "moved_vertices": 1050,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "min",
+   "value": 50.0,
+   "asked_cm": 72.15,
+   "measured_cm": 72.15,
+   "max_move_mm": 5.6,
+   "moved_vertices": 4673,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "max",
+   "value": 64.0,
+   "asked_cm": 78.71,
+   "measured_cm": 78.71,
+   "max_move_mm": 7.5,
+   "moved_vertices": 4691,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "min",
+   "value": 70.0,
+   "asked_cm": 80.97,
+   "measured_cm": 86.63,
+   "max_move_mm": 48.1,
+   "moved_vertices": 3981,
+   "status": "limit",
+   "cause": "stops 5.7 cm short of the asked value"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 100.47,
+   "measured_cm": 95.46,
+   "max_move_mm": 62.4,
+   "moved_vertices": 4648,
+   "status": "limit",
+   "cause": "stops 5.0 cm short of the asked value"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "min",
+   "value": 68.0,
+   "asked_cm": 63.67,
+   "measured_cm": 63.68,
+   "max_move_mm": 9.9,
+   "moved_vertices": 345,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "max",
+   "value": 142.0,
+   "asked_cm": 79.42,
+   "measured_cm": 79.42,
+   "max_move_mm": 22.6,
+   "moved_vertices": 376,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 36.0,
+   "asked_cm": 37.05,
+   "measured_cm": 37.05,
+   "max_move_mm": 6.1,
+   "moved_vertices": 594,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 75.0,
+   "asked_cm": 47.09,
+   "measured_cm": 47.1,
+   "max_move_mm": 11.1,
+   "moved_vertices": 636,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "min",
+   "value": 30.0,
+   "asked_cm": 25.84,
+   "measured_cm": 25.85,
+   "max_move_mm": 3.0,
+   "moved_vertices": 644,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "max",
+   "value": 54.0,
+   "asked_cm": 31.97,
+   "measured_cm": 31.98,
+   "max_move_mm": 7.8,
+   "moved_vertices": 706,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "min",
+   "value": 17.0,
+   "asked_cm": 14.04,
+   "measured_cm": 14.04,
+   "max_move_mm": 1.9,
+   "moved_vertices": 1124,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": 17.58,
+   "measured_cm": 17.58,
+   "max_move_mm": 4.3,
+   "moved_vertices": 1260,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "min",
+   "value": 19.0,
+   "asked_cm": 20.6,
+   "measured_cm": 20.6,
+   "max_move_mm": 3.2,
+   "moved_vertices": 312,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "max",
+   "value": 38.0,
+   "asked_cm": 25.77,
+   "measured_cm": 25.77,
+   "max_move_mm": 7.0,
+   "moved_vertices": 352,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "min",
+   "value": 18.0,
+   "asked_cm": 20.06,
+   "measured_cm": 20.06,
+   "max_move_mm": 3.0,
+   "moved_vertices": 324,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "max",
+   "value": 36.0,
+   "asked_cm": 25.19,
+   "measured_cm": 25.19,
+   "max_move_mm": 6.3,
+   "moved_vertices": 356,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "min",
+   "value": 13.0,
+   "asked_cm": 12.57,
+   "measured_cm": 12.58,
+   "max_move_mm": 1.4,
+   "moved_vertices": 434,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": 15.46,
+   "measured_cm": 15.47,
+   "max_move_mm": 4.1,
+   "moved_vertices": 526,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 43.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 2726,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 49.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 2726,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 74.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 1150,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 80.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 1387,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 83.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 21.0,
+   "moved_vertices": 365,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 89.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 365,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 93.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 442,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 99.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 442,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 102.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 308,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 108.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 404,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 110.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.0,
+   "moved_vertices": 280,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 116.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 280,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 118.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 801,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 124.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 801,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 134.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 3558,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 140.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 4198,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 141.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 7748,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 147.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 7748,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 26.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 69.2,
+   "moved_vertices": 1186,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 44.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 108.7,
+   "moved_vertices": 1192,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 48.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 110.0,
+   "moved_vertices": 2136,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 74.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 150.0,
+   "moved_vertices": 2136,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 14.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 35.0,
+   "moved_vertices": 1608,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 65.0,
+   "moved_vertices": 1608,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 6.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 13.7,
+   "moved_vertices": 1544,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 12.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 36.4,
    "moved_vertices": 1568,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 20.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 37.9,
+   "moved_vertices": 1416,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 63.2,
+   "moved_vertices": 1452,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 7.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 9.6,
+   "moved_vertices": 1338,
+   "status": "ok"
+  },
+  {
+   "model": "body_female.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 13.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 25.5,
+   "moved_vertices": 1428,
    "status": "ok"
   },
   {
@@ -253,8 +831,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 6.1,
-   "moved_vertices": 5016,
+   "max_move_mm": 6.0,
+   "moved_vertices": 2189,
    "status": "ok"
   },
   {
@@ -263,8 +841,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 21.4,
-   "moved_vertices": 189,
+   "max_move_mm": 15.6,
+   "moved_vertices": 3056,
    "status": "ok"
   },
   {
@@ -273,8 +851,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 15.3,
-   "moved_vertices": 114,
+   "max_move_mm": 14.1,
+   "moved_vertices": 3180,
    "status": "ok"
   },
   {
@@ -283,8 +861,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 14.7,
-   "moved_vertices": 189,
+   "max_move_mm": 12.0,
+   "moved_vertices": 2831,
    "status": "ok"
   },
   {
@@ -293,8 +871,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 13.2,
-   "moved_vertices": 126,
+   "max_move_mm": 12.1,
+   "moved_vertices": 2857,
    "status": "ok"
   },
   {
@@ -303,8 +881,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 13.6,
-   "moved_vertices": 106,
+   "max_move_mm": 24.8,
+   "moved_vertices": 3537,
    "status": "ok"
   },
   {
@@ -313,8 +891,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 12.2,
-   "moved_vertices": 106,
+   "max_move_mm": 25.9,
+   "moved_vertices": 3588,
    "status": "ok"
   },
   {
@@ -323,8 +901,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 4.3,
-   "moved_vertices": 102,
+   "max_move_mm": 6.0,
+   "moved_vertices": 418,
    "status": "ok"
   },
   {
@@ -333,8 +911,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 5.1,
-   "moved_vertices": 142,
+   "max_move_mm": 6.2,
+   "moved_vertices": 406,
    "status": "ok"
   },
   {
@@ -343,8 +921,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 32.2,
-   "moved_vertices": 205,
+   "max_move_mm": 22.9,
+   "moved_vertices": 3612,
    "status": "ok"
   },
   {
@@ -353,8 +931,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 11.0,
-   "moved_vertices": 959,
+   "max_move_mm": 22.8,
+   "moved_vertices": 940,
    "status": "ok"
   },
   {
@@ -363,8 +941,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 11.0,
-   "moved_vertices": 959,
+   "max_move_mm": 21.8,
+   "moved_vertices": 950,
    "status": "ok"
   },
   {
@@ -373,8 +951,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 14.3,
-   "moved_vertices": 308,
+   "max_move_mm": 28.3,
+   "moved_vertices": 796,
    "status": "ok"
   },
   {
@@ -383,8 +961,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 14.3,
-   "moved_vertices": 308,
+   "max_move_mm": 28.7,
+   "moved_vertices": 363,
    "status": "ok"
   },
   {
@@ -393,8 +971,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 9.3,
-   "moved_vertices": 1130,
+   "max_move_mm": 18.6,
+   "moved_vertices": 1275,
    "status": "ok"
   },
   {
@@ -403,8 +981,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 9.3,
-   "moved_vertices": 1152,
+   "max_move_mm": 18.5,
+   "moved_vertices": 1297,
    "status": "ok"
   },
   {
@@ -413,8 +991,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 10.7,
-   "moved_vertices": 1225,
+   "max_move_mm": 14.2,
+   "moved_vertices": 970,
    "status": "ok"
   },
   {
@@ -423,289 +1001,121 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.7,
-   "moved_vertices": 1268,
+   "max_move_mm": 13.8,
+   "moved_vertices": 1037,
    "status": "ok"
   },
   {
    "model": "body_female.glb",
    "slider": "acrossBackWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "acrossFrontWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "ankle",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "backRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "backWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "cervicaleHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "chestHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "crotchCurveTotal",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "crotchHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "elbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "footLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "footWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "forearm",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "frontRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "frontWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "handLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "handWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "head",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "highHip",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "highHipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "hipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "inseamLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "knee",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "kneeHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "midThigh",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "outseamFromHighHip",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "outseamFromWaist",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "shoulderHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "shoulderToElbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "sideTorsoLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "singleShoulderLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "sleeveFromArmpit",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "sleeveFromNeck",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "sleeveFromShoulder",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "torsoLoop",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "underbustHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "upperChest",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "waistHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female.glb",
    "slider": "waistToKneeLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female.glb",
-   "slider": "wrist",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
@@ -716,7 +1126,7 @@
    "asked_cm": 145.0,
    "measured_cm": 145.0,
    "max_move_mm": 230.0,
-   "moved_vertices": 9526,
+   "moved_vertices": 9524,
    "status": "ok"
   },
   {
@@ -728,7 +1138,7 @@
    "asked_cm": 205.0,
    "measured_cm": 205.0,
    "max_move_mm": 370.0,
-   "moved_vertices": 9534,
+   "moved_vertices": 9532,
    "status": "ok"
   },
   {
@@ -738,9 +1148,9 @@
    "at": "min",
    "value": 28.0,
    "asked_cm": 28.0,
-   "measured_cm": 28.07,
-   "max_move_mm": 13.7,
-   "moved_vertices": 1139,
+   "measured_cm": 28.06,
+   "max_move_mm": 14.0,
+   "moved_vertices": 3566,
    "status": "ok"
   },
   {
@@ -751,8 +1161,8 @@
    "value": 50.0,
    "asked_cm": 50.0,
    "measured_cm": 50.06,
-   "max_move_mm": 36.4,
-   "moved_vertices": 1296,
+   "max_move_mm": 37.3,
+   "moved_vertices": 3867,
    "status": "ok"
   },
   {
@@ -762,11 +1172,11 @@
    "at": "min",
    "value": 72.0,
    "asked_cm": 72.0,
-   "measured_cm": 85.72,
-   "max_move_mm": 39.7,
-   "moved_vertices": 136,
+   "measured_cm": 83.31,
+   "max_move_mm": 47.6,
+   "moved_vertices": 140,
    "status": "limit",
-   "cause": "stops 13.7 cm short of the asked value"
+   "cause": "stops 11.3 cm short of the asked value"
   },
   {
    "model": "body_female_realistic.glb",
@@ -775,11 +1185,11 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 145.0,
-   "measured_cm": 104.15,
-   "max_move_mm": 96.0,
-   "moved_vertices": 244,
+   "measured_cm": 103.05,
+   "max_move_mm": 91.9,
+   "moved_vertices": 246,
    "status": "limit",
-   "cause": "stops 40.8 cm short of the asked value"
+   "cause": "stops 41.9 cm short of the asked value"
   },
   {
    "model": "body_female_realistic.glb",
@@ -788,9 +1198,9 @@
    "at": "min",
    "value": 62.0,
    "asked_cm": 62.0,
-   "measured_cm": 62.15,
-   "max_move_mm": 65.0,
-   "moved_vertices": 1809,
+   "measured_cm": 62.04,
+   "max_move_mm": 27.7,
+   "moved_vertices": 3872,
    "status": "ok"
   },
   {
@@ -800,9 +1210,9 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 130.0,
-   "measured_cm": 130.13,
-   "max_move_mm": 105.9,
-   "moved_vertices": 2948,
+   "measured_cm": 130.25,
+   "max_move_mm": 102.4,
+   "moved_vertices": 4468,
    "status": "ok"
   },
   {
@@ -812,9 +1222,9 @@
    "at": "min",
    "value": 54.0,
    "asked_cm": 54.0,
-   "measured_cm": 54.11,
-   "max_move_mm": 27.3,
-   "moved_vertices": 356,
+   "measured_cm": 54.1,
+   "max_move_mm": 26.9,
+   "moved_vertices": 213,
    "status": "ok"
   },
   {
@@ -824,9 +1234,9 @@
    "at": "max",
    "value": 135.0,
    "asked_cm": 135.0,
-   "measured_cm": 135.0,
-   "max_move_mm": 129.5,
-   "moved_vertices": 707,
+   "measured_cm": 134.66,
+   "max_move_mm": 127.3,
+   "moved_vertices": 572,
    "status": "ok"
   },
   {
@@ -837,8 +1247,8 @@
    "value": 78.0,
    "asked_cm": 78.0,
    "measured_cm": 78.05,
-   "max_move_mm": 39.8,
-   "moved_vertices": 552,
+   "max_move_mm": 39.2,
+   "moved_vertices": 428,
    "status": "ok"
   },
   {
@@ -848,9 +1258,9 @@
    "at": "max",
    "value": 150.0,
    "asked_cm": 150.0,
-   "measured_cm": 150.14,
-   "max_move_mm": 119.3,
-   "moved_vertices": 601,
+   "measured_cm": 150.15,
+   "max_move_mm": 117.7,
+   "moved_vertices": 471,
    "status": "ok"
   },
   {
@@ -861,8 +1271,8 @@
    "value": 33.0,
    "asked_cm": 33.0,
    "measured_cm": 33.0,
-   "max_move_mm": 34.0,
-   "moved_vertices": 4356,
+   "max_move_mm": 32.7,
+   "moved_vertices": 4236,
    "status": "ok"
   },
   {
@@ -872,9 +1282,9 @@
    "at": "max",
    "value": 56.0,
    "asked_cm": 56.0,
-   "measured_cm": 56.0,
-   "max_move_mm": 86.4,
-   "moved_vertices": 4885,
+   "measured_cm": 55.99,
+   "max_move_mm": 83.0,
+   "moved_vertices": 4775,
    "status": "ok"
   },
   {
@@ -885,8 +1295,8 @@
    "value": 21.0,
    "asked_cm": 21.0,
    "measured_cm": 21.0,
-   "max_move_mm": 12.1,
-   "moved_vertices": 573,
+   "max_move_mm": 12.9,
+   "moved_vertices": 436,
    "status": "ok"
   },
   {
@@ -896,9 +1306,9 @@
    "at": "max",
    "value": 48.0,
    "asked_cm": 48.0,
-   "measured_cm": 48.0,
-   "max_move_mm": 38.2,
-   "moved_vertices": 648,
+   "measured_cm": 48.01,
+   "max_move_mm": 40.8,
+   "moved_vertices": 487,
    "status": "ok"
   },
   {
@@ -909,8 +1319,8 @@
    "value": 42.0,
    "asked_cm": 42.0,
    "measured_cm": 42.01,
-   "max_move_mm": 24.4,
-   "moved_vertices": 294,
+   "max_move_mm": 24.6,
+   "moved_vertices": 207,
    "status": "ok"
   },
   {
@@ -921,8 +1331,8 @@
    "value": 85.0,
    "asked_cm": 85.0,
    "measured_cm": 2.25,
-   "max_move_mm": 50.6,
-   "moved_vertices": 322,
+   "max_move_mm": 51.0,
+   "moved_vertices": 281,
    "status": "limit",
    "cause": "stops 82.8 cm short of the asked value"
   },
@@ -934,8 +1344,8 @@
    "value": 28.0,
    "asked_cm": 28.0,
    "measured_cm": 28.0,
-   "max_move_mm": 12.5,
-   "moved_vertices": 550,
+   "max_move_mm": 11.9,
+   "moved_vertices": 428,
    "status": "ok"
   },
   {
@@ -945,9 +1355,588 @@
    "at": "max",
    "value": 52.0,
    "asked_cm": 52.0,
-   "measured_cm": 52.01,
-   "max_move_mm": 30.3,
-   "moved_vertices": 638,
+   "measured_cm": 52.0,
+   "max_move_mm": 28.9,
+   "moved_vertices": 468,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "min",
+   "value": 50.0,
+   "asked_cm": 50.0,
+   "measured_cm": 50.01,
+   "max_move_mm": 12.6,
+   "moved_vertices": 4152,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "max",
+   "value": 64.0,
+   "asked_cm": 64.0,
+   "measured_cm": 64.01,
+   "max_move_mm": 16.8,
+   "moved_vertices": 4168,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "min",
+   "value": 70.0,
+   "asked_cm": 74.65,
+   "measured_cm": 91.33,
+   "max_move_mm": 92.0,
+   "moved_vertices": 3914,
+   "status": "limit",
+   "cause": "stops 16.7 cm short of the asked value"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 139.65,
+   "measured_cm": 145.93,
+   "max_move_mm": 178.0,
+   "moved_vertices": 4597,
+   "status": "limit",
+   "cause": "stops 6.3 cm short of the asked value"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "min",
+   "value": 68.0,
+   "asked_cm": 68.0,
+   "measured_cm": 68.02,
+   "max_move_mm": 32.9,
+   "moved_vertices": 244,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "max",
+   "value": 142.0,
+   "asked_cm": 142.0,
+   "measured_cm": 142.04,
+   "max_move_mm": 110.4,
+   "moved_vertices": 308,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 36.0,
+   "asked_cm": 36.0,
+   "measured_cm": 36.0,
+   "max_move_mm": 20.8,
+   "moved_vertices": 201,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 75.0,
+   "asked_cm": 75.0,
+   "measured_cm": null,
+   "max_move_mm": 46.8,
+   "moved_vertices": 212,
+   "status": "limit",
+   "cause": "ruler finds no section at this extreme"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "min",
+   "value": 30.0,
+   "asked_cm": 30.0,
+   "measured_cm": 30.01,
+   "max_move_mm": 11.7,
+   "moved_vertices": 264,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "max",
+   "value": 54.0,
+   "asked_cm": 54.0,
+   "measured_cm": 54.01,
+   "max_move_mm": 31.6,
+   "moved_vertices": 284,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "min",
+   "value": 17.0,
+   "asked_cm": 17.0,
+   "measured_cm": 17.0,
+   "max_move_mm": 8.4,
+   "moved_vertices": 650,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": 32.0,
+   "measured_cm": 32.0,
+   "max_move_mm": 19.5,
+   "moved_vertices": 712,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "min",
+   "value": 19.0,
+   "asked_cm": 19.0,
+   "measured_cm": 19.01,
+   "max_move_mm": 11.6,
+   "moved_vertices": 336,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "max",
+   "value": 38.0,
+   "asked_cm": 38.0,
+   "measured_cm": 38.02,
+   "max_move_mm": 32.4,
+   "moved_vertices": 530,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "min",
+   "value": 18.0,
+   "asked_cm": 18.0,
+   "measured_cm": 18.01,
+   "max_move_mm": 10.0,
+   "moved_vertices": 431,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "max",
+   "value": 36.0,
+   "asked_cm": 36.0,
+   "measured_cm": 36.02,
+   "max_move_mm": 25.9,
+   "moved_vertices": 560,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "min",
+   "value": 13.0,
+   "asked_cm": 13.0,
+   "measured_cm": 13.0,
+   "max_move_mm": 5.0,
+   "moved_vertices": 408,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": 24.0,
+   "measured_cm": 24.0,
+   "max_move_mm": 17.0,
+   "moved_vertices": 467,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 43.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.5,
+   "moved_vertices": 1137,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 49.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.5,
+   "moved_vertices": 1137,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 74.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 378,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 80.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 524,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 83.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 20.6,
+   "moved_vertices": 187,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 89.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.5,
+   "moved_vertices": 188,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 93.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 28.4,
+   "moved_vertices": 290,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 99.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 28.4,
+   "moved_vertices": 290,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 102.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.6,
+   "moved_vertices": 244,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 108.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.6,
+   "moved_vertices": 244,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 110.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 221,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 116.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 221,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 118.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 604,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 124.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 604,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 134.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 3015,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 140.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 3559,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 141.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 5204,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 147.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 5204,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 26.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 70.0,
+   "moved_vertices": 976,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 44.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 109.9,
+   "moved_vertices": 986,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 48.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 110.0,
+   "moved_vertices": 1846,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 74.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 150.0,
+   "moved_vertices": 1846,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 14.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 35.0,
+   "moved_vertices": 1408,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 65.0,
+   "moved_vertices": 1408,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 6.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 13.6,
+   "moved_vertices": 1374,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 12.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 36.3,
+   "moved_vertices": 1404,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 20.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 35.9,
+   "moved_vertices": 2282,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 59.9,
+   "moved_vertices": 2301,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 7.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 11.1,
+   "moved_vertices": 2179,
+   "status": "ok"
+  },
+  {
+   "model": "body_female_realistic.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 13.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.5,
+   "moved_vertices": 2280,
    "status": "ok"
   },
   {
@@ -956,8 +1945,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 6.0,
-   "moved_vertices": 3594,
+   "max_move_mm": 5.9,
+   "moved_vertices": 1371,
    "status": "ok"
   },
   {
@@ -966,8 +1955,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 16.2,
-   "moved_vertices": 136,
+   "max_move_mm": 15.0,
+   "moved_vertices": 208,
    "status": "ok"
   },
   {
@@ -976,8 +1965,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 15.2,
-   "moved_vertices": 100,
+   "max_move_mm": 14.1,
+   "moved_vertices": 246,
    "status": "ok"
   },
   {
@@ -987,7 +1976,7 @@
    "at": "min",
    "value": -1.0,
    "max_move_mm": 12.0,
-   "moved_vertices": 110,
+   "moved_vertices": 197,
    "status": "ok"
   },
   {
@@ -996,8 +1985,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 12.1,
-   "moved_vertices": 100,
+   "max_move_mm": 12.0,
+   "moved_vertices": 212,
    "status": "ok"
   },
   {
@@ -1006,8 +1995,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 11.3,
-   "moved_vertices": 165,
+   "max_move_mm": 19.0,
+   "moved_vertices": 2496,
    "status": "ok"
   },
   {
@@ -1016,8 +2005,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.0,
-   "moved_vertices": 115,
+   "max_move_mm": 20.3,
+   "moved_vertices": 2628,
    "status": "ok"
   },
   {
@@ -1026,8 +2015,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 4.9,
-   "moved_vertices": 89,
+   "max_move_mm": 6.0,
+   "moved_vertices": 193,
    "status": "ok"
   },
   {
@@ -1036,8 +2025,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 5.5,
-   "moved_vertices": 103,
+   "max_move_mm": 6.1,
+   "moved_vertices": 169,
    "status": "ok"
   },
   {
@@ -1046,8 +2035,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 24.1,
-   "moved_vertices": 161,
+   "max_move_mm": 22.0,
+   "moved_vertices": 2389,
    "status": "ok"
   },
   {
@@ -1056,8 +2045,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 10.6,
-   "moved_vertices": 431,
+   "max_move_mm": 22.0,
+   "moved_vertices": 364,
    "status": "ok"
   },
   {
@@ -1066,8 +2055,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.6,
-   "moved_vertices": 431,
+   "max_move_mm": 21.0,
+   "moved_vertices": 370,
    "status": "ok"
   },
   {
@@ -1076,8 +2065,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 14.4,
-   "moved_vertices": 93,
+   "max_move_mm": 28.5,
+   "moved_vertices": 183,
    "status": "ok"
   },
   {
@@ -1086,8 +2075,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 14.4,
-   "moved_vertices": 93,
+   "max_move_mm": 28.9,
+   "moved_vertices": 98,
    "status": "ok"
   },
   {
@@ -1096,8 +2085,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 10.4,
-   "moved_vertices": 478,
+   "max_move_mm": 21.0,
+   "moved_vertices": 518,
    "status": "ok"
   },
   {
@@ -1106,8 +2095,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.4,
-   "moved_vertices": 478,
+   "max_move_mm": 20.9,
+   "moved_vertices": 522,
    "status": "ok"
   },
   {
@@ -1116,8 +2105,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 11.2,
-   "moved_vertices": 488,
+   "max_move_mm": 15.8,
+   "moved_vertices": 381,
    "status": "ok"
   },
   {
@@ -1126,289 +2115,121 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 11.2,
-   "moved_vertices": 488,
+   "max_move_mm": 15.6,
+   "moved_vertices": 382,
    "status": "ok"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "acrossBackWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "acrossFrontWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "ankle",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "backRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "backWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "cervicaleHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "chestHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "crotchCurveTotal",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "crotchHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "elbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "footLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "footWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "forearm",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "frontRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "frontWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "handLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "handWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "head",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "highHip",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "highHipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "hipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "inseamLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "knee",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "kneeHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "midThigh",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "outseamFromHighHip",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "outseamFromWaist",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "shoulderHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "shoulderToElbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "sideTorsoLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "singleShoulderLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "sleeveFromArmpit",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "sleeveFromNeck",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "sleeveFromShoulder",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "torsoLoop",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "underbustHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "upperChest",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "waistHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_female_realistic.glb",
    "slider": "waistToKneeLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_female_realistic.glb",
-   "slider": "wrist",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
@@ -1419,7 +2240,7 @@
    "asked_cm": 145.0,
    "measured_cm": 145.0,
    "max_move_mm": 350.0,
-   "moved_vertices": 12788,
+   "moved_vertices": 12782,
    "status": "ok"
   },
   {
@@ -1442,8 +2263,8 @@
    "value": 28.0,
    "asked_cm": 35.48,
    "measured_cm": 35.48,
-   "max_move_mm": 10.3,
-   "moved_vertices": 819,
+   "max_move_mm": 10.2,
+   "moved_vertices": 855,
    "status": "ok"
   },
   {
@@ -1453,9 +2274,9 @@
    "at": "max",
    "value": 50.0,
    "asked_cm": 43.18,
-   "measured_cm": 43.18,
+   "measured_cm": 43.17,
    "max_move_mm": 9.4,
-   "moved_vertices": 806,
+   "moved_vertices": 834,
    "status": "ok"
   },
   {
@@ -1466,8 +2287,8 @@
    "value": 72.0,
    "asked_cm": 90.2,
    "measured_cm": 90.24,
-   "max_move_mm": 19.0,
-   "moved_vertices": 1530,
+   "max_move_mm": 19.8,
+   "moved_vertices": 220,
    "status": "ok"
   },
   {
@@ -1477,9 +2298,9 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 115.75,
-   "measured_cm": 115.78,
-   "max_move_mm": 30.6,
-   "moved_vertices": 1829,
+   "measured_cm": 115.88,
+   "max_move_mm": 31.8,
+   "moved_vertices": 435,
    "status": "ok"
   },
   {
@@ -1489,9 +2310,9 @@
    "at": "min",
    "value": 62.0,
    "asked_cm": 80.85,
-   "measured_cm": 80.91,
-   "max_move_mm": 19.2,
-   "moved_vertices": 292,
+   "measured_cm": 80.87,
+   "max_move_mm": 18.7,
+   "moved_vertices": 264,
    "status": "ok"
   },
   {
@@ -1501,9 +2322,9 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 104.65,
-   "measured_cm": 104.72,
-   "max_move_mm": 25.8,
-   "moved_vertices": 300,
+   "measured_cm": 104.67,
+   "max_move_mm": 25.1,
+   "moved_vertices": 274,
    "status": "ok"
   },
   {
@@ -1514,8 +2335,8 @@
    "value": 54.0,
    "asked_cm": 73.5,
    "measured_cm": 73.55,
-   "max_move_mm": 22.1,
-   "moved_vertices": 453,
+   "max_move_mm": 22.2,
+   "moved_vertices": 270,
    "status": "ok"
   },
   {
@@ -1526,8 +2347,8 @@
    "value": 135.0,
    "asked_cm": 97.44,
    "measured_cm": 97.45,
-   "max_move_mm": 28.3,
-   "moved_vertices": 457,
+   "max_move_mm": 28.4,
+   "moved_vertices": 278,
    "status": "ok"
   },
   {
@@ -1538,8 +2359,8 @@
    "value": 78.0,
    "asked_cm": 91.0,
    "measured_cm": 91.01,
-   "max_move_mm": 15.7,
-   "moved_vertices": 1078,
+   "max_move_mm": 15.5,
+   "moved_vertices": 878,
    "status": "ok"
   },
   {
@@ -1550,8 +2371,8 @@
    "value": 150.0,
    "asked_cm": 113.68,
    "measured_cm": 113.69,
-   "max_move_mm": 35.2,
-   "moved_vertices": 1163,
+   "max_move_mm": 34.7,
+   "moved_vertices": 998,
    "status": "ok"
   },
   {
@@ -1560,10 +2381,10 @@
    "kind": "measure",
    "at": "min",
    "value": 33.0,
-   "asked_cm": 41.25,
-   "measured_cm": 41.25,
-   "max_move_mm": 23.3,
-   "moved_vertices": 4321,
+   "asked_cm": 41.06,
+   "measured_cm": 41.07,
+   "max_move_mm": 23.4,
+   "moved_vertices": 4365,
    "status": "ok"
   },
   {
@@ -1572,10 +2393,10 @@
    "kind": "measure",
    "at": "max",
    "value": 56.0,
-   "asked_cm": 49.26,
-   "measured_cm": 49.26,
-   "max_move_mm": 17.9,
-   "moved_vertices": 4173,
+   "asked_cm": 49.03,
+   "measured_cm": 49.06,
+   "max_move_mm": 18.2,
+   "moved_vertices": 4206,
    "status": "ok"
   },
   {
@@ -1584,10 +2405,10 @@
    "kind": "measure",
    "at": "min",
    "value": 21.0,
-   "asked_cm": 30.08,
-   "measured_cm": 30.08,
-   "max_move_mm": 8.5,
-   "moved_vertices": 684,
+   "asked_cm": 29.95,
+   "measured_cm": 29.96,
+   "max_move_mm": 9.5,
+   "moved_vertices": 546,
    "status": "ok"
   },
   {
@@ -1596,10 +2417,10 @@
    "kind": "measure",
    "at": "max",
    "value": 48.0,
-   "asked_cm": 39.95,
-   "measured_cm": 39.95,
-   "max_move_mm": 10.6,
-   "moved_vertices": 702,
+   "asked_cm": 39.78,
+   "measured_cm": 39.79,
+   "max_move_mm": 11.9,
+   "moved_vertices": 558,
    "status": "ok"
   },
   {
@@ -1608,10 +2429,10 @@
    "kind": "measure",
    "at": "min",
    "value": 42.0,
-   "asked_cm": 51.57,
-   "measured_cm": 51.57,
-   "max_move_mm": 9.6,
-   "moved_vertices": 752,
+   "asked_cm": 51.59,
+   "measured_cm": 51.59,
+   "max_move_mm": 9.7,
+   "moved_vertices": 510,
    "status": "ok"
   },
   {
@@ -1620,10 +2441,10 @@
    "kind": "measure",
    "at": "max",
    "value": 85.0,
-   "asked_cm": 66.21,
-   "measured_cm": 66.22,
+   "asked_cm": 66.24,
+   "measured_cm": 66.24,
    "max_move_mm": 16.0,
-   "moved_vertices": 772,
+   "moved_vertices": 542,
    "status": "ok"
   },
   {
@@ -1635,7 +2456,7 @@
    "asked_cm": 33.71,
    "measured_cm": 33.71,
    "max_move_mm": 5.8,
-   "moved_vertices": 1586,
+   "moved_vertices": 1032,
    "status": "ok"
   },
   {
@@ -1647,7 +2468,583 @@
    "asked_cm": 41.91,
    "measured_cm": 41.91,
    "max_move_mm": 8.1,
-   "moved_vertices": 1732,
+   "moved_vertices": 1090,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "min",
+   "value": 50.0,
+   "asked_cm": 76.15,
+   "measured_cm": 76.15,
+   "max_move_mm": 7.6,
+   "moved_vertices": 4884,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "max",
+   "value": 64.0,
+   "asked_cm": 82.91,
+   "measured_cm": 82.91,
+   "max_move_mm": 5.7,
+   "moved_vertices": 4835,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "min",
+   "value": 70.0,
+   "asked_cm": 87.97,
+   "measured_cm": 88.27,
+   "max_move_mm": 25.1,
+   "moved_vertices": 4520,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 110.66,
+   "measured_cm": 110.68,
+   "max_move_mm": 27.0,
+   "moved_vertices": 4581,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "min",
+   "value": 68.0,
+   "asked_cm": 66.44,
+   "measured_cm": 66.45,
+   "max_move_mm": 12.7,
+   "moved_vertices": 283,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "max",
+   "value": 142.0,
+   "asked_cm": 84.55,
+   "measured_cm": 84.56,
+   "max_move_mm": 23.0,
+   "moved_vertices": 294,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 36.0,
+   "asked_cm": 39.02,
+   "measured_cm": 39.02,
+   "max_move_mm": 7.9,
+   "moved_vertices": 494,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 75.0,
+   "asked_cm": 50.45,
+   "measured_cm": 50.45,
+   "max_move_mm": 12.2,
+   "moved_vertices": 514,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "min",
+   "value": 30.0,
+   "asked_cm": 28.49,
+   "measured_cm": 28.49,
+   "max_move_mm": 4.5,
+   "moved_vertices": 730,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "max",
+   "value": 54.0,
+   "asked_cm": 35.16,
+   "measured_cm": 35.17,
+   "max_move_mm": 7.5,
+   "moved_vertices": 754,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "min",
+   "value": 17.0,
+   "asked_cm": 18.21,
+   "measured_cm": 18.21,
+   "max_move_mm": 3.5,
+   "moved_vertices": 1180,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": 22.71,
+   "measured_cm": 22.72,
+   "max_move_mm": 4.6,
+   "moved_vertices": 1238,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "min",
+   "value": 19.0,
+   "asked_cm": 27.21,
+   "measured_cm": 27.22,
+   "max_move_mm": 7.1,
+   "moved_vertices": 378,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "max",
+   "value": 38.0,
+   "asked_cm": 34.49,
+   "measured_cm": 34.5,
+   "max_move_mm": 7.9,
+   "moved_vertices": 406,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "min",
+   "value": 18.0,
+   "asked_cm": 26.38,
+   "measured_cm": 26.39,
+   "max_move_mm": 7.2,
+   "moved_vertices": 360,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "max",
+   "value": 36.0,
+   "asked_cm": 33.26,
+   "measured_cm": 33.26,
+   "max_move_mm": 6.5,
+   "moved_vertices": 352,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "min",
+   "value": 13.0,
+   "asked_cm": 15.53,
+   "measured_cm": 15.54,
+   "max_move_mm": 3.1,
+   "moved_vertices": 510,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": 19.29,
+   "measured_cm": 19.3,
+   "max_move_mm": 4.5,
+   "moved_vertices": 536,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 46.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 2756,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 52.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 2756,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 79.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 1008,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 85.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 1195,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 90.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 24.0,
+   "moved_vertices": 321,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 96.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 323,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 99.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 351,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 105.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.8,
+   "moved_vertices": 351,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 108.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 327,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 114.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 327,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 120.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 28.6,
+   "moved_vertices": 320,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 126.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 28.6,
+   "moved_vertices": 320,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 128.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.5,
+   "moved_vertices": 729,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 134.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.5,
+   "moved_vertices": 729,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 144.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 3507,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 150.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 4049,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 151.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 7582,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 157.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 7582,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 26.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 99.8,
+   "moved_vertices": 1202,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 44.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 79.9,
+   "moved_vertices": 1198,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 48.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 160.0,
+   "moved_vertices": 2122,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 74.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 100.0,
+   "moved_vertices": 2122,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 14.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 55.0,
+   "moved_vertices": 1608,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 45.0,
+   "moved_vertices": 1608,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 6.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 25.9,
+   "moved_vertices": 1562,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 12.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 21.6,
+   "moved_vertices": 1556,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 20.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 55.8,
+   "moved_vertices": 1580,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 39.9,
+   "moved_vertices": 1548,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 7.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 20.6,
+   "moved_vertices": 1530,
+   "status": "ok"
+  },
+  {
+   "model": "body_male.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 13.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 17.2,
+   "moved_vertices": 1510,
    "status": "ok"
   },
   {
@@ -1657,7 +3054,7 @@
    "at": "max",
    "value": 1.0,
    "max_move_mm": 10.0,
-   "moved_vertices": 3181,
+   "moved_vertices": 2589,
    "status": "ok"
   },
   {
@@ -1666,8 +3063,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 10.2,
-   "moved_vertices": 882,
+   "max_move_mm": 21.1,
+   "moved_vertices": 980,
    "status": "ok"
   },
   {
@@ -1676,8 +3073,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.2,
-   "moved_vertices": 882,
+   "max_move_mm": 20.3,
+   "moved_vertices": 980,
    "status": "ok"
   },
   {
@@ -1686,8 +3083,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 14.3,
-   "moved_vertices": 259,
+   "max_move_mm": 28.1,
+   "moved_vertices": 810,
    "status": "ok"
   },
   {
@@ -1696,8 +3093,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 14.3,
-   "moved_vertices": 259,
+   "max_move_mm": 28.7,
+   "moved_vertices": 476,
    "status": "ok"
   },
   {
@@ -1706,8 +3103,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 9.1,
-   "moved_vertices": 1068,
+   "max_move_mm": 18.3,
+   "moved_vertices": 1104,
    "status": "ok"
   },
   {
@@ -1716,8 +3113,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 9.1,
-   "moved_vertices": 1068,
+   "max_move_mm": 18.4,
+   "moved_vertices": 1111,
    "status": "ok"
   },
   {
@@ -1726,8 +3123,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 10.9,
-   "moved_vertices": 1184,
+   "max_move_mm": 13.2,
+   "moved_vertices": 720,
    "status": "ok"
   },
   {
@@ -1736,289 +3133,121 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.9,
-   "moved_vertices": 1184,
+   "max_move_mm": 12.7,
+   "moved_vertices": 720,
    "status": "ok"
   },
   {
    "model": "body_male.glb",
    "slider": "acrossBackWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "acrossFrontWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "ankle",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "backRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "backWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "cervicaleHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "chestHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "crotchCurveTotal",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "crotchHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "elbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "footLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "footWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "forearm",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "frontRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "frontWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "handLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "handWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "head",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "highHip",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "highHipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "hipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "inseamLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "knee",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "kneeHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "midThigh",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "outseamFromHighHip",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "outseamFromWaist",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "shoulderHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "shoulderToElbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "sideTorsoLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "singleShoulderLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "sleeveFromArmpit",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "sleeveFromNeck",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "sleeveFromShoulder",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "torsoLoop",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "underbustHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "upperChest",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "waistHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male.glb",
    "slider": "waistToKneeLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male.glb",
-   "slider": "wrist",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2041,7 +3270,7 @@
    "asked_cm": 205.0,
    "measured_cm": 205.0,
    "max_move_mm": 250.0,
-   "moved_vertices": 9504,
+   "moved_vertices": 9502,
    "status": "ok"
   },
   {
@@ -2051,9 +3280,9 @@
    "at": "min",
    "value": 28.0,
    "asked_cm": 28.0,
-   "measured_cm": 28.12,
-   "max_move_mm": 27.6,
-   "moved_vertices": 1221,
+   "measured_cm": 28.11,
+   "max_move_mm": 28.2,
+   "moved_vertices": 1235,
    "status": "ok"
   },
   {
@@ -2064,8 +3293,8 @@
    "value": 50.0,
    "asked_cm": 50.0,
    "measured_cm": 50.03,
-   "max_move_mm": 25.2,
-   "moved_vertices": 1217,
+   "max_move_mm": 25.8,
+   "moved_vertices": 1228,
    "status": "ok"
   },
   {
@@ -2075,10 +3304,11 @@
    "at": "min",
    "value": 72.0,
    "asked_cm": 72.0,
-   "measured_cm": 72.1,
-   "max_move_mm": 56.4,
-   "moved_vertices": 4285,
-   "status": "ok"
+   "measured_cm": 72.77,
+   "max_move_mm": 54.9,
+   "moved_vertices": 812,
+   "status": "limit",
+   "cause": "stops 0.8 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2087,9 +3317,9 @@
    "at": "max",
    "value": 145.0,
    "asked_cm": 145.0,
-   "measured_cm": 145.1,
-   "max_move_mm": 90.6,
-   "moved_vertices": 4564,
+   "measured_cm": 145.26,
+   "max_move_mm": 88.2,
+   "moved_vertices": 930,
    "status": "ok"
   },
   {
@@ -2099,11 +3329,11 @@
    "at": "min",
    "value": 62.0,
    "asked_cm": 62.0,
-   "measured_cm": 62.59,
-   "max_move_mm": 55.1,
-   "moved_vertices": 331,
+   "measured_cm": 63.22,
+   "max_move_mm": 61.5,
+   "moved_vertices": 237,
    "status": "limit",
-   "cause": "stops 0.6 cm short of the asked value"
+   "cause": "stops 1.2 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2112,10 +3342,11 @@
    "at": "max",
    "value": 130.0,
    "asked_cm": 130.0,
-   "measured_cm": 130.22,
-   "max_move_mm": 74.2,
-   "moved_vertices": 346,
-   "status": "ok"
+   "measured_cm": 131.02,
+   "max_move_mm": 82.7,
+   "moved_vertices": 256,
+   "status": "limit",
+   "cause": "stops 1.0 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2124,11 +3355,11 @@
    "at": "min",
    "value": 54.0,
    "asked_cm": 54.0,
-   "measured_cm": 54.95,
-   "max_move_mm": 58.7,
-   "moved_vertices": 361,
+   "measured_cm": 56.79,
+   "max_move_mm": 64.5,
+   "moved_vertices": 225,
    "status": "limit",
-   "cause": "stops 1.0 cm short of the asked value"
+   "cause": "stops 2.8 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2137,11 +3368,11 @@
    "at": "max",
    "value": 135.0,
    "asked_cm": 135.0,
-   "measured_cm": 135.59,
-   "max_move_mm": 99.8,
-   "moved_vertices": 377,
+   "measured_cm": 137.28,
+   "max_move_mm": 109.7,
+   "moved_vertices": 263,
    "status": "limit",
-   "cause": "stops 0.6 cm short of the asked value"
+   "cause": "stops 2.3 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2151,8 +3382,8 @@
    "value": 78.0,
    "asked_cm": 78.0,
    "measured_cm": 78.06,
-   "max_move_mm": 39.7,
-   "moved_vertices": 534,
+   "max_move_mm": 39.9,
+   "moved_vertices": 425,
    "status": "ok"
   },
   {
@@ -2163,8 +3394,8 @@
    "value": 150.0,
    "asked_cm": 150.0,
    "measured_cm": 150.12,
-   "max_move_mm": 103.3,
-   "moved_vertices": 549,
+   "max_move_mm": 103.8,
+   "moved_vertices": 442,
    "status": "ok"
   },
   {
@@ -2174,10 +3405,11 @@
    "at": "min",
    "value": 33.0,
    "asked_cm": 33.0,
-   "measured_cm": 33.0,
-   "max_move_mm": 67.0,
-   "moved_vertices": 4287,
-   "status": "ok"
+   "measured_cm": 31.99,
+   "max_move_mm": 59.9,
+   "moved_vertices": 4188,
+   "status": "limit",
+   "cause": "stops 1.0 cm short of the asked value"
   },
   {
    "model": "body_male_realistic.glb",
@@ -2186,9 +3418,9 @@
    "at": "max",
    "value": 56.0,
    "asked_cm": 56.0,
-   "measured_cm": 56.0,
-   "max_move_mm": 51.6,
-   "moved_vertices": 4146,
+   "measured_cm": 55.93,
+   "max_move_mm": 46.1,
+   "moved_vertices": 4059,
    "status": "ok"
   },
   {
@@ -2198,9 +3430,9 @@
    "at": "min",
    "value": 21.0,
    "asked_cm": 21.0,
-   "measured_cm": 21.01,
-   "max_move_mm": 22.6,
-   "moved_vertices": 620,
+   "measured_cm": 21.02,
+   "max_move_mm": 24.4,
+   "moved_vertices": 461,
    "status": "ok"
   },
   {
@@ -2210,9 +3442,9 @@
    "at": "max",
    "value": 48.0,
    "asked_cm": 48.0,
-   "measured_cm": 48.0,
-   "max_move_mm": 28.2,
-   "moved_vertices": 621,
+   "measured_cm": 48.01,
+   "max_move_mm": 30.5,
+   "moved_vertices": 480,
    "status": "ok"
   },
   {
@@ -2224,7 +3456,7 @@
    "asked_cm": 42.0,
    "measured_cm": 42.01,
    "max_move_mm": 28.4,
-   "moved_vertices": 277,
+   "moved_vertices": 187,
    "status": "ok"
   },
   {
@@ -2235,8 +3467,8 @@
    "value": 85.0,
    "asked_cm": 85.0,
    "measured_cm": null,
-   "max_move_mm": 47.9,
-   "moved_vertices": 291,
+   "max_move_mm": 48.0,
+   "moved_vertices": 232,
    "status": "limit",
    "cause": "ruler finds no section at this extreme"
   },
@@ -2247,9 +3479,9 @@
    "at": "min",
    "value": 28.0,
    "asked_cm": 28.0,
-   "measured_cm": 28.01,
-   "max_move_mm": 17.7,
-   "moved_vertices": 581,
+   "measured_cm": 28.0,
+   "max_move_mm": 17.6,
+   "moved_vertices": 454,
    "status": "ok"
   },
   {
@@ -2259,9 +3491,585 @@
    "at": "max",
    "value": 52.0,
    "asked_cm": 52.0,
-   "measured_cm": 52.01,
-   "max_move_mm": 24.8,
-   "moved_vertices": 618,
+   "measured_cm": 52.0,
+   "max_move_mm": 24.6,
+   "moved_vertices": 461,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "min",
+   "value": 50.0,
+   "asked_cm": 50.0,
+   "measured_cm": 50.01,
+   "max_move_mm": 16.9,
+   "moved_vertices": 4192,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "head",
+   "kind": "measure",
+   "at": "max",
+   "value": 64.0,
+   "asked_cm": 64.0,
+   "measured_cm": 64.01,
+   "max_move_mm": 12.7,
+   "moved_vertices": 4174,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "min",
+   "value": 70.0,
+   "asked_cm": 78.62,
+   "measured_cm": 79.0,
+   "max_move_mm": 59.5,
+   "moved_vertices": 4391,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "upperChest",
+   "kind": "measure",
+   "at": "max",
+   "value": 135.0,
+   "asked_cm": 143.62,
+   "measured_cm": 143.77,
+   "max_move_mm": 75.6,
+   "moved_vertices": 4486,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "min",
+   "value": 68.0,
+   "asked_cm": 68.0,
+   "measured_cm": 68.02,
+   "max_move_mm": 43.7,
+   "moved_vertices": 227,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "highHip",
+   "kind": "measure",
+   "at": "max",
+   "value": 142.0,
+   "asked_cm": 142.0,
+   "measured_cm": 142.02,
+   "max_move_mm": 96.8,
+   "moved_vertices": 296,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "min",
+   "value": 36.0,
+   "asked_cm": 36.0,
+   "measured_cm": 36.02,
+   "max_move_mm": 27.0,
+   "moved_vertices": 197,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "midThigh",
+   "kind": "measure",
+   "at": "max",
+   "value": 75.0,
+   "asked_cm": 75.0,
+   "measured_cm": 75.02,
+   "max_move_mm": 43.2,
+   "moved_vertices": 202,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "min",
+   "value": 30.0,
+   "asked_cm": 30.0,
+   "measured_cm": 30.02,
+   "max_move_mm": 15.8,
+   "moved_vertices": 272,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "knee",
+   "kind": "measure",
+   "at": "max",
+   "value": 54.0,
+   "asked_cm": 54.0,
+   "measured_cm": 54.02,
+   "max_move_mm": 26.3,
+   "moved_vertices": 282,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "min",
+   "value": 17.0,
+   "asked_cm": 17.0,
+   "measured_cm": 17.0,
+   "max_move_mm": 12.3,
+   "moved_vertices": 658,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "ankle",
+   "kind": "measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": 32.0,
+   "measured_cm": 32.01,
+   "max_move_mm": 16.1,
+   "moved_vertices": 684,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "min",
+   "value": 19.0,
+   "asked_cm": 19.0,
+   "measured_cm": 19.01,
+   "max_move_mm": 19.4,
+   "moved_vertices": 469,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "elbow",
+   "kind": "measure",
+   "at": "max",
+   "value": 38.0,
+   "asked_cm": 38.0,
+   "measured_cm": 38.01,
+   "max_move_mm": 21.5,
+   "moved_vertices": 480,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "min",
+   "value": 18.0,
+   "asked_cm": 18.0,
+   "measured_cm": 18.01,
+   "max_move_mm": 18.4,
+   "moved_vertices": 341,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "forearm",
+   "kind": "measure",
+   "at": "max",
+   "value": 36.0,
+   "asked_cm": 36.0,
+   "measured_cm": 36.01,
+   "max_move_mm": 16.5,
+   "moved_vertices": 328,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "min",
+   "value": 13.0,
+   "asked_cm": 13.0,
+   "measured_cm": 13.01,
+   "max_move_mm": 8.1,
+   "moved_vertices": 474,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "wrist",
+   "kind": "measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": 24.0,
+   "measured_cm": 24.02,
+   "max_move_mm": 11.7,
+   "moved_vertices": 504,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 46.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 1105,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "kneeHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 52.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 1105,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 79.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 354,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "crotchHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 85.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 477,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 90.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 23.8,
+   "moved_vertices": 172,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "hipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 96.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.7,
+   "moved_vertices": 177,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 99.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 259,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "highHipHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 105.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 259,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 108.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.4,
+   "moved_vertices": 159,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "waistHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 114.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.4,
+   "moved_vertices": 259,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 120.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 22.0,
+   "moved_vertices": 145,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "underbustHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 126.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.7,
+   "moved_vertices": 146,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 128.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 670,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "chestHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 134.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 29.9,
+   "moved_vertices": 670,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 144.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 3073,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 150.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 3624,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "minus",
+   "value": 151.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 5157,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "cervicaleHeight",
+   "kind": "delta measure",
+   "at": "plus",
+   "value": 157.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 30.0,
+   "moved_vertices": 5157,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 26.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 100.0,
+   "moved_vertices": 956,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "shoulderToElbow",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 44.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 80.0,
+   "moved_vertices": 956,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 48.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 160.0,
+   "moved_vertices": 1819,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "sleeveFromShoulder",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 74.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 100.0,
+   "moved_vertices": 1818,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 14.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 55.0,
+   "moved_vertices": 1392,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "handLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 24.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 45.0,
+   "moved_vertices": 1388,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 6.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 25.1,
+   "moved_vertices": 1356,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "handWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 12.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 20.9,
+   "moved_vertices": 1356,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 20.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 56.5,
+   "moved_vertices": 2319,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "footLength",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 32.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 40.3,
+   "moved_vertices": 2308,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "min",
+   "value": 7.5,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 25.1,
+   "moved_vertices": 2289,
+   "status": "ok"
+  },
+  {
+   "model": "body_male_realistic.glb",
+   "slider": "footWidth",
+   "kind": "delta measure",
+   "at": "max",
+   "value": 13.0,
+   "asked_cm": null,
+   "measured_cm": null,
+   "max_move_mm": 20.9,
+   "moved_vertices": 2281,
    "status": "ok"
   },
   {
@@ -2271,7 +4079,7 @@
    "at": "max",
    "value": 1.0,
    "max_move_mm": 10.3,
-   "moved_vertices": 3791,
+   "moved_vertices": 3687,
    "status": "ok"
   },
   {
@@ -2280,8 +4088,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 11.2,
-   "moved_vertices": 399,
+   "max_move_mm": 23.1,
+   "moved_vertices": 336,
    "status": "ok"
   },
   {
@@ -2290,8 +4098,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 11.2,
-   "moved_vertices": 399,
+   "max_move_mm": 22.1,
+   "moved_vertices": 347,
    "status": "ok"
   },
   {
@@ -2300,8 +4108,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 14.3,
-   "moved_vertices": 84,
+   "max_move_mm": 28.4,
+   "moved_vertices": 141,
    "status": "ok"
   },
   {
@@ -2310,8 +4118,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 14.3,
-   "moved_vertices": 84,
+   "max_move_mm": 28.7,
+   "moved_vertices": 85,
    "status": "ok"
   },
   {
@@ -2320,8 +4128,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 8.1,
-   "moved_vertices": 428,
+   "max_move_mm": 15.3,
+   "moved_vertices": 490,
    "status": "ok"
   },
   {
@@ -2330,8 +4138,8 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 8.1,
-   "moved_vertices": 428,
+   "max_move_mm": 16.0,
+   "moved_vertices": 491,
    "status": "ok"
   },
   {
@@ -2340,8 +4148,8 @@
    "kind": "shape",
    "at": "min",
    "value": -1.0,
-   "max_move_mm": 10.3,
-   "moved_vertices": 483,
+   "max_move_mm": 14.2,
+   "moved_vertices": 370,
    "status": "ok"
   },
   {
@@ -2350,289 +4158,121 @@
    "kind": "shape",
    "at": "max",
    "value": 1.0,
-   "max_move_mm": 10.3,
-   "moved_vertices": 483,
+   "max_move_mm": 14.0,
+   "moved_vertices": 368,
    "status": "ok"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "acrossBackWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "acrossFrontWidth",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "ankle",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "backRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "backWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "cervicaleHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "chestHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "crotchCurveTotal",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "crotchHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "elbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "footLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "footWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "forearm",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "frontRise",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "frontWaistLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "handLength",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "handWidth",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "head",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "highHip",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "highHipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "hipHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "inseamLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "knee",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "kneeHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "midThigh",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "outseamFromHighHip",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "outseamFromWaist",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "shoulderHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "shoulderToElbow",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "sideTorsoLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "singleShoulderLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "sleeveFromArmpit",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "sleeveFromNeck",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "sleeveFromShoulder",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "torsoLoop",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "underbustHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "upperChest",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "waistHeight",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   },
   {
    "model": "body_male_realistic.glb",
    "slider": "waistToKneeLength",
    "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
-  },
-  {
-   "model": "body_male_realistic.glb",
-   "slider": "wrist",
-   "kind": "measure",
-   "status": "not_implemented",
-   "cause": "the body has no key for this measure yet"
+   "status": "linked",
+   "cause": "moves the body through other measures (site linking)"
   }
  ]
 }

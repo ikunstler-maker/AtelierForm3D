@@ -28,6 +28,10 @@ TOLERANCE_CM = 0.5
 # Anime body with shape sliders moved: the sliders do not add up exactly on the stylized breasts.
 # Accuracy is promised for the realistic body only (docs/decisions.md), so this case gets a wider band.
 ANIME_SHAPED_TOLERANCE_CM = 1.0
+# Delta measures (upper chest) follow the change from the standard value; their tape crosses the
+# top of the breasts, so with a very large bust the reading is approximate.
+DELTA_TOLERANCE_CM = 2.5
+MIN_SEGMENT_SHARE = 0.4  # a body segment between two height levels keeps at least this share of its length
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 MODELS_DIR = os.path.join(REPO_ROOT, "public", "models")
@@ -44,7 +48,11 @@ def effective_targets(calibration, targets_cm):
     names = ["totalHeight"] + calibration["girthOrder"]
     st = calibration.get("stylization")
     if not st:
-        return {n: targets_cm[n] for n in names}
+        out = {n: targets_cm[n] for n in names}
+        # Delta measures follow the difference from their standard value.
+        for m, reference in (calibration.get("deltaMeasures") or {}).items():
+            out[m] = calibration["base"][m] + (targets_cm[m] - reference)
+        return out
     base = calibration["base"]
     reference = st.get("reference", base)
     out = {
@@ -106,6 +114,7 @@ def solve_weights(calibration, targets_cm, shape=None):
     """Mirror of solveBlenderBodyWeights() in src/utils/blenderBodySolver.ts."""
     from measure_glb import solve_linear
 
+    real_targets = targets_cm
     targets_cm = effective_targets(calibration, targets_cm)
     order = calibration["girthOrder"]
     base = calibration["base"]
@@ -114,74 +123,163 @@ def solve_weights(calibration, targets_cm, shape=None):
     matrix = calibration["matrixCmPerUnit"]
     curves = calibration.get("curveKeys") or {}
 
+    minus = calibration.get("shapeMatrixMinusCm")
+
     def from_shape(r):
         # The sliders change the measures a little; the measurement keys take that back.
-        return sum(calibration["shapeMatrixCmPerUnit"][r][c] * shapes[key] for c, key in enumerate(shape_cols))
-
-    # 1. Straight-line part: every measure except the curved ones (their keys touch nothing else).
-    lin = [r for r, g in enumerate(order) if g not in curves]
-    sub = [[matrix[r][c] for c in lin] for r in lin]
-    rhs = [targets_cm[order[r]] - base[order[r]] - from_shape(r) for r in lin]
-    solved = solve_linear(sub, rhs)
-    weights = {calibration["girthKeys"][r]: w for r, w in zip(lin, solved)}
-
-    # 2. Curved part (female full bust): the other keys scale the section, then the curve is inverted.
-    for g, curve in curves.items():
-        r = order.index(g)
-        # measure(w) = curve(w) blended towards the big-rib-cage curve by L, plus shape(w);
-        # L = what the straight-line keys add to this measure (cm).
-        keys = calibration["girthKeys"]
-        frame_key = curve.get("frameKey")
-        # Straight-line keys other than the rib cage key (their effect here is small).
-        frame = sum(matrix[r][c] * weights[keys[c]] for c in lin if keys[c] != frame_key)
-        points = curve["points"]
-
-        def measure_at(w, r=r, curve=curve, frame=frame, points=points, frame_key=frame_key):
-            f = curve_value(points, w)
-            if frame_key:
-                # Rib cage size u: its own curve at breast weight 0, plus the breast part,
-                # blended between the normal and the big rib cage.
-                u = weights[frame_key]
-                grow0 = f - curve_value(points, 0.0)
-                grow_a = curve_value(curve["framePoints"], w) - curve_value(curve["framePoints"], 0.0)
-                f = curve_value_open(curve["frameCurve"], u) + grow0 + u / curve["frameWeight"] * (grow_a - grow0)
-            f += frame
-            if "shapeEffects" in curve:
-                shape_part = shape_effect(curve, shapes, w)
+        total = 0.0
+        for c, key in enumerate(shape_cols):
+            v = shapes[key]
+            if v < 0.0 and minus:
+                total += minus[r][c] * -v
             else:
-                shape_part = from_shape(r)
-            return f + shape_part
+                total += calibration["shapeMatrixCmPerUnit"][r][c] * v
+        return total
 
-        # The measure rises with the weight: find the weight by halving the interval.
-        lo, hi = points[0][0], points[-1][0]
-        for _ in range(40):
-            mid = (lo + hi) * 0.5
-            if measure_at(mid) < targets_cm[g]:
-                lo = mid
+    curve_w = {g: 0.0 for g in curves}
+    # Delta measures (upper chest) do not push back when the bust grows through their tape.
+    delta_names = set(calibration.get("deltaMeasures") or {})
+
+    def cross_part(r):
+        # What the curved keys (bust) add to a straight-line measure, from the calibration.
+        return sum(
+            curve_value(curve["crossTalk"][order[r]], curve_w[g])
+            for g, curve in curves.items()
+            if order[r] in (curve.get("crossTalk") or {}) and order[r] not in delta_names
+        )
+
+    residual_curves = calibration.get("residualCurves") or []
+
+    def residual_part(r):
+        # Left-over of a measure that does not follow one key in a straight line (shoulder width).
+        return sum(
+            curve_value_open(rc["points"], weights.get(rc["key"], 0.0))
+            for rc in residual_curves if rc["measure"] == order[r]
+        )
+
+    weights = {}
+    for _ in range(3 if residual_curves or any(c.get("crossTalk") for c in curves.values()) else 1):
+        # 1. Straight-line part: every measure except the curved ones (their keys touch nothing else).
+        lin = [r for r, g in enumerate(order) if g not in curves]
+        sub = [[matrix[r][c] for c in lin] for r in lin]
+        rhs = [targets_cm[order[r]] - base[order[r]] - from_shape(r) - cross_part(r) - residual_part(r)
+               for r in lin]
+        solved = solve_linear(sub, rhs)
+        weights = {calibration["girthKeys"][r]: w for r, w in zip(lin, solved)}
+
+        # 2. Curved part (female full bust): the other keys scale the section, then the curve is inverted.
+        for g, curve in curves.items():
+            r = order.index(g)
+            # measure(w) = curve(w) blended towards the big-rib-cage curve by L, plus shape(w);
+            # L = what the straight-line keys add to this measure (cm).
+            keys = calibration["girthKeys"]
+            frame_key = curve.get("frameKey")
+            # Straight-line keys other than the rib cage key (their effect here is small).
+            frame = sum(matrix[r][c] * weights[keys[c]] for c in lin if keys[c] != frame_key)
+            points = curve["points"]
+
+            def measure_at(w, r=r, curve=curve, frame=frame, points=points, frame_key=frame_key):
+                f = curve_value(points, w)
+                if frame_key:
+                    # Rib cage size u: its own curve at breast weight 0, plus the breast part,
+                    # blended between the normal and the big rib cage.
+                    u = weights[frame_key]
+                    grow0 = f - curve_value(points, 0.0)
+                    grow_a = curve_value(curve["framePoints"], w) - curve_value(curve["framePoints"], 0.0)
+                    f = curve_value_open(curve["frameCurve"], u) + grow0 + u / curve["frameWeight"] * (grow_a - grow0)
+                f += frame
+                if "shapeEffects" in curve:
+                    shape_part = shape_effect(curve, shapes, w)
+                else:
+                    shape_part = from_shape(r)
+                return f + shape_part
+
+            # The measure rises with the weight: find the weight by halving the interval.
+            lo, hi = points[0][0], points[-1][0]
+            for _ in range(40):
+                mid = (lo + hi) * 0.5
+                if measure_at(mid) < targets_cm[g]:
+                    lo = mid
+                else:
+                    hi = mid
+            w = (lo + hi) * 0.5
+            curve_w[g] = w
+            if curve.get("negKey"):
+                # Negative weights are carried by a second key (female: back to the chest wall).
+                weights[curve["key"]] = max(w, 0.0)
+                weights[curve["negKey"]] = min(curve.get("negMax", 1.0), max(-w, 0.0) * curve["negScale"])
             else:
-                hi = mid
-        w = (lo + hi) * 0.5
-        if curve.get("negKey"):
-            # Negative weights are carried by a second key (female: back to the chest wall).
-            weights[curve["key"]] = max(w, 0.0)
-            weights[curve["negKey"]] = min(curve.get("negMax", 1.0), max(-w, 0.0) * curve["negScale"])
-        else:
-            weights[curve["key"]] = w
+                weights[curve["key"]] = w
     weights.update(shapes)
-    hk = calibration["heightKey"]
-    weights[hk["name"]] = (targets_cm["totalHeight"] - base["totalHeight"]) / hk["cmPerUnit"]
+    # Heights and lengths use the measures as entered (the anime softening is for girths only).
+    weights.update(level_weights(calibration, real_targets))
+    weights.update(delta_weights(calibration, real_targets))
     return weights
 
 
-def stretched_height(calibration, z, height_weight):
-    hk = calibration["heightKey"]
-    ratio = (z - hk["stretchFromM"]) / (hk["stretchToM"] - hk["stretchFromM"])
-    return z + height_weight * (hk["cmPerUnit"] / 100.0) * min(1.0, max(0.0, ratio))
+def level_weights(calibration, targets_cm):
+    """Mirror of levelWeights(): one key per height level, driven by the change from its reference.
+
+    Total height is absolute. A level missing from the targets follows the total height the way
+    the site links them: the body stretches evenly up to the base of the neck, the head keeps its size.
+    """
+    levels = calibration["levelKeys"]
+    total = levels[-1]
+    d_total = targets_cm["totalHeight"] - calibration["base"]["totalHeight"]
+    cerv = levels[-2]
+    floor_m = levels[0]["fromM"]
+    d_cerv = targets_cm[cerv["measure"]] - cerv["reference"] if cerv["measure"] in targets_cm else d_total
+    deltas = []
+    for lk in levels[:-1]:
+        if lk["measure"] in targets_cm:
+            deltas.append(targets_cm[lk["measure"]] - lk["reference"])
+        else:
+            deltas.append(d_cerv * (lk["levelM"] - floor_m) / (cerv["levelM"] - floor_m))
+    deltas.append(d_total)
+    # No part of the body may be squeezed below MIN_SEGMENT_SHARE of its own length (the levels of
+    # the mesh sit closer together than the tailor's ones): a level that comes too close to the
+    # one below is pushed up.
+    below_base, below_new = floor_m, floor_m
+    out = {}
+    for lk, delta in zip(levels, deltas):
+        new = max(lk["levelM"] + delta / 100.0, below_new + MIN_SEGMENT_SHARE * (lk["levelM"] - below_base))
+        out[lk["key"]] = (new - lk["levelM"]) * 100.0 / lk["cmPerUnit"]
+        below_base, below_new = lk["levelM"], new
+    return out
+
+
+def delta_weights(calibration, targets_cm):
+    """Mirror of deltaWeights(): lengths, hands, feet. change (cm) = sum of weight x cm per unit."""
+    from measure_glb import solve_linear
+
+    rows = calibration.get("deltaKeys") or []
+    keys = sorted({k for row in rows for k in row["keys"]})
+    if not keys:
+        return {}
+    matrix = [[row["keys"].get(k, 0.0) for k in keys] for row in rows]
+    rhs = [targets_cm.get(row["measure"], row["reference"]) - row["reference"] for row in rows]
+    return dict(zip(keys, solve_linear(matrix, rhs)))
+
+
+def stretched_height(calibration, z, weights):
+    """Height z (m) after the level keys are applied."""
+    out = z
+    for lk in calibration["levelKeys"]:
+        step = weights.get(lk["key"], 0.0) * lk["cmPerUnit"] / 100.0
+        if not step or z <= lk["fromM"]:
+            continue
+        if z <= lk["levelM"]:
+            out += step * (z - lk["fromM"]) / (lk["levelM"] - lk["fromM"])
+        elif lk["toM"] is None:
+            out += step
+        elif z < lk["toM"]:
+            out += step * (lk["toM"] - z) / (lk["toM"] - lk["levelM"])
+    return out
 
 
 def ruler_specs(calibration, weights):
     """Where to measure once the keys are applied: landmarks rise with height, the arm rides on the shoulder."""
-    height_weight = weights[calibration["heightKey"]["name"]]
+    own_shift = calibration.get("pointShiftMPerUnit", {})
     base_specs = calibration.get("measureSpecs") or {
         name: {"type": "girth", "height_m": calibration["landmarksM"][name]} for name in calibration["girthOrder"]
     }
@@ -190,15 +288,16 @@ def ruler_specs(calibration, weights):
     for name, spec in base_specs.items():
         spec = dict(spec)
         if "height_m" in spec:
-            spec["height_m"] = stretched_height(calibration, spec["height_m"], height_weight)
+            spec["height_m"] = stretched_height(calibration, spec["height_m"], weights)
         elif "range_m" in spec:
-            spec["range_m"] = [stretched_height(calibration, z, height_weight) for z in spec["range_m"]]
+            spec["range_m"] = [stretched_height(calibration, z, weights) for z in spec["range_m"]]
         else:
             point = list(spec["point_m"])
             for key, weight in weights.items():
                 shift = arm_shift.get(key, [0.0, 0.0, 0.0])
+                own = own_shift.get(name, {}).get(key, [0.0, 0.0, 0.0])
                 for axis in range(3):
-                    point[axis] += weight * shift[axis]
+                    point[axis] += weight * (shift[axis] + own[axis])
             spec["point_m"] = point
         specs[name] = spec
     return specs
@@ -226,6 +325,14 @@ def verify_profile(profile, calibration):
 
     # The model must match the effective targets (equal to the real ones for exact bodies).
     expected = effective_targets(calibration, targets)
+    # ...so what the tape reads there includes the bust's own contribution.
+    for g, curve in (calibration.get("curveKeys") or {}).items():
+        w = weights.get(curve["key"], 0.0)
+        if curve.get("negKey") and weights.get(curve["negKey"], 0.0) > 0.0:
+            w = -weights[curve["negKey"]] / curve["negScale"]
+        for m in calibration.get("deltaMeasures") or {}:
+            if m in (curve.get("crossTalk") or {}):
+                expected[m] += curve_value(curve["crossTalk"][m], w)
     rows = {}
     ok = True
     shaped = any(abs(v) > 1e-9 for v in (profile.get("shape") or {}).values())
@@ -237,7 +344,7 @@ def verify_profile(profile, calibration):
             ok = False
             continue
         delta = value - target
-        row_ok = abs(delta) <= tolerance
+        row_ok = abs(delta) <= (DELTA_TOLERANCE_CM if name in (calibration.get("deltaMeasures") or {}) else tolerance)
         ok = ok and row_ok
         rows[name] = {
             "real_cm": targets[name],
@@ -265,6 +372,8 @@ def main():
     out_path = None
     if "--profiles" in cli:
         profiles_dir = cli[cli.index("--profiles") + 1]
+    # --only <text>: check just the models whose file name contains the text (e.g. "realistic").
+    only = cli[cli.index("--only") + 1] if "--only" in cli else None
     if "--out" in cli:
         out_path = cli[cli.index("--out") + 1]
 
@@ -278,6 +387,8 @@ def main():
         with open(path, "r", encoding="utf-8") as fh:
             profile = json.load(fh)
         for cal_path in sorted(glob.glob(os.path.join(MODELS_DIR, f"body_{profile['gender']}*.calibration.json"))):
+            if only and only not in os.path.basename(cal_path):
+                continue
             with open(cal_path, "r", encoding="utf-8") as fh:
                 reports.append(verify_profile(profile, json.load(fh)))
 
