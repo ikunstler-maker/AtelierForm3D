@@ -15,7 +15,9 @@
 | Повзунок мірки / Measurement key | calibrated shape key `M_<name>`; weight 1 = known cm | generator, `BlenderBody.tsx` |
 | Таблиця калібрування / Calibration | JSON: base girths + cm per unit weight per key | `public/models/*.calibration.json` |
 | Режим «Аніме» / Anime mode | stylized Blender body; real measurements, softened response | `glassSettings.bodyModel = 'anime'`, `BlenderBody.tsx` |
-| Режим «Реалістичний» / Realistic mode | exact body, ±0.5 cm (planned) | `--style realistic` in the generator |
+| Режим «Реалістичний» / Realistic mode | exact body, ±0.5 cm on 9 driven measures; default | `glassSettings.bodyModel = 'realistic'`, `body_<gender>_realistic.glb` |
+| Керовані мірки / Driven measures | measures a body follows: `girthOrder` in its calibration | realistic 9, anime 5 |
+| Плечовий суглоб / Shoulder joint | point the arm rides on as one rigid piece | `joint_x`, `armShiftMPerUnit` in calibration |
 | Класичний манекен / Classic | previous procedural mannequin | `glassSettings.bodyModel = 'classic'`, `ParametricBody.tsx` |
 | М'який перерахунок / Stylization | share of the difference from base size the anime body follows | `stylization` in calibration, `effectiveBodyTargets()` |
 | Базова модель / Base mesh | CC0 body from Blender Studio Human Base Meshes | `assets/human-base-meshes/` (not in git) |

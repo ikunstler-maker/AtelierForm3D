@@ -32,6 +32,33 @@
 - Verify: render close-ups of the shoulders for base and extreme sizes.
 - Seen: 2026-11-23
 
+## Whole body measures wrong only for smaller-than-base profiles — Blender
+- Symptom: `verify_profiles.py` fails every measure of one body (height +4.9 cm, hip NOT MEASURED) when `M_height` < 0.
+- Root cause: wide-set feet lay outside the torso boundary, counted as arms and sank below the floor; the ruler measures from the lowest vertex.
+- Fix: arm zone ends above the lower legs (`limit` in `analyze()`).
+- Verify: `male-s` passes on `body_male_realistic.glb`.
+- Seen: 2026-11-23
+
+## One measure drifts on extreme sizes — Blender
+- Symptom: a single measure is 1.5–3 cm off only on the largest profiles (seen on bicep).
+- Root cause: its section sat where another key bends the surface (upper arm at armpit level), so the response was not linear.
+- Fix: move the section to a zone that key moves rigidly; debug with one key at a time (expected = base + matrix × weight).
+- Verify: `female-plus` and `male-xl` pass.
+- Seen: 2026-11-23
+
+## Horizontal belts on extreme sizes — Blender
+- Symptom: creases across the belly and thighs when measures differ a lot from the base.
+- Root cause: separate Gaussian zones of neighbouring keys leave dips between landmarks.
+- Fix: `torso_profile` (hip, waist, chest add up to 1 between hip and chest), `leg_profile` (thigh fades to the knee).
+- Verify: render `female-plus` front view.
+- Seen: 2026-11-23
+
+## Realistic GLB is 14 MB — Blender
+- Symptom: `body_*_realistic.glb` far above the 6 MB limit.
+- Root cause: multires level 1 gives 43k vertices; every shape key stores positions and normals for all of them.
+- Fix: `MULTIRES_LEVEL = 0` (11.7k vertices, 2.6 MB).
+- Seen: 2026-11-23
+
 ## PowerShell cannot touch .blend paths — Env
 - Symptom: `resolve-path targeting '...blend' was blocked` in the Claude session.
 - Root cause: `.claude/settings.json` denies reading `*.blend`; path cmdlets on such files are blocked too.

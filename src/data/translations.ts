@@ -146,8 +146,8 @@ export interface TranslationDictionary {
     canvasBackground: string;
     showStudioFloor: string;
     bodyModel: string;
-    bodyModels: { anime: string; classic: string };
-    bodyModelHints: { anime: string; classic: string };
+    bodyModels: { realistic: string; anime: string; classic: string };
+    bodyModelHints: { realistic: string; anime: string; classic: string };
     skinColor: string;
     skinTexture: string;
     lighting: string;
@@ -361,8 +361,14 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       canvasBackground: 'Колір фону позаду манекена',
       showStudioFloor: 'Показувати подіум та сітку підлоги',
       bodyModel: 'Манекен',
-      bodyModels: { anime: 'Аніме', classic: 'Класичний' },
+      bodyModels: {
+        realistic: 'Реалістичний',
+        anime: 'Аніме',
+        classic: 'Класичний',
+      },
       bodyModelHints: {
+        realistic:
+          'Ваша копія: точно відтворює зріст, шию, груди, талію, стегна, ширину плечей, обхват руки, стегна й литки',
         anime:
           'Стилізоване тіло: реагує на зріст, шию, груди, талію і стегна м’яко, щоб зберегти аніме-пропорції',
         classic:
@@ -774,8 +780,14 @@ export const TRANSLATIONS: Record<Language, TranslationDictionary> = {
       canvasBackground: 'Custom Background Color Behind Body',
       showStudioFloor: 'Show Floor Pedestal & Grid',
       bodyModel: 'Mannequin',
-      bodyModels: { anime: 'Anime', classic: 'Classic' },
+      bodyModels: {
+        realistic: 'Realistic',
+        anime: 'Anime',
+        classic: 'Classic',
+      },
       bodyModelHints: {
+        realistic:
+          'Your copy: exact height, neck, chest, waist, hip, shoulder width, upper arm, thigh and calf',
         anime:
           'Stylized body: follows height, neck, chest, waist and hip softly to keep anime proportions',
         classic:

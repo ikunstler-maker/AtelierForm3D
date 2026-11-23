@@ -25,7 +25,8 @@ Source of truth: `docs/SPEC.md`, amended by `docs/decisions.md`. Conflict with a
 
 ## Blender → site pipeline (invariants)
 - Generator: `scripts/blender_base_body_generator.py` (Blender Studio Human Base Meshes, CC0; bundle in `assets/human-base-meshes/`, not in git) → `public/models/body_<gender>.glb` + `.calibration.json`. Old tube generator `blender_sims_human_generator.py` is a fallback only.
-- Two modes: anime (stylized body, soft response: `stylization` in the calibration) and realistic (exact; planned). Accuracy ±0.5 cm is promised for realistic only.
+- Styles: `--style realistic` (default mannequin, exact, 9 measures → `body_<gender>_realistic.*`) and `--style stylized` (anime, soft response via `stylization`, 5 measures → `body_<gender>.*`). Run both after generator changes (about 2.5 min each, run in background). Accuracy ±0.5 cm is promised for realistic only.
+- Calibration `girthOrder` names must equal the site's `MeasurementKey` names; the site reads targets by these names.
 - Ruler: `scripts/measure_glb.py`; import GLBs with `merge_vertices=True` (UV seams split the mesh).
 - After any generator change: regenerate, then `blender -b --factory-startup -P scripts/verify_profiles.py -- --out docs/reports/verify_latest.json` must exit 0.
 - Show the owner renders (base + extreme sizes) before wiring a new or changed body into the site.

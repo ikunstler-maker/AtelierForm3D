@@ -34,7 +34,7 @@ export const GlassCustomizer: React.FC = () => {
   const bodyModel = glassSettings.bodyModel ?? DEFAULT_BODY_MODEL;
   const skinTexture = glassSettings.skinTexture ?? DEFAULT_SKIN_TEXTURE;
   const lighting = glassSettings.lighting ?? DEFAULT_LIGHTING;
-  const bodyModels: BodyModel[] = ['anime', 'classic'];
+  const bodyModels: BodyModel[] = ['realistic', 'anime', 'classic'];
   const lightingPresets: LightingPresetId[] = [
     'studio',
     'soft',
@@ -167,7 +167,7 @@ export const GlassCustomizer: React.FC = () => {
           {t.customizer.bodyModel}
         </div>
         <div
-          className="grid grid-cols-2 gap-1.5 p-1 rounded-xl border border-white/10"
+          className="grid grid-cols-3 gap-1.5 p-1 rounded-xl border border-white/10"
           style={{ background: 'var(--glass-bg-elevated)' }}
         >
           {bodyModels.map((model) => (

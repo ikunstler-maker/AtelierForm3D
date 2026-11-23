@@ -245,7 +245,9 @@ export const MannequinScene: React.FC = () => {
         <group position={[0, 0, 0]}>
           {useBlenderBody ? (
             <Suspense fallback={null}>
-              <BlenderBody />
+              <BlenderBody
+                variant={bodyModel === 'anime' ? 'anime' : 'realistic'}
+              />
             </Suspense>
           ) : (
             <ParametricBody />

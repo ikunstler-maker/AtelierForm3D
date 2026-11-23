@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { useGLTF } from '@react-three/drei';
-import { Gender } from '../../data/measurementsSchema';
+import { Gender, MeasurementKey } from '../../data/measurementsSchema';
 import {
   DEFAULT_SKIN_TEXTURE,
   useAtelierStore,
@@ -11,9 +11,14 @@ import {
   solveBlenderBodyWeights,
 } from '../../utils/blenderBodySolver';
 
-const modelUrl = (gender: Gender) => `./models/body_${gender}.glb`;
-const calibrationUrl = (gender: Gender) =>
-  `./models/body_${gender}.calibration.json`;
+export type BlenderBodyVariant = 'anime' | 'realistic';
+
+const stem = (gender: Gender, variant: BlenderBodyVariant) =>
+  `./models/body_${gender}${variant === 'realistic' ? '_realistic' : ''}`;
+const modelUrl = (gender: Gender, variant: BlenderBodyVariant) =>
+  `${stem(gender, variant)}.glb`;
+const calibrationUrl = (gender: Gender, variant: BlenderBodyVariant) =>
+  `${stem(gender, variant)}.calibration.json`;
 
 const EYE_MATERIAL_NAME = 'Eye';
 const SKIN_GRAIN_REPEAT = 14;
@@ -62,30 +67,29 @@ function getSkinGrainTexture(): THREE.CanvasTexture {
 /**
  * Mannequin built in Blender (GLB, meters, Y-up) on the Blender Studio Human
  * Base Meshes (CC0). Its shape keys are calibrated in centimeters and driven by
- * totalHeight, neck, chest, waist and hip from the store. The stylized (anime)
- * body softens the response; see blenderBodySolver.ts.
+ * the measurements listed in its calibration file (realistic: 9 measures, exact;
+ * anime: 5 measures, softened). See blenderBodySolver.ts.
  */
-export const BlenderBody: React.FC = () => {
+export const BlenderBody: React.FC<{ variant: BlenderBodyVariant }> = ({
+  variant,
+}) => {
   const gender = useAtelierStore((s) => s.gender);
-  const totalHeight = useAtelierStore((s) => s.measurements.totalHeight);
-  const neck = useAtelierStore((s) => s.measurements.neck);
-  const chest = useAtelierStore((s) => s.measurements.chest);
-  const waist = useAtelierStore((s) => s.measurements.waist);
-  const hip = useAtelierStore((s) => s.measurements.hip);
+  const measurements = useAtelierStore((s) => s.measurements);
   const surfaceFinish = useAtelierStore((s) => s.glassSettings.surfaceFinish);
   const skinTexture = useAtelierStore(
     (s) => s.glassSettings.skinTexture ?? DEFAULT_SKIN_TEXTURE
   );
   const skinToneHex = useAtelierStore((s) => s.appearance.skinToneHex);
 
-  const { scene } = useGLTF(modelUrl(gender));
+  const { scene } = useGLTF(modelUrl(gender, variant));
   const [calibration, setCalibration] =
     useState<BlenderBodyCalibration | null>(null);
+  const expectedModel = modelUrl(gender, variant).split('/').pop();
 
   useEffect(() => {
     let cancelled = false;
     setCalibration(null);
-    fetch(calibrationUrl(gender))
+    fetch(calibrationUrl(gender, variant))
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then((data: BlenderBodyCalibration) => {
         if (!cancelled) setCalibration(data);
@@ -96,7 +100,7 @@ export const BlenderBody: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [gender]);
+  }, [gender, variant]);
 
   // Remember which part every mesh is (skin or eye) before materials are replaced.
   const parts = useMemo(() => {
@@ -162,14 +166,15 @@ export const BlenderBody: React.FC = () => {
   }, [parts, skinMaterial, eyeMaterial]);
 
   useEffect(() => {
-    if (!calibration || calibration.gender !== gender) return;
-    const weights = solveBlenderBodyWeights(calibration, {
-      totalHeight,
-      neck,
-      chest,
-      waist,
-      hip,
+    // Skip a calibration that belongs to the previous gender or variant.
+    if (!calibration || calibration.model !== expectedModel) return;
+    const targets: Record<string, number> = {
+      totalHeight: measurements.totalHeight,
+    };
+    calibration.girthOrder.forEach((name) => {
+      targets[name] = measurements[name as MeasurementKey];
     });
+    const weights = solveBlenderBodyWeights(calibration, targets);
     parts.forEach(({ mesh }) => {
       const dict = mesh.morphTargetDictionary;
       const influences = mesh.morphTargetInfluences;
@@ -181,9 +186,7 @@ export const BlenderBody: React.FC = () => {
       });
     });
     scene.userData.blenderBodyWeights = weights;
-  }, [calibration, gender, scene, parts, totalHeight, neck, chest, waist, hip]);
+  }, [calibration, expectedModel, scene, parts, measurements]);
 
   return <primitive object={scene} name="blender-mannequin" />;
 };
-
-useGLTF.preload(modelUrl('female'));

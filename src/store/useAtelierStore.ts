@@ -221,9 +221,13 @@ export interface GlassSettings {
   lighting?: LightingSettings;
 }
 
-/** 'anime' = stylized Blender body (soft response to measurements); 'classic' = procedural mannequin. */
-export type BodyModel = 'anime' | 'classic';
-export const DEFAULT_BODY_MODEL: BodyModel = 'anime';
+/**
+ * 'realistic' = exact Blender body (your copy, ±0.5 cm on the driven measures);
+ * 'anime' = stylized Blender body (soft response to measurements);
+ * 'classic' = procedural mannequin.
+ */
+export type BodyModel = 'realistic' | 'anime' | 'classic';
+export const DEFAULT_BODY_MODEL: BodyModel = 'realistic';
 export const DEFAULT_SKIN_TEXTURE = 0.5;
 
 export type LightingPresetId = 'studio' | 'soft' | 'contrast' | 'warm';
